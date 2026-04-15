@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('notes', function (Blueprint $table) {
-            $table->string('title')->default('Untitled')->change();
+        Schema::table('image_attachments', function (Blueprint $table) {
+            $table->rename('note_images');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('notes', function (Blueprint $table) {
-            $table->string('title')->nullable()->change();
+        Schema::table('image_attachments', function (Blueprint $table) {
+            $table->rename('image_attachments');
         });
     }
 };

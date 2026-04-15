@@ -9,10 +9,16 @@ class NoteImage extends Model {
     use HasFactory;
 
     protected $fillable = [
+        'note_id',
         'image_url',
+        'public_id',
+    ];
+
+    protected $hidden = [
+        'public_id'
     ];
 
     public function note() {
-        return $this->belongsTo('notes');
+        return $this->belongsTo(Note::class);
     }
 }
