@@ -4,18 +4,23 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\NoteImage;
-use Cloudinary\Cloudinary;
 use Illuminate\Http\Request;
 use App\Services\CloudinaryService;
-use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Format;
 
 class NoteImageController extends Controller
 {
+    protected ImageManager $manager;
 
-    private function compress(ImageManager $manager, $file) {
-        $imageCompress = $manager->decode($file);
+    public function __construct(ImageManager $manager)
+    {
+        $this->manager = $manager;
+    }
+
+    private function compress($file)
+    {
+        $imageCompress = $this->manager->decode($file);
 
         $imageCompress->scale(width: 1200);
 
@@ -31,17 +36,15 @@ class NoteImageController extends Controller
         ]);
 
         if(!$upload) {
-            return response()->json([
-                'message' => 'Upload to Cloudinary failed. Please try again later.'
-            ], 500);
+            throw new \Exception('Upload to Cloudinary failed. Please try again later.');
         }
 
         unlink($tempPath);
 
         return $upload;
     }
-    public function store(Request $request) {
-
+    public function store(Request $request)
+    {
         $request->validate([
             'note_id' => 'required',
             'image_url' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
@@ -51,9 +54,7 @@ class NoteImageController extends Controller
 
         // Compress the file
         try {
-            $manager = new ImageManager(new Driver());
-
-            $upload = $this->compress($manager, $file);
+            $upload = $this->compress($file);
 
             $image = NoteImage::create([
                 'note_id' => $request->note_id,
@@ -70,10 +71,10 @@ class NoteImageController extends Controller
             'message' => 'Image uploaded successfully',
             'image' => $image
         ], 201);
-
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $request->validate([
             'image_url' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10248',
         ]);
@@ -84,10 +85,7 @@ class NoteImageController extends Controller
 
         // Compress the file
         try {
-            $manager = new ImageManager(new Driver());
-
-            $upload = $this->compress($manager, $request->file('image_url'));
-
+            $upload = $this->compress($request->file('image_url'));
         } catch(\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
