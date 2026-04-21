@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 class AuthController extends Controller
 {
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $request->validate([
             'display_name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
@@ -27,13 +27,24 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        $cookie = cookie(
+            'auth_token',
+            $token,
+            60 * 24 * 7,
+            '/',
+            null,
+            config('app.env') === 'production',
+            true
+        );
+
         return response()->json([
             'message' => 'register successfully',
             'user' => $user
-        ], 201);
+        ], 201)->withCookie($cookie);
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required'
@@ -41,7 +52,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if(!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'message' => 'Wrong email or password'
             ], 401);
@@ -50,22 +61,32 @@ class AuthController extends Controller
         // Create a JWT
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        $cookie = cookie(
+            'auth_token',
+            $token,
+            60 * 24 * 7,
+            '/',
+            null,
+            config('app.env') === 'production',
+            true
+        );
+
         return response()->json([
             'message' => 'login successfully',
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-        ]);
+        ], 200)->withCookie($cookie);
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         $request->user()->tokens()->delete();
 
         return response()->json([
             'message' => 'logout successfully'
-        ]);
+        ])->withoutCookie('auth_token');
     }
 
-    public function me(Request $request) {
+    public function me(Request $request)
+    {
         return response()->json($request->user());
     }
 }
