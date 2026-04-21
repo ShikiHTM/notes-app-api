@@ -9,6 +9,11 @@ use App\Services\CloudinaryService;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Format;
 
+/**
+ * @group Media Management
+ *
+ * APIs for handling image attachments, WebP compression, and Cloudinary storage.
+ */
 class NoteImageController extends Controller
 {
     protected ImageManager $manager;
@@ -43,6 +48,15 @@ class NoteImageController extends Controller
 
         return $upload;
     }
+
+    /**
+     * Upload an image.
+     *
+     * Uploads a file, compresses it to WebP, and stores it in Cloudinary.
+     * @bodyParam note_id int required The ID of the note this image belongs to.
+     * @bodyParam image_url file required The image file (Max 10MB).
+     * @authenticated
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -107,6 +121,11 @@ class NoteImageController extends Controller
         ]);
     }
 
+    /**
+     * Delete an image.
+     * @urlParam id int required The Image ID.
+     * @authenticated
+     */
     public function destroy($id) {
         $image = NoteImage::findOrFail($id);
 
@@ -128,6 +147,11 @@ class NoteImageController extends Controller
         ]);
     }
 
+    /**
+     * List note images.
+     * @queryParam note_id int required Filter by Note ID.
+     * @authenticated
+     */
     public function index(Request $request) {
         $query = NoteImage::query();
 

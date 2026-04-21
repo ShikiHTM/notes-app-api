@@ -7,8 +7,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
+/**
+ * @group Authentication
+ * APIs for user registration, login, and session management.
+ */
 class AuthController extends Controller
 {
+    /**
+     * Register a new user.
+     *
+     * Creates a new user account and sends a verification email.
+     *
+     * @bodyParam display_name string required The name shown on the profile. Example: John Doe
+     * @bodyParam email string required Must be a unique email address. Example: john@example.com
+     * @bodyParam password string required Minimum 6 characters. Example: secret123
+     */
     public function register(Request $request)
     {
         $request->validate([
@@ -43,6 +56,14 @@ class AuthController extends Controller
         ], 201)->withCookie($cookie);
     }
 
+    /**
+     * User Login.
+     *
+     * Authenticates credentials and returns an auth_token via a secure cookie.
+     *
+     * @bodyParam email string required Example: john@example.com
+     * @bodyParam password string required Example: secret123
+     */
     public function login(Request $request)
     {
         $request->validate([
@@ -54,7 +75,7 @@ class AuthController extends Controller
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'Wrong email or password'
+                'error' => 'Wrong email or password'
             ], 401);
         }
 
@@ -76,6 +97,12 @@ class AuthController extends Controller
         ], 200)->withCookie($cookie);
     }
 
+    /**
+     * User Logout.
+     *
+     * Revokes the current access token and clears the auth cookie.
+     * @authenticated
+     */
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
@@ -85,6 +112,12 @@ class AuthController extends Controller
         ])->withoutCookie('auth_token');
     }
 
+    /**
+     * Get Current Profile.
+     *
+     * Returns the authenticated user's details.
+     * @authenticated
+     */
     public function me(Request $request)
     {
         return response()->json($request->user());

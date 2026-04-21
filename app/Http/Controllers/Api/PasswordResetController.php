@@ -12,8 +12,19 @@ use Illuminate\Http\Request;
 use Mail;
 use Str;
 
+/**
+ * @group Authentication
+ *
+ * APIs for managing forgotten passwords and recovery links.
+ */
 class PasswordResetController extends Controller
 {
+    /**
+     * Request reset link.
+     *
+     * Sends a password reset email to the user if the account exists.
+     * @bodyParam email string required Valid email address.
+     */
     public function sendResetLinkEmail(Request $request)
     {
         $request->validate([
@@ -44,6 +55,15 @@ class PasswordResetController extends Controller
         ]);
     }
 
+    /**
+     * Reset password.
+     *
+     * Validates the token and updates the user's password.
+     * @bodyParam token string required The token from the reset email.
+     * @bodyParam email string required Valid email address.
+     * @bodyParam password string required New password.
+     * @bodyParam password_confirmation string required Must match password.
+     */
     public function reset(Request $request)
     {
         $request->validate([
@@ -62,7 +82,7 @@ class PasswordResetController extends Controller
 
         if (Carbon::parse($record->created_at)->addMinutes(60)->isPast()) {
             DB::table('password_reset_tokens')->where('email', $request->email)->delete();
-            return response()->json(['message' => 'This password reset token is expired.'], 422);
+            return response()->json(['error' => 'This password reset token is expired.'], 422);
         }
 
         $user = User::where('email', $request->email);
