@@ -33,7 +33,8 @@ class PasswordResetController extends Controller
 
         $url = "https://shikii.dev/api/reset-password?token={$token}&email={$request->email}";
 
-        Mail::to($request->email)->send(new ForgotPasswordMail($url));
+            Mail::to($request->email)->queue(new ForgotPasswordMail($url));
+        }
 
         return response()->json([
             'message' => 'We have sent your password reset link!'

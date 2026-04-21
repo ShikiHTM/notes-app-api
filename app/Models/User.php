@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Notifications\VerifyEmailNotification;
 
 #[Fillable(['display_name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
@@ -22,7 +23,9 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use HasApiTokens;
 
     /**
      * Get the attributes that should be cast.
@@ -37,19 +40,27 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function userPreference() {
+    public function userPreference()
+    {
         return $this->hasOne(userPreference::class);
     }
 
-    public function notes() {
+    public function notes()
+    {
         return $this->hasMany(Note::class);
     }
 
-    public function labels() {
+    public function labels()
+    {
         return $this->hasMany(Label::class);
     }
 
-    public function sharedNotes() {
+    public function sharedNotes()
+    {
         return $this->belongsToMany(Note::class, 'note_shares')->withPivot('permission', 'shared_at');
+    }
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmailNotification());
     }
 }
