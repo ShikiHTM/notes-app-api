@@ -1,0 +1,218 @@
+name: 'Media Management'
+description: |-
+
+  APIs for handling image attachments, WebP compression, and Cloudinary storage.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/images
+    metadata:
+      custom: []
+      groupName: 'Media Management'
+      groupDescription: |-
+
+        APIs for handling image attachments, WebP compression, and Cloudinary storage.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List note images.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      note_id:
+        custom: []
+        name: note_id
+        description: 'Filter by Note ID.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      note_id: 16
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/v1/images
+    metadata:
+      custom: []
+      groupName: 'Media Management'
+      groupDescription: |-
+
+        APIs for handling image attachments, WebP compression, and Cloudinary storage.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Upload an image.'
+      description: 'Uploads a file, compresses it to WebP, and stores it in Cloudinary.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      note_id:
+        custom: []
+        name: note_id
+        description: 'The ID of the note this image belongs to.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      image_url:
+        custom: []
+        name: image_url
+        description: 'The image file (Max 10MB).'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      note_id: 16
+    fileParameters:
+      image_url: null
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/v1/images/{id}'
+    metadata:
+      custom: []
+      groupName: 'Media Management'
+      groupDescription: |-
+
+        APIs for handling image attachments, WebP compression, and Cloudinary storage.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete an image.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The Image ID.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 16
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/v1/images/{id}'
+    metadata:
+      custom: []
+      groupName: 'Media Management'
+      groupDescription: |-
+
+        APIs for handling image attachments, WebP compression, and Cloudinary storage.
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the image.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      image_url:
+        custom: []
+        name: image_url
+        description: 'Must be an image. Must not be greater than 10248 kilobytes.'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters: []
+    fileParameters:
+      image_url: null
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
