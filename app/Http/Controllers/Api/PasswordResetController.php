@@ -14,34 +14,38 @@ use Str;
 
 class PasswordResetController extends Controller
 {
-    public function sendResetLink(Request $request) {
+    public function sendResetLinkEmail(Request $request)
+    {
         $request->validate([
             'email' => 'required|string|email',
         ]);
 
         // Check if email is existed
+        $user = User::where('email', $request->email)->first();
 
-        $token = Str::random(64);
+        if ($user) {
+            $token = Str::random(64);
 
-        DB::table('password_reset_tokens')->updateOrInsert([
-            'email' => $request->email,
-            'token' => hash('sha256', $token),
-            'created_at' => now()
-        ]);
+            DB::table('password_reset_tokens')->updateOrInsert([
+                'email' => $request->email,
+                'token' => hash('sha256', $token),
+                'created_at' => now(),
+            ]);
 
-        // Send via Mailtrap
+            // Send via Mailtrap
 
-        $url = "https://shikii.dev/api/reset-password?token={$token}&email={$request->email}";
+            $url = "https://shikii.dev/reset-password?token={$token}&email={$request->email}";
 
             Mail::to($request->email)->queue(new ForgotPasswordMail($url));
         }
 
         return response()->json([
-            'message' => 'We have sent your password reset link!'
+            'message' => 'If your email is in our system, you will receive a reset link shortly!',
         ]);
     }
 
-    public function resetPassword(Request $request) {
+    public function reset(Request $request)
+    {
         $request->validate([
             'token' => 'required',
             'email' => 'required|string|email',
@@ -50,21 +54,26 @@ class PasswordResetController extends Controller
 
         $record = DB::table('password_reset_tokens')->where('email', $request->email)->first();
 
-        if(!$record || !hash_equals($record->token, hash('sha256', $request->token))) {
-            Carbon::parse($record->created_at)->addMinutes(60)->isPast();
+        if (!$record || !hash_equals($record->token, hash('sha256', $request->token))) {
             return response()->json([
-                'message' => 'This password reset token is invalid.'
+                'message' => 'This password reset token is invalid.',
             ]);
         }
 
-        User::where('email', $request->email)->update([
-            'password' => Hash::make($request->password)
-        ]);
+        if (Carbon::parse($record->created_at)->addMinutes(60)->isPast()) {
+            DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+            return response()->json(['message' => 'This password reset token is expired.'], 422);
+        }
 
-        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+        $user = User::where('email', $request->email);
+
+        if ($user) {
+            $user->update(['password' => Hash::make($request->password)]);
+            DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+        }
 
         return response()->json([
-            'message' => 'Your password has been changed.'
+            'message' => 'Your password has been changed successfully.',
         ]);
     }
 }
