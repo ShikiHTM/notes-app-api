@@ -12,9 +12,7 @@ class CloudinaryService
     /**
      * Create a new class instance.
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     private static function init(): void
     {
@@ -34,21 +32,19 @@ class CloudinaryService
     {
         self::init();
         try {
-
             $upload = new UploadApi();
             return $upload->upload($file, $options);
-
-        } catch(Exception $e) {
-
+        } catch (Exception $e) {
             \Log::error("Cloudinary upload error: " . $e->getMessage());
             return null;
-
         }
     }
 
     public static function delete($publicId): ?ApiResponse
     {
-        if($publicId) return null;
+        if (!$publicId) {
+            return null;
+        }
 
         self::init();
 
@@ -57,7 +53,7 @@ class CloudinaryService
 
             $response = $upload->destroy($publicId);
 
-            if($response['result'] === 'not found') {
+            if ($response['result'] === 'not found') {
                 \Log::info("Cloudinary delete: Image not found for ID: {$publicId}");
             }
 
