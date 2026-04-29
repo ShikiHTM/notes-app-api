@@ -1,0 +1,80 @@
+services:
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: notes-app-backend
+    container_name: notes-app-backend
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./backend:/var/www
+      - ./.env:/var/www/.env
+    networks:
+      - notes-network
+    depends_on:
+      - db
+      - redis
+
+  webserver:
+    image: nginx:alpine
+    container_name: notes-app-nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./backend:/var/www
+      - ./backend/docker/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - notes-network
+    depends_on:
+      - app
+
+  db:
+    image: mysql:8.0
+    container_name: notes-app-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - notes-network
+
+  redis:
+    image: redis:alpine
+    container_name: notes-app-redis
+    restart: unless-stopped
+    networks:
+      - notes-network
+
+  tunnel:
+    container_name: cloudflared-tunnel
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    networks:
+      - notes-network
+
+  hocuspocus:
+    image: node:20-alpine
+    container_name: notes-yjs-server
+    working_dir: /app
+    volumes:
+      - ./yjs-server:/app
+    command: sh -c "npm install && npm start"
+    ports:
+      - "1234:1234"
+    networks:
+      - notes-network
+
+networks:
+  notes-network:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
