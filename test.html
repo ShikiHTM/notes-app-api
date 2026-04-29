@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>Kiểm tra Yjs Real-time</h1>
+  <p id="status">Đang kết nối...</p>
+
+  <script type="module">
+    // Import provider từ CDN
+    import { HocuspocusProvider } from 'https://esm.sh/@hocuspocus/provider';
+    import * as Y from 'https://esm.sh/yjs';
+
+    const doc = new Y.Doc();
+    const statusEl = document.getElementById('status');
+
+    const provider = new HocuspocusProvider({
+      url: 'wss://yjs.shikii.dev',
+      name: 'note-123', // Phải khớp với tên trong route
+      document: doc,
+      onConnect: () => {
+        statusEl.innerText = 'Kết nối thành công! Đang gõ thử...';
+        
+        // Giả lập gõ chữ
+        const ytext = doc.getText('content');
+        ytext.insert(0, 'Hello Shiki, Stellar Stellar! ☄️');
+        
+        console.log('Đã gửi dữ liệu chuẩn Binary sang server.');
+      },
+      onStatus: ({ status }) => {
+        console.log('Trạng thái:', status);
+      }
+    });
+  </script>
+</body>
+</html>
