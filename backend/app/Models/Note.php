@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 
 class Note extends Model {
-    use HasFactory, Searchable;
+    use HasFactory, Searchable, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -16,6 +16,7 @@ class Note extends Model {
         'content',
         'is_pinned',
         'pinned_at',
+        'deleted_at',
         'password',
         'content_binary'
     ];

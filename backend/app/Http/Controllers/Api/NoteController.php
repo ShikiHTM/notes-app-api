@@ -181,6 +181,28 @@ class NoteController extends Controller
         return response()->json(null, 204);
     }
 
+    public function forceDestroy(Request $request, string $id) {
+        $note = Note::findOrFail($id);
+
+        if($request->user()->id !== $note->user_id) {
+            return response()->json(['error' => 'Forbidden: you\'re not own this note'], 403);
+        }
+
+        $note->forceDelete();
+        return response()->json(null, 204);
+    }
+
+    public function restore(Request $request, string $id) {
+        $note = Note::withTrashed()->findOrFail($id);
+
+        if($request->user()->id !== $note->user_id) {
+            return response()->json(['error' => 'Forbidden: you\'re not own this note'], 403);
+        }
+
+        $note->restore();
+        return response()->json($note);
+    }
+
     public function handleYjsWebhook(Request $request)
     {
         $id = str_replace('note-', '', $request->input('documentName'));
