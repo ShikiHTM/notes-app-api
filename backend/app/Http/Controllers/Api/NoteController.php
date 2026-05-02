@@ -109,12 +109,17 @@ class NoteController extends Controller
         }
 
         $validated = $request->validate([
-            'title' => 'sometimes|string|max:255',
+            'title' => 'sometimes|nullable|string|max:255',
+            'content' => 'sometimes|string|nullable',
             'is_pinned' => 'sometimes|boolean',
         ]);
 
         if($request->user()->id !== $note->user_id) {
             return response()->json(['error' => 'Forbidden: you\'re not own this note'], 403);
+        }
+
+        if (isset($validated['is_pinned'])) {
+            $validated['pinned_at'] = $validated['is_pinned'] ? now() : null;
         }
 
         $note->update($validated);
