@@ -130,6 +130,40 @@ class NoteController extends Controller
     }
 
     /**
+     * Search notes.
+     *
+     * Full-text search across title and content using Meilisearch.
+     * @queryParam q string required The search query.
+     * @authenticated
+     */
+    public function search(Request $request)
+    {
+        $q = trim($request->query('q', ''));
+
+        if ($q === '') {
+            return response()->json([]);
+        }
+
+        try {
+            $noteIds = Note::search($q)
+                ->where('user_id', $request->user()->id)
+                ->keys();
+
+            $notes = Note::with(['labels', 'images'])
+                ->whereIn('id', $noteIds)
+                ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at'])
+                ->orderBy('is_pinned', 'desc')
+                ->orderBy('pinned_at', 'desc')
+                ->latest()
+                ->get();
+
+            return response()->json($notes);
+        } catch (\Exception) {
+            return response()->json([]);
+        }
+    }
+
+    /**
      * Delete a note.
      * @urlParam id int required The Note ID.
      * @authenticated

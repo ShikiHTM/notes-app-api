@@ -37,6 +37,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('images', NoteImageController::class)->only(['index', 'store', 'destroy']);
         Route::post('/images/{id}', [NoteImageController::class, 'update']);
 
+        Route::get('/notes/search', [NoteController::class, 'search']);
         Route::apiResource('notes', NoteController::class);
 
         Route::apiResource('labels', LabelController::class);

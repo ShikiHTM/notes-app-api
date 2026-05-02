@@ -1,5 +1,15 @@
 services:
-  app:
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: https://api.shikii.dev/api/v1
+    container_name: notes-app-frontend
+    restart: unless-stopped
+    networks:
+      - notes-network
+  
+  backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -10,6 +20,7 @@ services:
     volumes:
       - ./backend:/var/www
       - ./.env:/var/www/.env
+      - vendor_data:/var/www/vendor
     networks:
       - notes-network
     depends_on:
@@ -28,7 +39,7 @@ services:
     networks:
       - notes-network
     depends_on:
-      - app
+      - backend
 
   db:
     image: mysql:8.0
@@ -71,6 +82,18 @@ services:
     networks:
       - notes-network
 
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    container_name: notes-app-meilisearch
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: ${MEILISEARCH_KEY}
+      MEILI_ENV: production
+    volumes:
+      - meilisearch_data:/meili_data
+    networks:
+      - notes-network
+
 networks:
   notes-network:
     driver: bridge
@@ -78,3 +101,5 @@ networks:
 volumes:
   dbdata:
     driver: local
+  vendor_data:
+  meilisearch_data:
