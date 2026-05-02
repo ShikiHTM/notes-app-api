@@ -27,7 +27,7 @@ class NoteController extends Controller
     public function index(Request $request)
     {
         return $request->user()->notes()
-            ->select(['id', 'title', 'is_pinned', 'pinned_at', 'created_at'])
+            ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at'])
             ->with(['labels', 'images']) // Eager loading
             ->orderBy('is_pinned', 'desc')
             ->orderBy('pinned_at', 'desc')
@@ -57,9 +57,9 @@ class NoteController extends Controller
 
         return DB::transaction(function () use ($request, $validated) {
             $note = $request->user()->notes()->create([
-                'title' => $validated['title'],
+                'title' => $validated['title'] ?? 'Untitled',
                 'content' => $validated['content'] ?? '',
-                'password' => $validated['password'] ? Hash::make($validated['password']) : null,
+                'password' => !empty($validated['password']) ? Hash::make($validated['password']) : null,
             ]);
 
             if (!empty($validated['labels'])) {
