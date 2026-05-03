@@ -1,7 +1,7 @@
-FROM php:8.4-fpm-alpine as builder
+FROM php:8.4-fpm-alpine AS builder
 
 RUN apk add --no-cache \
-    git curl zip unzip libpng-dev libzip-dev oniguruma-dev libxml2-dev icu-dev
+    git curl zip unzip libpng-dev libzip-dev oniguruma-dev libxml2-dev icu-dev netcat-openbsd
 
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl
 
