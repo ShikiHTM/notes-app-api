@@ -1,21 +1,26 @@
 import { useState } from "react";
 import useToast from "../../hooks/toast.hook";
 import { useNavigate } from "react-router-dom";
-import type { IRegisterRequest, IRegisterResponse } from "../../types";
-import api from "../../api/axios";
-import RegisterCard from "../../components/registerCard";
+import type { IAuthResponse, IRegisterRequest } from "../../types";
+import api from "../../api/Axios";
+import RegisterCard from "../../components/auth/RegisterCard";
+import { isAxiosError } from "axios";
+import { useAuth } from "../../hooks/auth.hook";
 
 export default function RegisterPage() {
     const [isLoading, setIsLoading] = useState(false);
+    const { login } = useAuth();
     const { showToast } = useToast();
     const navigate = useNavigate();
 
     const handleRegister = async(data: IRegisterRequest) => {
         setIsLoading(true);
         try {
-            const response = await api.post('/auth/register', data) as IRegisterResponse;
+            const response = await api.post('/auth/register', data);
 
-            localStorage.setItem('access_token', response.token);
+            const authData: IAuthResponse = response.data;
+
+            login(authData.token, authData.user);
 
             showToast('Đăng ký thành công!', 'success');
 
@@ -23,8 +28,15 @@ export default function RegisterPage() {
                 navigate('/login');
             }, 1000)
         }catch(error) {
-            showToast(`Internal Server Error.`, 'error');
-            console.error(error);
+            if(isAxiosError(error)) {
+                const serverMessage = error.response?.data?.message;
+                const validationErrors = error.response?.data?.errors;
+
+                showToast(serverMessage, 'error');
+                console.error(validationErrors);
+            } else {
+                showToast('Internal Server Error', 'error');
+            }
         }finally {
             setIsLoading(false);
         }

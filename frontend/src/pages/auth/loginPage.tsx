@@ -1,23 +1,25 @@
 import { useNavigate } from "react-router-dom";
-import api from "../../api/axios"
-import type { ILoginRequest, ILoginResponse } from "../../types/auth.types"
-import LoginCard from "../../components/loginCard";
+import api from "../../api/Axios"
+import type { ILoginRequest, IAuthResponse } from "../../types/auth.types"
+import LoginCard from "../../components/auth/LoginCard";
 import { useState } from "react";
 import useToast from "../../hooks/toast.hook";
+import { useAuth } from "../../hooks/auth.hook";
 
 export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
+    const { login } = useAuth();
     const { showToast } = useToast();
     const navigate = useNavigate();
 
     const handleLogin = async (data: ILoginRequest) => {
         setIsLoading(true);
         try {
-            const response = await api.post('/auth/login', data) as ILoginResponse;
+            const response = await api.post('/auth/login', data);
 
-            console.log(response);
+            const authData: IAuthResponse = response.data;
 
-            localStorage.setItem('access_token', response.token);
+            login(authData.token, authData.user);
 
             showToast('Đăng nhập thành công!', 'success');
 
