@@ -1,5 +1,5 @@
 import type { IToast } from "../../types";
-import ToastItem from "./toastItem";
+import ToastItem from "./ToastItem";
 
 interface IToastContainer {
     toasts: IToast[];
