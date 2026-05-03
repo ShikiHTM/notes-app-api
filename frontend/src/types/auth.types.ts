@@ -5,32 +5,35 @@ export interface ILoginRequest {
     password: string;
 };
 
-export interface ILoginCardProps {
+interface IOmniCardProps {
+    isLoading: boolean;
+    errorMessage?: string | null;
+}
+
+export interface ILoginCardProps extends IOmniCardProps {
     onLogin: (data: ILoginRequest) => Promise<void>;
-    isLoading: boolean;
-    errorMessage?: string | null;
 }
 
-export interface IRegisterCardProps {
+export interface IRegisterCardProps extends IOmniCardProps {
     onRegister: (data: IRegisterRequest) => Promise<void>;
-    isLoading: boolean;
-    errorMessage?: string | null;
 }
 
-export interface IRegisterRequest {
+export interface IRegisterRequest extends ILoginRequest {
     display_name: string;
-    email: string;
-    password: string;
     confirm_password: string;
 }
 
-export interface ILoginResponse {
+export interface IAuthResponse {
     token: string;
-    token_type: string;
+    toke_type: string;
+    user: IUser;
 }
 
-export interface IRegisterResponse {
-    token: string;
-    token_type: string;
-    user: IUser;
+export type IAuthTypes = {
+    user?: IUser;
+    token: string | null;
+    isAuthenticated: boolean;
+    isInitialLoading: boolean;
+    login: (token: string, userData: any) => void;
+    logout: () => void;
 }
