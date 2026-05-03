@@ -1,13 +1,13 @@
 services:
   frontend:
-    image: shiki/notes-app-frontend:latest
+    image: shikihtm/notes-app-frontend:latest
     container_name: notes-app-frontend
     restart: unless-stopped
     networks:
       - notes-network
 
   backend:
-    image: shiki/notes-app-backend:latest
+    image: shikihtm/notes-app-backend:latest
     container_name: notes-app-backend
     restart: unless-stopped
     working_dir: /var/www
@@ -58,12 +58,12 @@ services:
     container_name: cloudflared-tunnel
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
-    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    command: tunnel --no-autoupdate run --protocol http2 --token ${CLOUDFLARE_TUNNEL_TOKEN}
     networks:
       - notes-network
 
   hocuspocus:
-    image: shiki/notes-app-yjs:latest
+    image: shikihtm/notes-app-yjs:latest
     container_name: notes-yjs-server
     restart: unless-stopped
     networks:
