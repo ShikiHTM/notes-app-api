@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('string', function (Blueprint $table) {
+        Schema::table('note_images', function (Blueprint $table) {
             $table->dropColumn('public_id');
             $table->dropTimestamps();
         });
