@@ -16,12 +16,14 @@ namespace App\Models{
  * @property int $id
  * @property int $user_id
  * @property string $name
+ * @property string $color
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Note> $notes
  * @property-read int|null $notes_count
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Label newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Label newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Label query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Label whereColor($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Label whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Label whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Label whereUserId($value)
@@ -37,9 +39,11 @@ namespace App\Models{
  * @property int $user_id
  * @property bool $is_pinned
  * @property \Illuminate\Support\Carbon|null $pinned_at
+ * @property string|null $deleted_at
  * @property string|null $password
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $content_binary
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NoteImage> $images
  * @property-read int|null $images_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Label> $labels
@@ -47,11 +51,14 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $sharedWith
  * @property-read int|null $shared_with_count
  * @property-read \App\Models\User $user
+ * @method static \Database\Factories\NoteFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Note newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Note newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Note query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereContentBinary($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereIsPinned($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Note wherePassword($value)

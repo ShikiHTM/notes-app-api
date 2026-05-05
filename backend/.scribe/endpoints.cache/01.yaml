@@ -42,6 +42,60 @@ endpoints:
     custom: []
     httpMethods:
       - GET
+    uri: api/v1/notes/search
+    metadata:
+      custom: []
+      groupName: 'Note Management'
+      groupDescription: |-
+
+        APIs for managing personal notes, including metadata and real-time content synchronization.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Search notes.'
+      description: 'Full-text search across title and content using Meilisearch.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      q:
+        custom: []
+        name: q
+        description: 'The search query.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      q: architecto
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
     uri: api/v1/notes
     metadata:
       custom: []
@@ -278,7 +332,18 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
+        nullable: true
+        deprecated: false
+      content:
+        custom: []
+        name: content
+        description: ''
+        required: false
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
         deprecated: false
       is_pinned:
         custom: []
@@ -315,6 +380,7 @@ endpoints:
         deprecated: false
     cleanBodyParameters:
       title: b
+      content: architecto
       is_pinned: false
       binary_state: architecto
       plain_text: architecto
