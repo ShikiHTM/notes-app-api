@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
     working_dir: /var/www
     env_file:
-      - .env
+      - stack.env
     networks:
       - notes-network
     depends_on:
@@ -20,9 +20,7 @@ services:
       - redis
 
   webserver:
-    build:
-      context: .
-      dockerfile: ./backend/docker/nginx.Dockerfile
+    image: shikihtm/notes-app-nginx:latest
     container_name: notes-app-nginx
     restart: unless-stopped
     ports:
