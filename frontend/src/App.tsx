@@ -1,9 +1,9 @@
 import { BrowserRouter, useRoutes } from "react-router-dom"
 import { authRoutes } from "./pages/auth/auth.routes"
 import { ToastProvider } from "./core/toast/ToastContext";
-import { AuthProvider } from "./context/AuthContext";
-import { ProtectedRoute } from "./routes/ProtectedRoute";
-import { AppRoutes } from "./routes";
+import { AuthProvider } from "./context/Auth.context";
+import { ProtectedRoute } from "./routes/Protected.route";
+import { AppRoutes } from "./routes/index.route";
 
 function AppContent() {
     const element = useRoutes([
@@ -28,9 +28,9 @@ function App() {
     return (
         <AuthProvider>
             <ToastProvider>
-                <BrowserRouter>
-                    <AppContent />
-                </BrowserRouter>
+                    <BrowserRouter>
+                        <AppContent />
+                    </BrowserRouter>
             </ToastProvider>
         </AuthProvider>
     )
