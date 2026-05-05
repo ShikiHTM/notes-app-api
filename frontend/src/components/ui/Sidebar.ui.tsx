@@ -1,25 +1,29 @@
 import type React from "react";
-import type { ISidebarItem, SidebarTab } from "../../types";
+import type { ISidebarItem } from "../../types";
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import SidebarHeader from "./sidebar/SidebarHeader.sidebar";
 import SidebarNav from "./sidebar/SidebarNav.sidebar";
 import AccountSection from "./sidebar/AccountSection.sidebar";
 import MobileHamburger from "./sidebar/MobileHamburger.sidebar";
 import MobileOverlay from "./sidebar/MobileOverlay.sidebar";
-import { FaArchive, FaStickyNote, FaTag, FaTrash } from "react-icons/fa";
+import { FaArchive, FaStickyNote, FaTags, FaTrash } from "react-icons/fa";
 
 const Sidebar: React.FC = () => {
-    const [activeTab, setActiveTab] = useState<SidebarTab>('notes');
+    const navigate = useNavigate();
+    const location = useLocation();
     const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     const menuItems: ISidebarItem[] = [
         { id: "notes", label: "Ghi chú", icon: <FaStickyNote size={20} /> },
-        { id: "labels", label: "Nhãn", icon: <FaTag size={20} /> },
+        { id: "labels", label: "Nhãn", icon: <FaTags size={20} /> },
         { id: "archive", label: "Lưu trữ", icon: <FaArchive size={20} /> },
         { id: "trash", label: "Thùng rác", icon: <FaTrash size={20} /> },
     ];
+
+    const activeTab = (menuItems.find(i => location.pathname.startsWith(`/${i.id}`))?.id ?? 'notes');
 
     return (
         <>
@@ -49,7 +53,7 @@ const Sidebar: React.FC = () => {
                 <SidebarNav
                     items={menuItems}
                     activeTab={activeTab}
-                    onTabChange={setActiveTab}
+                    onTabChange={(tab) => navigate(`/${tab}`)}
                     isOpen={isSidebarOpen}
                 />
 

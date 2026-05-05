@@ -12,7 +12,7 @@ const SidebarNav: React.FC<Props> = ({ items, activeTab, onTabChange, isOpen }) 
         {items.map((item) => (
             <button
                 key={item.id}
-                className={`flex items-center gap-4 w-full p-3 rounded-lg transition-all ${
+                className={`flex items-center gap-4 w-full p-3 rounded-lg transition-all cursor-pointer ${
                     activeTab === item.id
                         ? "bg-indigo-100 text-indigo-700 font-bold"
                         : "text-slate-600 hover:bg-indigo-50"
