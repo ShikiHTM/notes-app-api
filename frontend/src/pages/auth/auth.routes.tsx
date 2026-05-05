@@ -1,6 +1,6 @@
 import type { RouteObject } from "react-router-dom";
-import LoginPage from "./LoginPage";
-import RegisterPage from "./RegisterPage";
+import LoginPage from "./LoginPage.auth";
+import RegisterPage from "./RegisterPage.auth";
 
 export const authRoutes: RouteObject[] = [
     {

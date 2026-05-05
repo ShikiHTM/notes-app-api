@@ -3,9 +3,9 @@ import useToast from "../../hooks/toast.hook";
 import { useNavigate } from "react-router-dom";
 import type { IAuthResponse, IRegisterRequest } from "../../types";
 import api from "../../api/Axios";
-import RegisterCard from "../../components/auth/RegisterCard";
 import { isAxiosError } from "axios";
 import { useAuth } from "../../hooks/auth.hook";
+import RegisterCard from "../../components/auth/RegisterCard.auth";
 
 export default function RegisterPage() {
     const [isLoading, setIsLoading] = useState(false);
