@@ -4,6 +4,7 @@ import { ToastProvider } from "./core/toast/ToastContext";
 import { AuthProvider } from "./context/Auth.context";
 import { ProtectedRoute } from "./routes/Protected.route";
 import { AppRoutes } from "./routes/index.route";
+import { ModalProvider } from "./context/Modal.context";
 
 function AppContent() {
     const element = useRoutes([
@@ -28,9 +29,11 @@ function App() {
     return (
         <AuthProvider>
             <ToastProvider>
+                <ModalProvider>
                     <BrowserRouter>
                         <AppContent />
                     </BrowserRouter>
+                </ModalProvider>
             </ToastProvider>
         </AuthProvider>
     )

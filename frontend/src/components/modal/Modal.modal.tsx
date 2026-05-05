@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { IoMdClose } from "react-icons/io";
 
 export type ModalSize = "sm" | "md" | "lg" | "xl" | "full";
@@ -57,7 +58,7 @@ export const Modal: React.FC<IModalProps> = ({
 
     if (!isOpen) return null;
 
-    return (
+    return createPortal(
         <>
             <div
                 className="fixed inset-0 z-9999 bg-black/70 backdrop-blur-sm"
@@ -100,7 +101,8 @@ export const Modal: React.FC<IModalProps> = ({
                     )}
                 </div>
             </div>
-        </>
+        </>,
+        document.body
     );
 };
 

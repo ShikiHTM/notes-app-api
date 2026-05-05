@@ -9,9 +9,9 @@ type Props = {
 };
 
 const AccountSection: React.FC<Props> = ({ isOpen, isAccountMenuOpen, onAccountMenuToggle }) => (
-    <div className=" mt-auto px-1 overflow-visible">
+    <div className="relative mt-auto px-1 overflow-visible">
         <button
-            className="relative flex justify-between items-center w-full p-3 rounded-xl hover:bg-slate-100 transition-colors group cursor-pointer"
+            className="flex justify-between items-center w-full p-3 rounded-xl hover:bg-slate-100 transition-colors group cursor-pointer"
             onClick={onAccountMenuToggle}
         >
             <div className="flex items-center gap-3 overflow-hidden">
@@ -26,13 +26,13 @@ const AccountSection: React.FC<Props> = ({ isOpen, isAccountMenuOpen, onAccountM
             {isOpen && (
                 <LuChevronsUpDown className="text-slate-400 group-hover:text-slate-600 shrink-0" />
             )}
-
-            {isAccountMenuOpen && (
-                <div className="absolute left-0 bottom-full min-h-22 mb-3 w-full z-60">
-                    <UserDropMenu />
-                </div>
-            )}
         </button>
+
+        {isAccountMenuOpen && (
+            <div className="absolute left-0 bottom-full min-h-22 mb-3 w-full px-1 z-60">
+                <UserDropMenu />
+            </div>
+        )}
     </div>
 );
 
