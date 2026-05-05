@@ -51,7 +51,7 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
             ['id' => $notifiable->getKey(), 'hash' => sha1($notifiable->getEmailForVerification())]
         );
 
-        return str_replace(config('app.url'), 'https://shikii.dev', $url);
+        return str_replace(config('app.url'), 'https://api.shikii.dev', $url);
     }
     /**
      * Get the array representation of the notification.
