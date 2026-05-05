@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
     working_dir: /var/www
     env_file:
-      - stack.env
+      - .env
     networks:
       - notes-network
     depends_on:
