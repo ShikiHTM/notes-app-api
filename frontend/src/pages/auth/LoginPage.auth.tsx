@@ -2,8 +2,8 @@ import { useNavigate } from "react-router-dom";
 import api from "../../api/Axios"
 import type { ILoginRequest, IAuthResponse } from "../../types/auth.types"
 import { useState } from "react";
-import useToast from "../../hooks/toast.hook";
-import { useAuth } from "../../hooks/auth.hook";
+import useToast from "../../hooks/Toast.hook";
+import { useAuth } from "../../hooks/Auth.hook";
 import LoginCard from "../../components/auth/LoginCard.auth";
 
 export default function LoginPage() {

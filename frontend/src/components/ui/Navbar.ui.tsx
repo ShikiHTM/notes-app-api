@@ -2,10 +2,10 @@ import type React from "react";
 import { useState } from "react";
 import DesktopSearch from "./navbar/DesktopSearch.navbar";
 import MobileSearch from "./navbar/MobileSearch.navbar";
-import ViewModeToggle from "./navbar/ViewModeToggle.navbar";
+// import ViewModeToggle from "./navbar/ViewModeToggle.navbar";
 
 const Navbar: React.FC = () => {
-    const [viewMode, setViewMode] = useState<'card' | 'list'>('card');
+    // const [viewMode, setViewMode] = useState<'card' | 'list'>('card');
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
     return (
@@ -21,10 +21,10 @@ const Navbar: React.FC = () => {
 
             {/* Right Side Tools */}
             <div className="flex items-center gap-6 text-slate-600">
-                <ViewModeToggle
+                {/* <ViewModeToggle
                     viewMode={viewMode}
                     onToggle={() => setViewMode(v => v === 'card' ? 'list' : 'card')}
-                />
+                /> */}
             </div>
         </nav>
     );

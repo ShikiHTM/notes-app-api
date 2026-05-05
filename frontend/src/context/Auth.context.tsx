@@ -34,7 +34,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const login = (token: string, userData: IUser) => {
         localStorage.setItem('access_token', token);
-
         setToken(token);
         setUser(userData);
     }

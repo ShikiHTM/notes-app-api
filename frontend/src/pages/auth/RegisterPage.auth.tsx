@@ -1,10 +1,10 @@
 import { useState } from "react";
-import useToast from "../../hooks/toast.hook";
+import useToast from "../../hooks/Toast.hook";
 import { useNavigate } from "react-router-dom";
 import type { IAuthResponse, IRegisterRequest } from "../../types";
 import api from "../../api/Axios";
 import { isAxiosError } from "axios";
-import { useAuth } from "../../hooks/auth.hook";
+import { useAuth } from "../../hooks/Auth.hook";
 import RegisterCard from "../../components/auth/RegisterCard.auth";
 
 export default function RegisterPage() {

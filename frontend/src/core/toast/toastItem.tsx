@@ -1,6 +1,6 @@
 import { MdCheckCircle, MdClose, MdError, MdInfo, MdWarning } from "react-icons/md";
 import type { IToast } from "../../types";
-import useToast from "../../hooks/toast.hook";
+import useToast from "../../hooks/Toast.hook";
 
 const ToastItem: React.FC<IToast> = ({ id, message, type }) => {
     const { removeToast } = useToast();
