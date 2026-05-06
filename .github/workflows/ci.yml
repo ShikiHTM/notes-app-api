@@ -35,7 +35,7 @@ jobs:
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Copy .env
-        run: cp .env.example .env
+        run: cp ../.env.example .env
 
       - name: Generate app key
         run: php artisan key:generate
