@@ -8,8 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Label extends Model {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
-        'name'
+        'name',
+        'color',
     ];
 
     public function user() {
