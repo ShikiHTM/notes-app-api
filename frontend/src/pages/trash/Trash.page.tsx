@@ -5,7 +5,7 @@ const TrashPage: React.FC = () => {
     return (
         <div className="flex flex-col gap-4">
             <h1 className="text-2xl font-semibold text-slate-800">Thùng rác</h1>
-            <NoteGrid notes={[]} emptyMessage="Thùng rác trống" variant={"trash"} />
+            <NoteGrid notes={[]} emptyMessage="Thùng rác trống" />
         </div>
     );
 };

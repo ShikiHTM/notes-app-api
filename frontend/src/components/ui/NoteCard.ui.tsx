@@ -26,7 +26,7 @@ const NoteCard: React.FC<INoteCardProps> = ({ note, onClick, actionsContext }) =
 
             {actionsContext && actions && (
                 <div
-                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition"
+                    className="absolute top-2 right-2 transition"
                     onClick={e => e.stopPropagation()}
                 >
                     {actions}

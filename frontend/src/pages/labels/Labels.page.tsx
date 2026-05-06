@@ -7,7 +7,7 @@ const LabelsPage: React.FC = () => {
     return (
         <div className="flex flex-col gap-4">
             <h1 className="text-2xl font-semibold text-slate-800">Nhãn</h1>
-            <NoteGrid notes={[]} emptyMessage="Chưa có nhãn nào" variant={"labels"} />
+            <NoteGrid notes={[]} emptyMessage="Chưa có nhãn nào" />
             <CreateButton
                 onClick={() => alert("Tạo nhãn mới")}
                 icon={<FaTag size={24} />}
