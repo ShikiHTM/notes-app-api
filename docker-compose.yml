@@ -60,12 +60,12 @@ services:
     networks:
       - notes-network
 
-  hocuspocus:
-    image: shikihtm/notes-app-yjs:latest
-    container_name: notes-yjs-server
-    restart: unless-stopped
-    networks:
-      - notes-network
+  # hocuspocus:
+  #   image: shikihtm/notes-app-yjs:latest
+  #   container_name: notes-yjs-server
+  #   restart: unless-stopped
+  #   networks:
+  #     - notes-network
 
   meilisearch:
     image: getmeili/meilisearch:latest
