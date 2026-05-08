@@ -20,12 +20,12 @@ const NotesPage: React.FC = () => {
         <div className="flex flex-col gap-4">
             {pinned.length > 0 && (
                 <section>
-                    <h1 className="text-2xl font-semibold text-indigo-600 mb-3">Ghim</h1>
+                    <h1 className="text-2xl font-semibold text-indigo-600 dark:text-gh-accent mb-3">Ghim</h1>
                     <NoteGrid notes={pinned} onCardClick={openNote} actionsContext="notes" />
                 </section>
             )}
 
-            <h1 className="text-2xl font-semibold text-slate-800">Ghi chú</h1>
+            <h1 className="text-2xl font-semibold text-slate-800 dark:text-gh-fg">Ghi chú</h1>
             <NoteGrid notes={others} onCardClick={openNote} emptyMessage="Chưa có ghi chú nào" actionsContext="notes" isLoading={isLoading} />
 
             <CreateButton

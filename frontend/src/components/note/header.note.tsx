@@ -12,7 +12,7 @@ const NoteHeader: React.FC = () => {
             onBlur={() => save()}
             readOnly={isReadOnly}
             placeholder="Tiêu đề"
-            className="w-full bg-transparent text-2xl font-semibold text-slate-800 outline-none placeholder:text-slate-400"
+            className="w-full bg-transparent text-2xl font-semibold text-slate-800 dark:text-gh-fg outline-none placeholder:text-slate-400 dark:placeholder:text-gh-fg-subtle"
         />
     );
 };

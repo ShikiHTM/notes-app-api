@@ -4,7 +4,7 @@ import Navbar from "./components/ui/Navbar.ui";
 
 export default function Layout() {
     return(
-        <div className="flex w-full min-h-screen bg-slate-50">
+        <div className="flex w-full min-h-screen bg-slate-50 dark:bg-gh-canvas dark:text-gh-fg">
             <Sidebar />
             <div className="flex-1 flex flex-col min-w-0">
                 <Navbar />

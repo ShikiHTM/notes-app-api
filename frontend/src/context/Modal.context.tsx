@@ -40,7 +40,7 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
                 footer={
                     <>
                         <button onClick={() => close(false)}
-                                className="px-4 py-2 rounded hover:bg-slate-100"
+                                className="px-4 py-2 rounded hover:bg-slate-100 dark:hover:bg-gh-canvas-inset dark:text-gh-fg"
                             >
                             {state?.opts.cancelText || 'Hủy'}
                         </button>

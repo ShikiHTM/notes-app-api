@@ -9,21 +9,21 @@ const NoteToolbar: React.FC = () => {
 
     const renderStatus = () => {
         if (isReadOnly) {
-            return <span className="text-xs text-slate-400">Chỉ đọc</span>;
+            return <span className="text-xs text-slate-400 dark:text-gh-fg-subtle">Chỉ đọc</span>;
         }
         if (isSaving) {
             return (
-                <span className="flex items-center gap-1 text-xs text-slate-500">
+                <span className="flex items-center gap-1 text-xs text-slate-500 dark:text-gh-fg-muted">
                     <MdSync size={14} className="animate-spin" />
                     Đang lưu…
                 </span>
             );
         }
         if (isDirty) {
-            return <span className="text-xs text-amber-600">Chưa lưu</span>;
+            return <span className="text-xs text-amber-600 dark:text-gh-attention">Chưa lưu</span>;
         }
         return (
-            <span className="flex items-center gap-1 text-xs text-emerald-600">
+            <span className="flex items-center gap-1 text-xs text-emerald-600 dark:text-gh-success">
                 <MdCheckCircle size={14} />
                 Đã lưu
             </span>
@@ -33,17 +33,17 @@ const NoteToolbar: React.FC = () => {
     const displayTitle = note?.title?.trim() || "Untitled";
 
     return (
-        <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-2">
+        <div className="flex items-center justify-between gap-3 border-b border-slate-200 dark:border-gh-border pb-2">
             <div className="flex min-w-0 items-center gap-2">
                 <button
                     type="button"
                     onClick={() => navigate(-1)}
-                    className="rounded p-1 text-slate-500 hover:bg-slate-100"
+                    className="rounded p-1 text-slate-500 hover:bg-slate-100 dark:text-gh-fg-muted dark:hover:bg-gh-canvas-inset"
                     aria-label="Quay lại"
                 >
                     <MdArrowBack size={18} />
                 </button>
-                <span className="truncate text-sm text-slate-600">{displayTitle}</span>
+                <span className="truncate text-sm text-slate-600 dark:text-gh-fg-muted">{displayTitle}</span>
             </div>
 
             {renderStatus()}

@@ -24,7 +24,7 @@ const ActionButton: React.FC<IActionButtonProps> = ({ label, onClick, children, 
         aria-label={label}
         onClick={onClick}
         disabled={disabled}
-        className={`p-1.5 rounded-full bg-white/80 hover:bg-white shadow-sm transition disabled:opacity-50 ${danger ? "text-red-600" : "text-slate-600"}`}
+        className={`p-1.5 rounded-full bg-white/80 hover:bg-white dark:bg-gh-canvas-subtle/80 dark:hover:bg-gh-canvas-subtle shadow-sm transition disabled:opacity-50 ${danger ? "text-red-600 dark:text-gh-danger" : "text-slate-600 dark:text-gh-fg-muted"}`}
     >
         {children}
     </button>

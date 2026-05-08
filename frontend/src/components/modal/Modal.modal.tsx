@@ -71,18 +71,18 @@ export const Modal: React.FC<IModalProps> = ({
                 aria-modal="true"
             >
                 <div
-                    className={`bg-white text-slate-800 w-full ${SIZE_CLASS[size]} max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col ${className}`}
+                    className={`bg-white text-slate-800 dark:bg-gh-canvas-subtle dark:text-gh-fg w-full ${SIZE_CLASS[size]} max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col ${className}`}
                     onClick={e => e.stopPropagation()}
                 >
                     {(title || showCloseButton) && (
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-gh-border">
                             <div className="text-lg font-semibold">{title}</div>
                             {showCloseButton && (
                                 <button
                                     type="button"
                                     onClick={onClose}
                                     aria-label="Close"
-                                    className="p-1 rounded-full hover:bg-slate-100 transition"
+                                    className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-gh-canvas-inset transition"
                                 >
                                     <IoMdClose size={22} />
                                 </button>
@@ -95,7 +95,7 @@ export const Modal: React.FC<IModalProps> = ({
                     </div>
 
                     {footer && (
-                        <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-2">
+                        <div className="px-6 py-4 border-t border-slate-200 dark:border-gh-border flex justify-end gap-2">
                             {footer}
                         </div>
                     )}

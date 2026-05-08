@@ -14,8 +14,8 @@ const SidebarNav: React.FC<Props> = ({ items, activeTab, onTabChange, isOpen }) 
                 key={item.id}
                 className={`flex items-center gap-4 w-full p-3 rounded-lg transition-all cursor-pointer ${
                     activeTab === item.id
-                        ? "bg-indigo-100 text-indigo-700 font-bold"
-                        : "text-slate-600 hover:bg-indigo-50"
+                        ? "bg-indigo-100 text-indigo-700 font-bold dark:bg-gh-accent-subtle dark:text-gh-accent"
+                        : "text-slate-600 hover:bg-indigo-50 dark:text-gh-fg-muted dark:hover:bg-gh-canvas-inset dark:hover:text-gh-fg"
                 }`}
                 onClick={() => onTabChange(item.id)}
             >

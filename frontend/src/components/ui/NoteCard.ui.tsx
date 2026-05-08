@@ -12,15 +12,15 @@ const NoteCard: React.FC<INoteCardProps> = ({ note, onClick, actionsContext }) =
     const actions = useNoteActions(note, actionsContext ?? "notes");
     return (
         <div
-            className="group relative bg-white border border-slate-200 rounded-xl p-4 hover:shadow-md transition cursor-pointer flex flex-col gap-2"
+            className="group relative bg-white border border-slate-200 dark:bg-gh-canvas-subtle dark:border-gh-border rounded-xl p-4 hover:shadow-md transition cursor-pointer flex flex-col gap-2"
             onClick={() => onClick?.(note)}
             style={note.color ? { backgroundColor: note.color } : undefined}
         >
             {note.title && (
-                <h3 className="font-semibold text-slate-800 line-clamp-1">{note.title}</h3>
+                <h3 className="font-semibold text-slate-800 dark:text-gh-fg line-clamp-1">{note.title}</h3>
             )}
 
-            <p className="text-sm text-slate-600 line-clamp-4 whitespace-pre-wrap">
+            <p className="text-sm text-slate-600 dark:text-gh-fg-muted line-clamp-4 whitespace-pre-wrap">
                 {note.content}
             </p>
 

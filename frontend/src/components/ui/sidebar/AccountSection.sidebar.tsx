@@ -11,20 +11,20 @@ type Props = {
 const AccountSection: React.FC<Props> = ({ isOpen, isAccountMenuOpen, onAccountMenuToggle }) => (
     <div className="relative mt-auto px-1 overflow-visible">
         <button
-            className="flex justify-between items-center w-full p-3 rounded-xl hover:bg-slate-100 transition-colors group cursor-pointer"
+            className="flex justify-between items-center w-full p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-gh-canvas-inset transition-colors group cursor-pointer"
             onClick={onAccountMenuToggle}
         >
             <div className="flex items-center gap-3 overflow-hidden">
-                <div className="text-slate-600 shrink-0">
+                <div className="text-slate-600 dark:text-gh-fg-muted shrink-0">
                     <MdAccountCircle size={24} />
                 </div>
                 {isOpen && (
-                    <span className="font-medium text-slate-700 whitespace-nowrap">Người dùng</span>
+                    <span className="font-medium text-slate-700 dark:text-gh-fg whitespace-nowrap">Người dùng</span>
                 )}
             </div>
 
             {isOpen && (
-                <LuChevronsUpDown className="text-slate-400 group-hover:text-slate-600 shrink-0" />
+                <LuChevronsUpDown className="text-slate-400 group-hover:text-slate-600 dark:text-gh-fg-subtle dark:group-hover:text-gh-fg shrink-0" />
             )}
         </button>
 

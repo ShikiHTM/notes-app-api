@@ -20,7 +20,7 @@ const SidebarHeader: React.FC<Props> = ({ isOpen, onToggle }) => (
         <div className={`flex transition-all duration-300 ease-in-out ${isOpen ? "ml-2" : "w-full justify-start"}`}>
             <button
                 onClick={onToggle}
-                className="p-2 cursor-pointer text-slate-400 hover:text-indigo-600 hover:bg-slate-100 rounded-lg transition-colors shrink-0"
+                className="p-2 cursor-pointer text-slate-400 hover:text-indigo-600 hover:bg-slate-100 dark:text-gh-fg-muted dark:hover:text-gh-accent dark:hover:bg-gh-canvas-inset rounded-lg transition-colors shrink-0"
             >
                 <LuPanelRight size={24} />
             </button>

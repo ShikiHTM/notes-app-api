@@ -38,7 +38,7 @@ const Sidebar: React.FC = () => {
             />
 
             <aside
-                className={`fixed inset-y-0 left-0 z-50 bg-white border-r border-slate-300 py-10 px-3
+                className={`fixed inset-y-0 left-0 z-50 bg-white border-r border-slate-300 dark:bg-gh-canvas-subtle dark:border-gh-border py-10 px-3
                     flex flex-col gap-5 transition-all duration-300 ease-in-out overflow-x-hidden
                     ${isSidebarOpen
                         ? "translate-x-0 w-64"

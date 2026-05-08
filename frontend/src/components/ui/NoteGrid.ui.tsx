@@ -26,7 +26,7 @@ const NoteGrid: React.FC<INoteGridProps> = ({ notes, emptyMessage = "Chưa có g
 
     if (notes.length === 0) {
         return (
-            <div className="flex items-center justify-center py-20 text-slate-400">
+            <div className="flex items-center justify-center py-20 text-slate-400 dark:text-gh-fg-subtle">
                 {emptyMessage}
             </div>
         );
