@@ -1,6 +1,7 @@
 import type React from "react";
 import { Navigate, useParams } from "react-router-dom";
 import { NoteProvider, useNoteContext } from "../../context/Note.context";
+import { NOTE_COLOR_CSS } from "../../types";
 import NoteHeader from "../../components/note/header.note";
 import NoteArea from "../../components/note/area.note";
 import NoteToolbar from "../../components/note/toolbar.note";
@@ -17,10 +18,12 @@ const NoteEditorContent: React.FC = () => {
         return <div className="py-20 text-center text-slate-400 dark:text-gh-fg-subtle">Không tìm thấy ghi chú</div>;
     }
 
+    const tint = note.color ? NOTE_COLOR_CSS[note.color] : undefined;
+
     return (
         <div
             className="flex h-full w-full flex-col gap-4"
-            style={note.color ? { backgroundColor: note.color } : undefined}
+            style={tint ? { backgroundColor: tint } : undefined}
         >
             <NoteToolbar />
             <NoteHeader />

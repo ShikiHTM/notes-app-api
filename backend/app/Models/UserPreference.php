@@ -10,9 +10,7 @@ class UserPreference extends Model {
 
     protected $fillable = [
         'user_id',
-        'font_size',
         'theme',
-        'note_color'
     ];
 
     public function user() {

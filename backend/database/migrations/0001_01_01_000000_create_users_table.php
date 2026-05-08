@@ -24,17 +24,7 @@ return new class extends Migration
         Schema::create('user_preferences', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->unique()->constrained('users')->onDelete('cascade');
-            $table->unsignedInteger('font_size')->default(14);
             $table->enum('theme', ['LIGHT', 'DARK'])->default('LIGHT');
-            $table->enum('note_color', [
-                'RED',
-                'CYAN',
-                'YELLOW',
-                'LIME',
-                'PURPLE',
-                'BLACK',
-                'WHITE'
-            ])->default('WHITE');
 
             $table->timestamps();
         });

@@ -19,6 +19,15 @@ return new class extends Migration
             $table->boolean('is_pinned')->default(false);
             $table->timestamp('pinned_at')->nullable();
             $table->string('password')->nullable();
+            $table->enum('color', [
+                'RED',
+                'CYAN',
+                'YELLOW',
+                'LIME',
+                'PURPLE',
+                'BLACK',
+                'WHITE',
+            ])->nullable();
             $table->timestamps();
         });
 

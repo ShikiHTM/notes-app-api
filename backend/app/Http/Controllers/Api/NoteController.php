@@ -28,7 +28,7 @@ class NoteController extends Controller
     {
         return $request->user()->notes()
             ->whereNull('archived_at')
-            ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at'])
+            ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at', 'color'])
             ->with(['labels', 'images'])
             ->orderBy('is_pinned', 'desc')
             ->orderBy('pinned_at', 'desc')
@@ -40,7 +40,7 @@ class NoteController extends Controller
     {
         return $request->user()->notes()
             ->whereNotNull('archived_at')
-            ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at', 'archived_at'])
+            ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at', 'archived_at', 'color'])
             ->with(['labels', 'images'])
             ->latest('archived_at')
             ->get();
@@ -50,7 +50,7 @@ class NoteController extends Controller
     {
         return $request->user()->notes()
             ->onlyTrashed()
-            ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at', 'deleted_at'])
+            ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at', 'deleted_at', 'color'])
             ->with(['labels', 'images'])
             ->latest('deleted_at')
             ->get();
@@ -134,6 +134,7 @@ class NoteController extends Controller
             'content' => 'sometimes|string|nullable',
             'is_pinned' => 'sometimes|boolean',
             'archived_at' => 'sometimes|nullable|date',
+            'color' => 'sometimes|nullable|in:RED,CYAN,YELLOW,LIME,PURPLE,BLACK,WHITE',
         ]);
 
         if($request->user()->id !== $note->user_id) {
@@ -173,7 +174,7 @@ class NoteController extends Controller
 
             $notes = Note::with(['labels', 'images'])
                 ->whereIn('id', $noteIds)
-                ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at'])
+                ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at', 'color'])
                 ->orderBy('is_pinned', 'desc')
                 ->orderBy('pinned_at', 'desc')
                 ->latest()

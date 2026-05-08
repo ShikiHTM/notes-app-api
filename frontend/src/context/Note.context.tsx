@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import type { INote } from "../types";
+import type { INote, NoteColor } from "../types";
 import api from "../api/Axios";
 import useToast from "../hooks/Toast.hook";
 import { notesQueryKey } from "../hooks/Note.hook";
@@ -13,6 +13,7 @@ interface INoteContextValue {
     isSaving: boolean;
     setTitle: (value: string) => void;
     setContent: (value: string) => void;
+    setColor: (value: NoteColor | null) => void;
     save: () => Promise<void>;
 }
 
@@ -56,6 +57,11 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
         setIsDirty(true);
     };
 
+    const setColor = (color: NoteColor | null) => {
+        setNote(n => (n ? { ...n, color } : n));
+        setIsDirty(true);
+    };
+
     const save = async () => {
         if (!note || isReadOnly || !isDirty || isSaving) return;
         setIsSaving(true);
@@ -63,6 +69,7 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
             const res = await api.put<INote>(`/notes/${note.id}`, {
                 title: note.title,
                 content: note.content,
+                color: note.color ?? null,
             });
             setNote(res.data);
             setIsDirty(false);
@@ -81,10 +88,10 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
         if (!note || !isDirty || isReadOnly) return;
         const timer = setTimeout(() => saveRef.current(), 800);
         return () => clearTimeout(timer);
-    }, [note?.title, note?.content, isDirty, isReadOnly]);
+    }, [note?.title, note?.content, note?.color, isDirty, isReadOnly]);
 
     return (
-        <NoteContext.Provider value={{ note, isLoading, isReadOnly, isDirty, isSaving, setTitle, setContent, save }}>
+        <NoteContext.Provider value={{ note, isLoading, isReadOnly, isDirty, isSaving, setTitle, setContent, setColor, save }}>
             {children}
         </NoteContext.Provider>
     );

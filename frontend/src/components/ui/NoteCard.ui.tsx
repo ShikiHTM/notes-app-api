@@ -1,5 +1,6 @@
 import type React from "react";
 import type { INote } from "../../types";
+import { NOTE_COLOR_CSS } from "../../types";
 import { useNoteActions, type NoteActionContext } from "../../hooks/NoteAction.hook";
 
 interface INoteCardProps {
@@ -10,11 +11,12 @@ interface INoteCardProps {
 
 const NoteCard: React.FC<INoteCardProps> = ({ note, onClick, actionsContext }) => {
     const actions = useNoteActions(note, actionsContext ?? "notes");
+    const tint = note.color ? NOTE_COLOR_CSS[note.color] : undefined;
     return (
         <div
             className="group relative bg-white border border-slate-200 dark:bg-gh-canvas-subtle dark:border-gh-border rounded-xl p-4 hover:shadow-md transition cursor-pointer flex flex-col gap-2"
             onClick={() => onClick?.(note)}
-            style={note.color ? { backgroundColor: note.color } : undefined}
+            style={tint ? { backgroundColor: tint } : undefined}
         >
             {note.title && (
                 <h3 className="font-semibold text-slate-800 dark:text-gh-fg line-clamp-1">{note.title}</h3>

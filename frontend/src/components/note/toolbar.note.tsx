@@ -2,6 +2,7 @@ import type React from "react";
 import { useNavigate } from "react-router-dom";
 import { MdArrowBack, MdCheckCircle, MdSync } from "react-icons/md";
 import { useNoteContext } from "../../context/Note.context";
+import NoteColorPicker from "./colorPicker.note";
 
 const NoteToolbar: React.FC = () => {
     const { note, isReadOnly, isDirty, isSaving } = useNoteContext();
@@ -46,7 +47,10 @@ const NoteToolbar: React.FC = () => {
                 <span className="truncate text-sm text-slate-600 dark:text-gh-fg-muted">{displayTitle}</span>
             </div>
 
-            {renderStatus()}
+            <div className="flex items-center gap-2">
+                <NoteColorPicker />
+                {renderStatus()}
+            </div>
         </div>
     );
 };

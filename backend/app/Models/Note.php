@@ -19,7 +19,8 @@ class Note extends Model {
         'archived_at',
         'deleted_at',
         'password',
-        'content_binary'
+        'content_binary',
+        'color',
     ];
 
     protected $hidden = [
