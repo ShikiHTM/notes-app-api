@@ -35,8 +35,7 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center" style={{
-            backgroundColor: '#f3f4f6',
+        <div className="flex min-h-screen items-center justify-center bg-slate-100 dark:bg-gh-canvas" style={{
             backgroundImage: 'radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.1) 0px, transparent 50%)'
         }}>
             <LoginCard

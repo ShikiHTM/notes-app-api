@@ -51,7 +51,7 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({ onRegister, isLoading }) =
     }
 
     return (
-        <div className="w-full max-w-105 bg-white rounded-lg shadow-lg p-8">
+        <div className="w-full max-w-105 bg-white dark:bg-gh-canvas-subtle rounded-lg shadow-lg p-8">
             {/* Logo */}
             <div className="text-white w-10 h-10 rounded-lg flex items-center justify-center m-auto" style={{
                 backgroundColor: '#6366f1'
@@ -59,8 +59,8 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({ onRegister, isLoading }) =
                 <MdNoteAlt size={30} />
             </div>
 
-            <h2 className="font-bold text-gray-800 text-center mt-2 mb-2 text-4xl">Chào mừng trở lại</h2>
-            <p className="text-gray-400 text-center text-sm mb-8">Vui lòng đăng nhập để tiếp tục</p>
+            <h2 className="font-bold text-gray-800 dark:text-gh-fg text-center mt-2 mb-2 text-4xl">Chào mừng trở lại</h2>
+            <p className="text-gray-400 dark:text-gh-fg-muted text-center text-sm mb-8">Vui lòng đăng nhập để tiếp tục</p>
 
             <form onSubmit={handleSubmit}>
                 <div className="w-full gap-5 px-4 mb-3 sm:px-0">
@@ -74,8 +74,8 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({ onRegister, isLoading }) =
                             type="text"
                             placeholder="User Name"
                             className="w-full block pl-12 pr-4 py-4
-                                    bg-white border border-slate-200 rounded-xl
-                                    text-slate-900 placeholder:text-slate-400
+                                    bg-white dark:bg-gh-canvas border border-slate-200 dark:border-gh-border rounded-xl
+                                    text-slate-900 dark:text-gh-fg placeholder:text-slate-400 dark:placeholder:text-gh-fg-subtle
                                     focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500
                                     transition-all duration-200 shadow-sm"
                             onChange={(e) => {
@@ -103,8 +103,8 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({ onRegister, isLoading }) =
                             type="email"
                             placeholder="Email"
                             className="w-full block pl-12 pr-4 py-4
-                                    bg-white border border-slate-200 rounded-xl
-                                    text-slate-900 placeholder:text-slate-400
+                                    bg-white dark:bg-gh-canvas border border-slate-200 dark:border-gh-border rounded-xl
+                                    text-slate-900 dark:text-gh-fg placeholder:text-slate-400 dark:placeholder:text-gh-fg-subtle
                                     focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500
                                     transition-all duration-200 shadow-sm"
                             onChange={(e) => {
@@ -132,8 +132,8 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({ onRegister, isLoading }) =
                             type={showPassword ? 'text' : 'password'}
                             placeholder="Password"
                             className="w-full block pl-12 pr-4 py-4
-                                    bg-white border border-slate-200 rounded-xl
-                                    text-slate-900 placeholder:text-slate-400
+                                    bg-white dark:bg-gh-canvas border border-slate-200 dark:border-gh-border rounded-xl
+                                    text-slate-900 dark:text-gh-fg placeholder:text-slate-400 dark:placeholder:text-gh-fg-subtle
                                     focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500
                                     transition-all duration-200 shadow-sm"
                             onChange={(e) => {
@@ -168,8 +168,8 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({ onRegister, isLoading }) =
                             type={showConfirmPassword ? 'text' : 'password'}
                             placeholder="Confirm Password"
                             className="w-full block pl-12 pr-4 py-4
-                                    bg-white border border-slate-200 rounded-xl
-                                    text-slate-900 placeholder:text-slate-400
+                                    bg-white dark:bg-gh-canvas border border-slate-200 dark:border-gh-border rounded-xl
+                                    text-slate-900 dark:text-gh-fg placeholder:text-slate-400 dark:placeholder:text-gh-fg-subtle
                                     focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500
                                     transition-all duration-200 shadow-sm"
                             onChange={(e) => {
@@ -194,7 +194,7 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({ onRegister, isLoading }) =
                 <button type="submit" className="
                     w-full mt-5 flex items-center justify-center text-white
                     bg-indigo-600 p-4 rounded-xl font-semibold cursor-pointer
-                    shadow-lg shadow-indigo-200
+                    shadow-lg shadow-indigo-200 dark:shadow-slate-500
 
                     ring-indigo-500/0 ring-0
 
@@ -211,10 +211,10 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({ onRegister, isLoading }) =
             </form>
 
             {/* Footer */}
-            <p className="text-gray-400 text-center text-sm mt-6">
+            <p className="text-gray-400 dark:text-gh-fg-muted text-center text-sm mt-6">
                 Đã có tài khoản?{' '}
                 <span
-                    className="text-indigo-600 hover:text-indigo-800 cursor-pointer transition-colors"
+                    className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 cursor-pointer transition-colors"
                     onClick={() => navigate('/login')}
                 >
                     Đăng nhập ngay

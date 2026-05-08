@@ -61,6 +61,7 @@ const Sidebar: React.FC = () => {
                     isOpen={isSidebarOpen}
                     isAccountMenuOpen={isAccountMenuOpen}
                     onAccountMenuToggle={() => setIsAccountMenuOpen(v => !v)}
+                    onAccountMenuClose={() => setIsAccountMenuOpen(false)}
                 />
             </aside>
         </>
