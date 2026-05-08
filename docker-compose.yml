@@ -68,7 +68,7 @@ services:
   #     - notes-network
 
   meilisearch:
-    image: getmeili/meilisearch:latest
+    image: getmeili/meilisearch:v1.43.0
     container_name: notes-app-meilisearch
     restart: unless-stopped
     environment:

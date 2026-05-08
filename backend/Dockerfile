@@ -23,6 +23,7 @@ COPY --from=builder /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
 COPY --from=builder /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
+COPY --from=builder /var/www/vendor ./vendor
 COPY . .
 
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
