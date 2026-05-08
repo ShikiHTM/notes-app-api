@@ -38,6 +38,10 @@ Route::prefix('v1')->group(function () {
         Route::post('/images/{id}', [NoteImageController::class, 'update']);
 
         Route::get('/notes/search', [NoteController::class, 'search']);
+        Route::get('/notes/archived', [NoteController::class, 'archived']);
+        Route::get('/notes/trashed', [NoteController::class, 'trashed']);
+        Route::post('/notes/{id}/restore', [NoteController::class, 'restore']);
+        Route::delete('/notes/{id}/force', [NoteController::class, 'forceDestroy']);
         Route::apiResource('notes', NoteController::class);
 
         Route::apiResource('labels', LabelController::class);

@@ -27,11 +27,32 @@ class NoteController extends Controller
     public function index(Request $request)
     {
         return $request->user()->notes()
+            ->whereNull('archived_at')
             ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at'])
-            ->with(['labels', 'images']) // Eager loading
+            ->with(['labels', 'images'])
             ->orderBy('is_pinned', 'desc')
             ->orderBy('pinned_at', 'desc')
             ->latest()
+            ->get();
+    }
+
+    public function archived(Request $request)
+    {
+        return $request->user()->notes()
+            ->whereNotNull('archived_at')
+            ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at', 'archived_at'])
+            ->with(['labels', 'images'])
+            ->latest('archived_at')
+            ->get();
+    }
+
+    public function trashed(Request $request)
+    {
+        return $request->user()->notes()
+            ->onlyTrashed()
+            ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at', 'deleted_at'])
+            ->with(['labels', 'images'])
+            ->latest('deleted_at')
             ->get();
     }
 
