@@ -204,7 +204,7 @@ class NoteController extends Controller
     }
 
     public function forceDestroy(Request $request, string $id) {
-        $note = Note::findOrFail($id);
+        $note = Note::withTrashed()->findOrFail($id);
 
         if($request->user()->id !== $note->user_id) {
             return response()->json(['error' => 'Forbidden: you\'re not own this note'], 403);
