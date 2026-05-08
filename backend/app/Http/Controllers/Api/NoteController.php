@@ -112,6 +112,7 @@ class NoteController extends Controller
             'title' => 'sometimes|nullable|string|max:255',
             'content' => 'sometimes|string|nullable',
             'is_pinned' => 'sometimes|boolean',
+            'archived_at' => 'sometimes|nullable|date',
         ]);
 
         if($request->user()->id !== $note->user_id) {

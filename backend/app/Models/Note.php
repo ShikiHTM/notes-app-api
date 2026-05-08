@@ -16,6 +16,7 @@ class Note extends Model {
         'content',
         'is_pinned',
         'pinned_at',
+        'archived_at',
         'deleted_at',
         'password',
         'content_binary'
