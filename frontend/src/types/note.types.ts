@@ -8,7 +8,7 @@ export interface INote {
     content: string;
     color?: string | null;
     is_pinned?: boolean;
-    is_archived?: boolean;
+    archived_at?: string | null;
     deleted_at?: string | null;
     created_at: string;
     updated_at: string;

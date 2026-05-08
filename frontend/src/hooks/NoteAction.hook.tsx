@@ -5,7 +5,7 @@ import type { INote } from "../types";
 import { useModal } from "./Modal.hook";
 import api from "../api/Axios";
 import useToast from "./Toast.hook";
-import { notesQueryKey } from "./Note.hook";
+import { archivedNotesQueryKey, notesQueryKey, trashedNotesQueryKey } from "./Note.hook";
 
 export type NoteActionContext = "notes" | "archive" | "trash" | "labels";
 
@@ -55,6 +55,28 @@ export const useNoteActions = (note: INote, context: NoteActionContext): React.R
     const softDeleteMutation = useMutation({
         mutationFn: () => api.delete(`/notes/${note.id}`),
         onMutate: async () => {
+            const sourceKey = context === "archive" ? archivedNotesQueryKey : notesQueryKey;
+            await qc.cancelQueries({ queryKey: sourceKey });
+            const previous = qc.getQueryData<INote[]>(sourceKey);
+            qc.setQueryData<INote[]>(sourceKey, old => old?.filter(n => n.id !== note.id));
+            return { previous, sourceKey };
+        },
+        onError: (_e, _v, ctx) => {
+            if (ctx?.previous) qc.setQueryData(ctx.sourceKey, ctx.previous);
+            showToast("Không thể xóa", "error");
+        },
+        onSettled: () => {
+            qc.invalidateQueries({ queryKey: notesQueryKey });
+            qc.invalidateQueries({ queryKey: archivedNotesQueryKey });
+            qc.invalidateQueries({ queryKey: trashedNotesQueryKey });
+        },
+    });
+
+    const archiveMutation = useMutation({
+        mutationFn: () => api.patch(`/notes/${note.id}`, {
+            archived_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
+        }),
+        onMutate: async () => {
             await qc.cancelQueries({ queryKey: notesQueryKey });
             const previous = qc.getQueryData<INote[]>(notesQueryKey);
             qc.setQueryData<INote[]>(notesQueryKey, old => old?.filter(n => n.id !== note.id));
@@ -62,22 +84,74 @@ export const useNoteActions = (note: INote, context: NoteActionContext): React.R
         },
         onError: (_e, _v, ctx) => {
             if (ctx?.previous) qc.setQueryData(notesQueryKey, ctx.previous);
-            showToast("Không thể xóa", "error");
+            showToast("Không thể lưu trữ", "error");
         },
-        onSettled: () => qc.invalidateQueries({ queryKey: notesQueryKey }),
+        onSettled: () => {
+            qc.invalidateQueries({ queryKey: notesQueryKey });
+            qc.invalidateQueries({ queryKey: archivedNotesQueryKey });
+        },
+    });
+
+    const unarchiveMutation = useMutation({
+        mutationFn: () => api.patch(`/notes/${note.id}`, { archived_at: null }),
+        onMutate: async () => {
+            await qc.cancelQueries({ queryKey: archivedNotesQueryKey });
+            const previous = qc.getQueryData<INote[]>(archivedNotesQueryKey);
+            qc.setQueryData<INote[]>(archivedNotesQueryKey, old => old?.filter(n => n.id !== note.id));
+            return { previous };
+        },
+        onError: (_e, _v, ctx) => {
+            if (ctx?.previous) qc.setQueryData(archivedNotesQueryKey, ctx.previous);
+            showToast("Không thể bỏ lưu trữ", "error");
+        },
+        onSettled: () => {
+            qc.invalidateQueries({ queryKey: notesQueryKey });
+            qc.invalidateQueries({ queryKey: archivedNotesQueryKey });
+        },
+    });
+
+    const restoreMutation = useMutation({
+        mutationFn: () => api.post(`/notes/${note.id}/restore`),
+        onMutate: async () => {
+            await qc.cancelQueries({ queryKey: trashedNotesQueryKey });
+            const previous = qc.getQueryData<INote[]>(trashedNotesQueryKey);
+            qc.setQueryData<INote[]>(trashedNotesQueryKey, old => old?.filter(n => n.id !== note.id));
+            return { previous };
+        },
+        onError: (_e, _v, ctx) => {
+            if (ctx?.previous) qc.setQueryData(trashedNotesQueryKey, ctx.previous);
+            showToast("Không thể khôi phục", "error");
+        },
+        onSettled: () => {
+            qc.invalidateQueries({ queryKey: notesQueryKey });
+            qc.invalidateQueries({ queryKey: trashedNotesQueryKey });
+        },
+    });
+
+    const hardDeleteMutation = useMutation({
+        mutationFn: () => api.delete(`/notes/${note.id}/force`),
+        onMutate: async () => {
+            await qc.cancelQueries({ queryKey: trashedNotesQueryKey });
+            const previous = qc.getQueryData<INote[]>(trashedNotesQueryKey);
+            qc.setQueryData<INote[]>(trashedNotesQueryKey, old => old?.filter(n => n.id !== note.id));
+            return { previous };
+        },
+        onError: (_e, _v, ctx) => {
+            if (ctx?.previous) qc.setQueryData(trashedNotesQueryKey, ctx.previous);
+            showToast("Không thể xóa vĩnh viễn", "error");
+        },
+        onSettled: () => qc.invalidateQueries({ queryKey: trashedNotesQueryKey }),
     });
 
     const onPin = () => pinMutation.mutate();
 
-    const onArchive = () => {
-        // TODO: backend chưa có cờ is_archived
-        console.log("archive", note.id);
+    const onArchive = async () => {
+        const ok = await confirm({ message: "Chuyển ghi chú vào lưu trữ?", confirmText: "Lưu trữ" });
+        if (!ok) return;
+        archiveMutation.mutate();
     };
 
-    const onUnarchive = () => {
-        // TODO: backend chưa có cờ is_archived
-        console.log("unarchive", note.id);
-    };
+    const onUnarchive = () => unarchiveMutation.mutate();
 
     const onSoftDelete = async () => {
         const ok = await confirm({ message: "Chuyển ghi chú vào thùng rác?", confirmText: "Xóa", confirmColor: "bg-red-500" });
@@ -85,16 +159,12 @@ export const useNoteActions = (note: INote, context: NoteActionContext): React.R
         softDeleteMutation.mutate();
     };
 
-    const onRestore = () => {
-        // TODO: route /notes/:id/restore chưa đăng ký
-        console.log("restore", note.id);
-    };
+    const onRestore = () => restoreMutation.mutate();
 
     const onHardDelete = async () => {
         const ok = await confirm({ message: "Xóa vĩnh viễn ghi chú này? Hành động không thể hoàn tác.", confirmText: "Xóa vĩnh viễn", confirmColor: "bg-red-500" });
         if (!ok) return;
-        // TODO: route force-delete chưa đăng ký
-        console.log("hard delete", note.id);
+        hardDeleteMutation.mutate();
     };
 
     if (context === "notes") {
@@ -103,7 +173,7 @@ export const useNoteActions = (note: INote, context: NoteActionContext): React.R
                 <ActionButton label={note.is_pinned ? "Bỏ ghim" : "Ghim"} onClick={onPin} disabled={pinMutation.isPending}>
                     <MdPushPin size={16} />
                 </ActionButton>
-                <ActionButton label="Lưu trữ" onClick={onArchive}>
+                <ActionButton label="Lưu trữ" onClick={onArchive} disabled={archiveMutation.isPending}>
                     <MdArchive size={16} />
                 </ActionButton>
                 <ActionButton label="Xóa" onClick={onSoftDelete} danger disabled={softDeleteMutation.isPending}>
@@ -116,7 +186,7 @@ export const useNoteActions = (note: INote, context: NoteActionContext): React.R
     if (context === "archive") {
         return (
             <div className="flex gap-1">
-                <ActionButton label="Bỏ lưu trữ" onClick={onUnarchive}>
+                <ActionButton label="Bỏ lưu trữ" onClick={onUnarchive} disabled={unarchiveMutation.isPending}>
                     <MdUnarchive size={16} />
                 </ActionButton>
                 <ActionButton label="Xóa" onClick={onSoftDelete} danger disabled={softDeleteMutation.isPending}>
@@ -129,10 +199,10 @@ export const useNoteActions = (note: INote, context: NoteActionContext): React.R
     if (context === "trash") {
         return (
             <div className="flex gap-1">
-                <ActionButton label="Khôi phục" onClick={onRestore}>
+                <ActionButton label="Khôi phục" onClick={onRestore} disabled={restoreMutation.isPending}>
                     <MdRestore size={16} />
                 </ActionButton>
-                <ActionButton label="Xóa vĩnh viễn" onClick={onHardDelete} danger>
+                <ActionButton label="Xóa vĩnh viễn" onClick={onHardDelete} danger disabled={hardDeleteMutation.isPending}>
                     <MdDeleteForever size={16} />
                 </ActionButton>
             </div>
