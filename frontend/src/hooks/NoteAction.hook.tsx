@@ -45,6 +45,7 @@ export const useNoteActions = (note: INote, context: NoteActionContext): React.R
             );
             return { previous };
         },
+        onSuccess: () => showToast(note.is_pinned ? "Đã bỏ ghim" : "Đã ghim", "success"),
         onError: (_e, _v, ctx) => {
             if (ctx?.previous) qc.setQueryData(notesQueryKey, ctx.previous);
             showToast("Không thể ghim", "error");
@@ -61,6 +62,7 @@ export const useNoteActions = (note: INote, context: NoteActionContext): React.R
             qc.setQueryData<INote[]>(sourceKey, old => old?.filter(n => n.id !== note.id));
             return { previous, sourceKey };
         },
+        onSuccess: () => showToast("Đã chuyển vào thùng rác", "success"),
         onError: (_e, _v, ctx) => {
             if (ctx?.previous) qc.setQueryData(ctx.sourceKey, ctx.previous);
             showToast("Không thể xóa", "error");
@@ -82,6 +84,7 @@ export const useNoteActions = (note: INote, context: NoteActionContext): React.R
             qc.setQueryData<INote[]>(notesQueryKey, old => old?.filter(n => n.id !== note.id));
             return { previous };
         },
+        onSuccess: () => showToast("Đã lưu trữ", "success"),
         onError: (_e, _v, ctx) => {
             if (ctx?.previous) qc.setQueryData(notesQueryKey, ctx.previous);
             showToast("Không thể lưu trữ", "error");
@@ -100,6 +103,7 @@ export const useNoteActions = (note: INote, context: NoteActionContext): React.R
             qc.setQueryData<INote[]>(archivedNotesQueryKey, old => old?.filter(n => n.id !== note.id));
             return { previous };
         },
+        onSuccess: () => showToast("Đã bỏ lưu trữ", "success"),
         onError: (_e, _v, ctx) => {
             if (ctx?.previous) qc.setQueryData(archivedNotesQueryKey, ctx.previous);
             showToast("Không thể bỏ lưu trữ", "error");
@@ -118,6 +122,7 @@ export const useNoteActions = (note: INote, context: NoteActionContext): React.R
             qc.setQueryData<INote[]>(trashedNotesQueryKey, old => old?.filter(n => n.id !== note.id));
             return { previous };
         },
+        onSuccess: () => showToast("Đã khôi phục", "success"),
         onError: (_e, _v, ctx) => {
             if (ctx?.previous) qc.setQueryData(trashedNotesQueryKey, ctx.previous);
             showToast("Không thể khôi phục", "error");
@@ -136,6 +141,7 @@ export const useNoteActions = (note: INote, context: NoteActionContext): React.R
             qc.setQueryData<INote[]>(trashedNotesQueryKey, old => old?.filter(n => n.id !== note.id));
             return { previous };
         },
+        onSuccess: () => showToast("Đã xóa vĩnh viễn", "success"),
         onError: (_e, _v, ctx) => {
             if (ctx?.previous) qc.setQueryData(trashedNotesQueryKey, ctx.previous);
             showToast("Không thể xóa vĩnh viễn", "error");
