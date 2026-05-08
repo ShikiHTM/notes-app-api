@@ -5,4 +5,5 @@ export interface IToast {
     type: ToastType;
     message: string;
     duration?: number;
+    isLeaving?: boolean;
 }

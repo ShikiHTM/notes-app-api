@@ -2,7 +2,7 @@ import { MdCheckCircle, MdClose, MdError, MdInfo, MdWarning } from "react-icons/
 import type { IToast } from "../../types";
 import useToast from "../../hooks/Toast.hook";
 
-const ToastItem: React.FC<IToast> = ({ id, message, type }) => {
+const ToastItem: React.FC<IToast> = ({ id, message, type, isLeaving }) => {
     const { removeToast } = useToast();
 
     const configs = {
@@ -31,7 +31,7 @@ const ToastItem: React.FC<IToast> = ({ id, message, type }) => {
     const config = configs[type];
 
     return (
-        <div className={`pointer-events-auto flex items-center p-4 rounded-lg border shadow-lg transition-all duration-300 animate-in fade-in slide-in-from-right-5 ${config.bg} ${config.text}`}>
+        <div className={`pointer-events-auto flex items-center p-4 rounded-lg border shadow-lg ${isLeaving ? 'animate-out fade-out zoom-out-95 slide-out-to-right-4 duration-200' : 'animate-in fade-in zoom-in-95 slide-in-from-right-4 duration-300'} ${config.bg} ${config.text}`}>
             <div className="shrink-0">{config.icon}</div>
             <div className="ml-3 text-sm font-medium">{message}</div>
             <button className="ml-auto bg-transparent border-none p-1 hover:opacity-70 transition-opacity">

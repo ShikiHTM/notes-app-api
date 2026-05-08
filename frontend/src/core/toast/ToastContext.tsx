@@ -17,11 +17,12 @@ export const ToastProvider: React.FC<{ children: React.ReactNode}> = ({ children
         const newToast = {id, message, type};
         setToasts((prev) => [...prev, newToast]);
 
-        setTimeout(() => removeToast(id), 2000)
+        setTimeout(() => removeToast(id), 2500)
     }
 
     const removeToast = (id: string) => {
-        setToasts((prev) => prev.filter((toast) => toast.id !== id));
+        setToasts((prev) => prev.map((t) => t.id === id ? { ...t, isLeaving: true } : t));
+        setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), 250);
     }
 
     return (
