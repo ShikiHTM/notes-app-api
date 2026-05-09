@@ -15,25 +15,25 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({ onRegister, isLoading }) =
     const validate = () => {
         const newErrors: { display_name?: string; email?: string; password?: string; confirmPassword?: string } = {};
 
-        if(!formData?.display_name) {
+        if (!formData?.display_name) {
             newErrors.display_name = 'Tên người dùng không được để trống';
-        }else if (formData?.display_name.length < 3) {
+        } else if (formData?.display_name.length < 3) {
             newErrors.display_name = 'Tên người dùng không được nhỏ hơn 3 ký tự';
         }
 
-        if(!formData?.email) {
+        if (!formData?.email) {
             newErrors.email = 'Email không được để trống';
-        } else if(!/\S+@\S+\.\S+/.test(formData.email)) {
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
             newErrors.email = 'Email không hợp lệ';
         }
 
-        if(!formData?.password) {
+        if (!formData?.password) {
             newErrors.password = 'Mật khẩu không được để trống';
-        } else if(formData.password.length < 8) {
+        } else if (formData.password.length < 8) {
             newErrors.password = 'Mật khẩu phải có ít nhất 8 ký tự';
         }
 
-        if(confirmPassword !== formData?.password) {
+        if (confirmPassword !== formData?.password) {
             newErrors.confirmPassword = 'Mật khẩu không trùng khớp'
         }
 
@@ -45,7 +45,7 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({ onRegister, isLoading }) =
         e.preventDefault();
 
         console.log(formData);
-        if(validate()) {
+        if (validate()) {
             onRegister(formData!);
         }
     }
@@ -85,12 +85,12 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({ onRegister, isLoading }) =
                                 }))
                             }}
                         />
-                        </div>
-                        {error.display_name && (
-                            <span className="text-xs text-red-500 mt-1 ml-2 animate-in fade-in slide-in-from-top-1">
-                                {error.display_name}
-                            </span>
-                        )}
+                    </div>
+                    {error.display_name && (
+                        <span className="text-xs text-red-500 mt-1 ml-2 animate-in fade-in slide-in-from-top-1">
+                            {error.display_name}
+                        </span>
+                    )}
                 </div>
                 <div className="w-full gap-5 px-4 mb-3 sm:px-0">
                     <div className="relative group">
@@ -148,7 +148,7 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({ onRegister, isLoading }) =
                             className="absolute top-1/2 right-2 -translate-1/2 text-slate-400 shadow-none"
                             onClick={() => setShowPassword(!showPassword)}
                         >
-                            {showPassword ? <MdVisibilityOff size={20}/> : <MdVisibility size={20}/>}
+                            {showPassword ? <MdVisibilityOff size={20} /> : <MdVisibility size={20} />}
                         </button>
                     </div>
                     {error.password && (
@@ -181,7 +181,7 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({ onRegister, isLoading }) =
                             className="absolute top-1/2 right-2 -translate-1/2 text-slate-400 shadow-none"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         >
-                            {showConfirmPassword ? <MdVisibilityOff size={20}/> : <MdVisibility size={20}/>}
+                            {showConfirmPassword ? <MdVisibilityOff size={20} /> : <MdVisibility size={20} />}
                         </button>
                     </div>
                     {error.confirmPassword && (
@@ -194,7 +194,7 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({ onRegister, isLoading }) =
                 <button type="submit" className="
                     w-full mt-5 flex items-center justify-center text-white
                     bg-indigo-600 p-4 rounded-xl font-semibold cursor-pointer
-                    shadow-lg shadow-indigo-200 dark:shadow-slate-500
+                    shadow-lg
 
                     ring-indigo-500/0 ring-0
 

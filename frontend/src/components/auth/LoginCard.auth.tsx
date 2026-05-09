@@ -12,15 +12,15 @@ const LoginCard: React.FC<ILoginCardProps> = ({ onLogin, isLoading }) => {
     const validate = () => {
         const newErrors: { email?: string; password?: string } = {};
 
-        if(!formData?.email) {
+        if (!formData?.email) {
             newErrors.email = 'Email không được để trống';
-        } else if(!/\S+@\S+\.\S+/.test(formData.email)) {
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
             newErrors.email = 'Email không hợp lệ';
         }
 
-        if(!formData?.password) {
+        if (!formData?.password) {
             newErrors.password = 'Mật khẩu không được để trống';
-        } else if(formData.password.length < 8) {
+        } else if (formData.password.length < 8) {
             newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
         }
 
@@ -31,7 +31,7 @@ const LoginCard: React.FC<ILoginCardProps> = ({ onLogin, isLoading }) => {
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if(validate()) {
+        if (validate()) {
             onLogin(formData!);
         }
     }
@@ -58,7 +58,7 @@ const LoginCard: React.FC<ILoginCardProps> = ({ onLogin, isLoading }) => {
                         </div>
                         <input
                             type="email"
-                            placeholder="test@example.com"
+                            placeholder="Email"
                             className="w-full block pl-12 pr-4 py-4
                                     bg-white dark:bg-gh-canvas border border-slate-200 dark:border-gh-border rounded-xl
                                     text-slate-900 dark:text-gh-fg placeholder:text-slate-400 dark:placeholder:text-gh-fg-subtle
@@ -71,12 +71,12 @@ const LoginCard: React.FC<ILoginCardProps> = ({ onLogin, isLoading }) => {
                                 }))
                             }}
                         />
-                        </div>
-                        {error.email && (
-                            <span className="text-xs text-red-500 mt-1 ml-2 animate-in fade-in slide-in-from-top-1">
-                                {error.email}
-                            </span>
-                        )}
+                    </div>
+                    {error.email && (
+                        <span className="text-xs text-red-500 mt-1 ml-2 animate-in fade-in slide-in-from-top-1">
+                            {error.email}
+                        </span>
+                    )}
                 </div>
                 <div className="w-full gap-5 px-4 sm:px-0">
                     <div className="relative group">
@@ -87,7 +87,7 @@ const LoginCard: React.FC<ILoginCardProps> = ({ onLogin, isLoading }) => {
                         </div>
                         <input
                             type={showPassword ? 'text' : 'password'}
-                            placeholder="******"
+                            placeholder="Password"
                             className="w-full block pl-12 pr-4 py-4
                                     bg-white dark:bg-gh-canvas border border-slate-200 dark:border-gh-border rounded-xl
                                     text-slate-900 dark:text-gh-fg placeholder:text-slate-400 dark:placeholder:text-gh-fg-subtle
@@ -105,7 +105,7 @@ const LoginCard: React.FC<ILoginCardProps> = ({ onLogin, isLoading }) => {
                             className="absolute top-1/2 right-2 -translate-1/2 text-slate-400 shadow-none"
                             onClick={() => setShowPassword(!showPassword)}
                         >
-                            {showPassword ? <MdVisibilityOff size={20}/> : <MdVisibility size={20}/>}
+                            {showPassword ? <MdVisibilityOff size={20} /> : <MdVisibility size={20} />}
                         </button>
                     </div>
                     {error.password && (
@@ -118,7 +118,7 @@ const LoginCard: React.FC<ILoginCardProps> = ({ onLogin, isLoading }) => {
                 <button type="submit" className="
                     w-full mt-5 flex items-center justify-center text-white
                     bg-indigo-600 p-4 rounded-xl font-semibold cursor-pointer
-                    shadow-lg shadow-indigo-200 dark:shadow-slate-500
+                    shadow-lg
 
                     ring-indigo-500/0 ring-0
 
