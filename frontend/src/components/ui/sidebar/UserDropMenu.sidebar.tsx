@@ -1,41 +1,47 @@
-import React, { useState } from "react";
+import React from "react";
 import { useAuth } from "../../../hooks/Auth.hook";
 import { MdLogout, MdSettings } from "react-icons/md";
 import { useModal } from "../../../hooks/Modal.hook";
-import SettingsModal from "../../modal/Settings.modal";
 
-const UserDropMenu: React.FC = () => {
+interface Props {
+    onOpenSettings: () => void;
+}
+
+const UserDropMenu: React.FC<Props> = ({ onOpenSettings }) => {
     const { logout } = useAuth();
     const { confirm } = useModal();
-    const [showSettings, setShowSettings] = useState(false);
 
     return (
         <>
             <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-300 dark:bg-gh-canvas-subtle dark:border-gh-border rounded-md shadow-lg py-1 z-50">
                 <button
                     className="w-full flex gap-2 items-center text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-gh-fg dark:hover:bg-gh-canvas-inset transition-colors cursor-pointer"
-                    onClick={() => setShowSettings(true)}
+                    onClick={onOpenSettings}
                 >
-                    <MdSettings size={16} />Cài đặt
+                    <MdSettings size={16} />
+                    Cài đặt
                 </button>
 
-                <div className= "h-px bg-slate-200 dark:bg-gh-border my-1 mx-4" />
+                <div className="h-px bg-slate-200 dark:bg-gh-border my-1 mx-4" />
 
                 <button
                     className="w-full flex gap-2 items-center text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100 dark:text-gh-danger dark:hover:bg-gh-danger-subtle transition-colors cursor-pointer"
                     onClick={async () => {
-                        const ok = await confirm({ message: "Bạn có chắc muốn đăng xuất?", confirmText: "Đăng xuất", confirmColor: "bg-red-500" });
+                        const ok = await confirm({
+                            message: "Bạn có chắc muốn đăng xuất?",
+                            confirmText: "Đăng xuất",
+                            confirmColor: "bg-red-500",
+                        });
 
-                        if(ok) logout();
+                        if (ok) logout();
                     }}
                 >
-                    <MdLogout size={16} />Đăng xuất
+                    <MdLogout size={16} />
+                    Đăng xuất
                 </button>
             </div>
-
-            <SettingsModal isOpen={showSettings} onClose={() => setShowSettings(false)} />
         </>
-    )
-}
+    );
+};
 
 export default UserDropMenu;

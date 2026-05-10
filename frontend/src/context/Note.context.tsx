@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+    type ReactNode,
+} from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import type { INote, NoteColor } from "../types";
 import api from "../api/Axios";
@@ -38,27 +45,35 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
         setIsDirty(false);
 
         api.get<INote>(`/notes/${noteId}`)
-            .then(res => { if (!cancelled) setNote(res.data); })
-            .catch(() => { if (!cancelled) showToast("Không tải được ghi chú", "error"); })
-            .finally(() => { if (!cancelled) setIsLoading(false); });
+            .then((res) => {
+                if (!cancelled) setNote(res.data);
+            })
+            .catch(() => {
+                if (!cancelled) showToast("Không tải được ghi chú", "error");
+            })
+            .finally(() => {
+                if (!cancelled) setIsLoading(false);
+            });
 
-        return () => { cancelled = true; };
+        return () => {
+            cancelled = true;
+        };
     }, [noteId]);
 
     const isReadOnly = !!note?.deleted_at;
 
     const setTitle = (title: string) => {
-        setNote(n => (n ? { ...n, title } : n));
+        setNote((n) => (n ? { ...n, title } : n));
         setIsDirty(true);
     };
 
     const setContent = (content: string) => {
-        setNote(n => (n ? { ...n, content } : n));
+        setNote((n) => (n ? { ...n, content } : n));
         setIsDirty(true);
     };
 
     const setColor = (color: NoteColor | null) => {
-        setNote(n => (n ? { ...n, color } : n));
+        setNote((n) => (n ? { ...n, color } : n));
         setIsDirty(true);
     };
 
@@ -91,7 +106,19 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
     }, [note?.title, note?.content, note?.color, isDirty, isReadOnly]);
 
     return (
-        <NoteContext.Provider value={{ note, isLoading, isReadOnly, isDirty, isSaving, setTitle, setContent, setColor, save }}>
+        <NoteContext.Provider
+            value={{
+                note,
+                isLoading,
+                isReadOnly,
+                isDirty,
+                isSaving,
+                setTitle,
+                setContent,
+                setColor,
+                save,
+            }}
+        >
             {children}
         </NoteContext.Provider>
     );
@@ -99,6 +126,7 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
 
 export const useNoteContext = () => {
     const ctx = useContext(NoteContext);
-    if (!ctx) throw new Error("useNoteContext must be used inside <NoteProvider>");
+    if (!ctx)
+        throw new Error("useNoteContext must be used inside <NoteProvider>");
     return ctx;
 };

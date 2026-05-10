@@ -23,7 +23,9 @@ const Sidebar: React.FC = () => {
         { id: "trash", label: "Thùng rác", icon: <FaTrash size={20} /> },
     ];
 
-    const activeTab = (menuItems.find(i => location.pathname.startsWith(`/${i.id}`))?.id ?? 'notes');
+    const activeTab =
+        menuItems.find((i) => location.pathname.startsWith(`/${i.id}`))?.id ??
+        "notes";
 
     return (
         <>
@@ -40,9 +42,10 @@ const Sidebar: React.FC = () => {
             <aside
                 className={`fixed inset-y-0 left-0 z-50 bg-white border-r border-slate-300 dark:bg-gh-canvas-subtle dark:border-gh-border py-10 px-3
                     flex flex-col gap-5 transition-all duration-300 ease-in-out overflow-x-hidden
-                    ${isSidebarOpen
-                        ? "translate-x-0 w-64"
-                        : "-translate-x-full w-0 md:w-20 md:translate-x-0"
+                    ${
+                        isSidebarOpen
+                            ? "translate-x-0 w-64"
+                            : "-translate-x-full w-0 md:w-20 md:translate-x-0"
                     } md:relative`}
             >
                 <SidebarHeader
@@ -60,7 +63,7 @@ const Sidebar: React.FC = () => {
                 <AccountSection
                     isOpen={isSidebarOpen}
                     isAccountMenuOpen={isAccountMenuOpen}
-                    onAccountMenuToggle={() => setIsAccountMenuOpen(v => !v)}
+                    onAccountMenuToggle={() => setIsAccountMenuOpen((v) => !v)}
                     onAccountMenuClose={() => setIsAccountMenuOpen(false)}
                 />
             </aside>

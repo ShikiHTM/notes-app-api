@@ -9,7 +9,8 @@ const SettingsContent: React.FC = () => {
     const [name, setName] = useState(user?.display_name ?? "");
     const [email, setEmail] = useState(user?.email ?? "");
 
-    const isDirty = name !== (user?.display_name ?? "") || email !== (user?.email ?? "");
+    const isDirty =
+        name !== (user?.display_name ?? "") || email !== (user?.email ?? "");
     const isDark = theme === "dark";
 
     return (
@@ -29,11 +30,13 @@ const SettingsContent: React.FC = () => {
 
                 <div className="flex-1 flex flex-col gap-4">
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-gh-fg-muted">Tên tài khoản</span>
+                        <span className="text-sm text-gh-fg-muted">
+                            Tên tài khoản
+                        </span>
                         <input
                             type="text"
                             value={name}
-                            onChange={e => setName(e.target.value)}
+                            onChange={(e) => setName(e.target.value)}
                             className="px-3 py-2 bg-gh-canvas border border-gh-border rounded-md text-gh-fg focus:outline-none focus:ring-2 focus:ring-gh-accent"
                         />
                     </label>
@@ -43,7 +46,7 @@ const SettingsContent: React.FC = () => {
                         <input
                             type="email"
                             value={email}
-                            onChange={e => setEmail(e.target.value)}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="px-3 py-2 bg-gh-canvas border border-gh-border rounded-md text-gh-fg focus:outline-none focus:ring-2 focus:ring-gh-accent"
                         />
                     </label>
@@ -59,7 +62,9 @@ const SettingsContent: React.FC = () => {
             </div>
 
             <div className="border-t border-gh-border pt-6">
-                <h3 className="text-sm font-semibold text-gh-fg mb-3">Giao diện</h3>
+                <h3 className="text-sm font-semibold text-gh-fg mb-3">
+                    Giao diện
+                </h3>
                 <div className="flex items-center justify-between rounded-lg border border-gh-border bg-gh-canvas-subtle px-4 py-3">
                     <div className="flex items-center gap-3">
                         {isDark ? (
@@ -68,7 +73,9 @@ const SettingsContent: React.FC = () => {
                             <MdLightMode size={22} className="text-gh-fg" />
                         )}
                         <div className="flex flex-col">
-                            <span className="text-sm font-medium text-gh-fg">Chế độ tối</span>
+                            <span className="text-sm font-medium text-gh-fg">
+                                Chế độ tối
+                            </span>
                         </div>
                     </div>
                     <button
@@ -89,7 +96,7 @@ const SettingsContent: React.FC = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default SettingsContent;

@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { MdPalette, MdFormatColorReset } from "react-icons/md";
-import { NOTE_COLORS, NOTE_COLOR_CSS, NOTE_COLOR_LABEL, type NoteColor } from "../../types";
+import {
+    NOTE_COLORS,
+    NOTE_COLOR_CSS,
+    NOTE_COLOR_LABEL,
+    type NoteColor,
+} from "../../types";
 import { useNoteContext } from "../../context/Note.context";
 
 const NoteColorPicker: React.FC = () => {
@@ -12,7 +17,10 @@ const NoteColorPicker: React.FC = () => {
         if (!open) return;
 
         const handler = (e: MouseEvent) => {
-            if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+            if (
+                containerRef.current &&
+                !containerRef.current.contains(e.target as Node)
+            ) {
                 setOpen(false);
             }
         };
@@ -32,7 +40,7 @@ const NoteColorPicker: React.FC = () => {
         <div ref={containerRef} className="relative">
             <button
                 type="button"
-                onClick={() => setOpen(v => !v)}
+                onClick={() => setOpen((v) => !v)}
                 aria-label="Chọn màu ghi chú"
                 className="rounded p-1 text-slate-500 hover:bg-slate-100 dark:text-gh-fg-muted dark:hover:bg-gh-canvas-inset cursor-pointer"
             >
@@ -52,10 +60,13 @@ const NoteColorPicker: React.FC = () => {
                                 : "border-slate-300 dark:border-gh-border hover:border-slate-400 dark:hover:border-gh-fg-subtle"
                         }`}
                     >
-                        <MdFormatColorReset size={14} className="text-slate-500 dark:text-gh-fg-muted" />
+                        <MdFormatColorReset
+                            size={14}
+                            className="text-slate-500 dark:text-gh-fg-muted"
+                        />
                     </button>
 
-                    {NOTE_COLORS.map(c => (
+                    {NOTE_COLORS.map((c) => (
                         <button
                             key={c}
                             type="button"

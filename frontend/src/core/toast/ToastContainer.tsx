@@ -12,5 +12,5 @@ export const ToastContainer: React.FC<IToastContainer> = ({ toasts }) => {
                 <ToastItem key={toast.id} {...toast} />
             ))}
         </div>
-    )
-}
+    );
+};

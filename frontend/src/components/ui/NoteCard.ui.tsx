@@ -1,7 +1,10 @@
 import type React from "react";
 import type { INote } from "../../types";
 import { NOTE_COLOR_CSS } from "../../types";
-import { useNoteActions, type NoteActionContext } from "../../hooks/NoteAction.hook";
+import {
+    useNoteActions,
+    type NoteActionContext,
+} from "../../hooks/NoteAction.hook";
 
 interface INoteCardProps {
     note: INote;
@@ -9,7 +12,11 @@ interface INoteCardProps {
     actionsContext?: NoteActionContext;
 }
 
-const NoteCard: React.FC<INoteCardProps> = ({ note, onClick, actionsContext }) => {
+const NoteCard: React.FC<INoteCardProps> = ({
+    note,
+    onClick,
+    actionsContext,
+}) => {
     const actions = useNoteActions(note, actionsContext ?? "notes");
     const tint = note.color ? NOTE_COLOR_CSS[note.color] : undefined;
     return (
@@ -19,7 +26,9 @@ const NoteCard: React.FC<INoteCardProps> = ({ note, onClick, actionsContext }) =
             style={tint ? { backgroundColor: tint } : undefined}
         >
             {note.title && (
-                <h3 className="font-semibold text-slate-800 dark:text-gh-fg line-clamp-1">{note.title}</h3>
+                <h3 className="font-semibold text-slate-800 dark:text-gh-fg line-clamp-1">
+                    {note.title}
+                </h3>
             )}
 
             <p className="text-sm text-slate-600 dark:text-gh-fg-muted line-clamp-4 whitespace-pre-wrap">
@@ -29,7 +38,7 @@ const NoteCard: React.FC<INoteCardProps> = ({ note, onClick, actionsContext }) =
             {actionsContext && actions && (
                 <div
                     className="absolute top-2 right-2 transition"
-                    onClick={e => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
                 >
                     {actions}
                 </div>

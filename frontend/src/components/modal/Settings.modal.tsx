@@ -8,7 +8,7 @@ interface ISettingsProps {
 }
 
 const SettingsModal: React.FC<ISettingsProps> = ({ isOpen, onClose }) => {
-    if(!isOpen) return null;
+    if (!isOpen) return null;
 
     return (
         <Modal
@@ -20,7 +20,7 @@ const SettingsModal: React.FC<ISettingsProps> = ({ isOpen, onClose }) => {
         >
             <SettingsContent />
         </Modal>
-    )
-}
+    );
+};
 
 export default SettingsModal;

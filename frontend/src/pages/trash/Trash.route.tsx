@@ -3,9 +3,9 @@ import TrashPage from "./Trash.page";
 
 const TrashRoutes: RouteObject[] = [
     {
-        path: 'trash',
-        element: <TrashPage />
-    }
+        path: "trash",
+        element: <TrashPage />,
+    },
 ];
 
 export default TrashRoutes;

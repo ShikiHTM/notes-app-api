@@ -7,7 +7,7 @@ const NoteArea: React.FC = () => {
     return (
         <textarea
             value={note?.content ?? ""}
-            onChange={e => setContent(e.target.value)}
+            onChange={(e) => setContent(e.target.value)}
             onBlur={() => save()}
             readOnly={isReadOnly}
             placeholder="Nội dung ghi chú…"

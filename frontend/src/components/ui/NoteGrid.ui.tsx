@@ -13,7 +13,14 @@ interface INoteGridProps {
     skeletonCount?: number;
 }
 
-const NoteGrid: React.FC<INoteGridProps> = ({ notes, emptyMessage = "Chưa có ghi chú nào", onCardClick, actionsContext, isLoading, skeletonCount = 8 }) => {
+const NoteGrid: React.FC<INoteGridProps> = ({
+    notes,
+    emptyMessage = "Chưa có ghi chú nào",
+    onCardClick,
+    actionsContext,
+    isLoading,
+    skeletonCount = 8,
+}) => {
     if (isLoading) {
         return (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -34,7 +41,7 @@ const NoteGrid: React.FC<INoteGridProps> = ({ notes, emptyMessage = "Chưa có g
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {notes.map(note => (
+            {notes.map((note) => (
                 <NoteCard
                     key={note.id}
                     note={note}

@@ -10,7 +10,9 @@ const readInitialTheme = (): Theme => {
     const stored = window.localStorage.getItem(STORAGE_KEY);
     if (stored === "dark" || stored === "light") return stored;
 
-    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
 };
 
 const applyThemeClass = (theme: Theme) => {
@@ -28,8 +30,8 @@ export const useTheme = () => {
 
     const setTheme = useCallback((next: Theme) => setThemeState(next), []);
     const toggleTheme = useCallback(
-        () => setThemeState(prev => (prev === "dark" ? "light" : "dark")),
-        []
+        () => setThemeState((prev) => (prev === "dark" ? "light" : "dark")),
+        [],
     );
 
     return { theme, setTheme, toggleTheme };

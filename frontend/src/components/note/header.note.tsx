@@ -8,7 +8,7 @@ const NoteHeader: React.FC = () => {
         <input
             type="text"
             value={note?.title ?? ""}
-            onChange={e => setTitle(e.target.value)}
+            onChange={(e) => setTitle(e.target.value)}
             onBlur={() => save()}
             readOnly={isReadOnly}
             placeholder="Tiêu đề"

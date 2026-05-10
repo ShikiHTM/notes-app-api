@@ -6,7 +6,9 @@ import { FaTag } from "react-icons/fa";
 const LabelsPage: React.FC = () => {
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-2xl font-semibold text-slate-800 dark:text-gh-fg">Nhãn</h1>
+            <h1 className="text-2xl font-semibold text-slate-800 dark:text-gh-fg">
+                Nhãn
+            </h1>
             <NoteGrid notes={[]} emptyMessage="Chưa có nhãn nào" />
             <CreateButton
                 onClick={() => alert("Tạo nhãn mới")}

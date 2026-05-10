@@ -3,9 +3,9 @@ import SettingsPage from "./Settings.page";
 
 const SettingsRoutes: RouteObject[] = [
     {
-        'path': 'settings',
-        'element': <SettingsPage />
-    }
-]
+        path: "settings",
+        element: <SettingsPage />,
+    },
+];
 
 export default SettingsRoutes;

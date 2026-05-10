@@ -10,7 +10,11 @@ const NoteToolbar: React.FC = () => {
 
     const renderStatus = () => {
         if (isReadOnly) {
-            return <span className="text-xs text-slate-400 dark:text-gh-fg-subtle">Chỉ đọc</span>;
+            return (
+                <span className="text-xs text-slate-400 dark:text-gh-fg-subtle">
+                    Chỉ đọc
+                </span>
+            );
         }
         if (isSaving) {
             return (
@@ -21,7 +25,11 @@ const NoteToolbar: React.FC = () => {
             );
         }
         if (isDirty) {
-            return <span className="text-xs text-amber-600 dark:text-gh-attention">Chưa lưu</span>;
+            return (
+                <span className="text-xs text-amber-600 dark:text-gh-attention">
+                    Chưa lưu
+                </span>
+            );
         }
         return (
             <span className="flex items-center gap-1 text-xs text-emerald-600 dark:text-gh-success">
@@ -44,7 +52,9 @@ const NoteToolbar: React.FC = () => {
                 >
                     <MdArrowBack size={18} />
                 </button>
-                <span className="truncate text-sm text-slate-600 dark:text-gh-fg-muted">{displayTitle}</span>
+                <span className="truncate text-sm text-slate-600 dark:text-gh-fg-muted">
+                    {displayTitle}
+                </span>
             </div>
 
             <div className="flex items-center gap-2">

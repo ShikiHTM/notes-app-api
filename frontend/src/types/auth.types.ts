@@ -3,7 +3,7 @@ import type { IUser } from "./user.types";
 export interface ILoginRequest {
     email: string;
     password: string;
-};
+}
 
 interface IOmniCardProps {
     isLoading: boolean;
@@ -36,4 +36,4 @@ export type IAuthTypes = {
     isInitialLoading: boolean;
     login: (token: string, userData: any) => void;
     logout: () => void;
-}
+};

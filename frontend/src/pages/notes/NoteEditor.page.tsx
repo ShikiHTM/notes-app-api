@@ -15,7 +15,11 @@ const NoteEditorContent: React.FC = () => {
     }
 
     if (!note) {
-        return <div className="py-20 text-center text-slate-400 dark:text-gh-fg-subtle">Không tìm thấy ghi chú</div>;
+        return (
+            <div className="py-20 text-center text-slate-400 dark:text-gh-fg-subtle">
+                Không tìm thấy ghi chú
+            </div>
+        );
     }
 
     const tint = note.color ? NOTE_COLOR_CSS[note.color] : undefined;

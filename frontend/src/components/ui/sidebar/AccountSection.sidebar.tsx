@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdAccountCircle } from "react-icons/md";
 import { LuChevronsUpDown } from "react-icons/lu";
 import UserDropMenu from "./UserDropMenu.sidebar";
+import SettingsModal from "../../modal/Settings.modal";
 
 type Props = {
     isOpen: boolean;
@@ -10,14 +11,28 @@ type Props = {
     onAccountMenuClose: () => void;
 };
 
-const AccountSection: React.FC<Props> = ({ isOpen, isAccountMenuOpen, onAccountMenuToggle, onAccountMenuClose }) => {
+const AccountSection: React.FC<Props> = ({
+    isOpen,
+    isAccountMenuOpen,
+    onAccountMenuToggle,
+    onAccountMenuClose,
+}) => {
     const containerRef = useRef<HTMLDivElement>(null);
+    const [showSettings, setShowSettings] = useState(false);
+
+    const handleOpenSettings = () => {
+        setShowSettings(true);
+        onAccountMenuClose();
+    };
 
     useEffect(() => {
         if (!isAccountMenuOpen) return;
 
         const handler = (e: MouseEvent) => {
-            if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+            if (
+                containerRef.current &&
+                !containerRef.current.contains(e.target as Node)
+            ) {
                 onAccountMenuClose();
             }
         };
@@ -27,7 +42,11 @@ const AccountSection: React.FC<Props> = ({ isOpen, isAccountMenuOpen, onAccountM
     }, [isAccountMenuOpen, onAccountMenuClose]);
 
     return (
-        <div ref={containerRef} className="relative mt-auto px-1 overflow-visible">
+        <>
+        <div
+            ref={containerRef}
+            className="relative mt-auto px-1 overflow-visible"
+        >
             <button
                 className="flex justify-between items-center w-full p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-gh-canvas-inset transition-colors group cursor-pointer"
                 onClick={onAccountMenuToggle}
@@ -37,7 +56,9 @@ const AccountSection: React.FC<Props> = ({ isOpen, isAccountMenuOpen, onAccountM
                         <MdAccountCircle size={24} />
                     </div>
                     {isOpen && (
-                        <span className="font-medium text-slate-700 dark:text-gh-fg whitespace-nowrap">Người dùng</span>
+                        <span className="font-medium text-slate-700 dark:text-gh-fg whitespace-nowrap">
+                            Người dùng
+                        </span>
                     )}
                 </div>
 
@@ -48,10 +69,16 @@ const AccountSection: React.FC<Props> = ({ isOpen, isAccountMenuOpen, onAccountM
 
             {isAccountMenuOpen && (
                 <div className="absolute left-0 bottom-full min-h-22 mb-3 w-full px-1 z-60">
-                    <UserDropMenu />
+                    <UserDropMenu onOpenSettings={handleOpenSettings} />
                 </div>
             )}
         </div>
+
+        <SettingsModal
+            isOpen={showSettings}
+            onClose={() => setShowSettings(false)}
+        />
+        </>
     );
 };
 

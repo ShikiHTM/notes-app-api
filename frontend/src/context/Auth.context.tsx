@@ -1,48 +1,55 @@
-import React, { createContext, useEffect, useState, type ReactNode } from "react"
-import type { IUser, IAuthTypes } from "../types"
+import React, {
+    createContext,
+    useEffect,
+    useState,
+    type ReactNode,
+} from "react";
+import type { IUser, IAuthTypes } from "../types";
 import api from "../api/Axios";
 
 export const AuthContext = createContext<IAuthTypes | undefined>(undefined);
 
 interface AuthProviderProps {
-    children: ReactNode
+    children: ReactNode;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const [token, setToken] = useState<string | null>(localStorage.getItem('access_token'));
+    const [token, setToken] = useState<string | null>(
+        localStorage.getItem("access_token"),
+    );
     const [user, setUser] = useState<IUser | undefined>(undefined);
     const [isInitialLoading, setIsInitialLoading] = useState(true);
 
     useEffect(() => {
-        const fetchUser = async() => {
+        const fetchUser = async () => {
             await new Promise((res) => setTimeout(res, 2000));
             if (token) {
                 try {
-                    const response = await api.get('/me');
+                    const response = await api.get("/me");
 
                     const authData: IUser = response.data;
 
                     setUser(authData);
-                } catch(error) {
+                } catch (error) {
                     logout();
                 }
             }
             setIsInitialLoading(false);
         };
         fetchUser();
-    }, [token])
+    }, [token]);
 
     const login = (token: string, userData: IUser) => {
-        localStorage.setItem('access_token', token);
+        localStorage.setItem("access_token", token);
         setToken(token);
         setUser(userData);
-    }
+    };
 
     const logout = () => {
-        localStorage.removeItem('access_token');
+        localStorage.removeItem("access_token");
         setToken(null);
         setUser(undefined);
-    }
+    };
 
     const value: IAuthTypes = {
         user,
@@ -50,9 +57,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isAuthenticated: !!token,
         isInitialLoading,
         login,
-        logout
-    }
+        logout,
+    };
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
-
+    return (
+        <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    );
+};

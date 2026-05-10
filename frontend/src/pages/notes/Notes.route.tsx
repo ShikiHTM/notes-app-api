@@ -4,13 +4,13 @@ import NoteEditorPage from "./NoteEditor.page";
 
 const NotesRoutes: RouteObject[] = [
     {
-        path: 'notes',
-        element: <NotesPage />
+        path: "notes",
+        element: <NotesPage />,
     },
     {
-        path: 'notes/:id',
-        element: <NoteEditorPage />
-    }
+        path: "notes/:id",
+        element: <NoteEditorPage />,
+    },
 ];
 
 export default NotesRoutes;

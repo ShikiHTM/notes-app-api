@@ -5,18 +5,18 @@ export interface ISidebarItem extends Object {
     count?: number;
 }
 
-const SIDEBAR_TAB =  {
-    NOTES: 'notes',
-    LABELS: 'labels',
-    ARCHIVE: 'archive',
-    TRASH: 'trash'
+const SIDEBAR_TAB = {
+    NOTES: "notes",
+    LABELS: "labels",
+    ARCHIVE: "archive",
+    TRASH: "trash",
 } as const;
 
-export type SidebarTab = typeof SIDEBAR_TAB[keyof typeof SIDEBAR_TAB];
+export type SidebarTab = (typeof SIDEBAR_TAB)[keyof typeof SIDEBAR_TAB];
 
 const SETTINGS_TAB = {
-    ACCOUNT: 'account',
-    APPEARANCE: 'appearance',
+    ACCOUNT: "account",
+    APPEARANCE: "appearance",
 } as const;
 
 export interface ISettingsSidebarItem {
@@ -25,4 +25,4 @@ export interface ISettingsSidebarItem {
     count?: number;
 }
 
-export type SettingsTab = typeof SETTINGS_TAB[keyof typeof SETTINGS_TAB];
+export type SettingsTab = (typeof SETTINGS_TAB)[keyof typeof SETTINGS_TAB];

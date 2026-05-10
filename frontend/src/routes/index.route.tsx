@@ -9,9 +9,9 @@ import TrashRoutes from "../pages/trash/Trash.route";
 
 export const AppRoutes: RouteObject[] = [
     {
-        'path': '/',
-        'element': <Layout />,
-        'children': [
+        path: "/",
+        element: <Layout />,
+        children: [
             { index: true, element: <Navigate to="/notes" replace /> },
             ...authRoutes,
             ...SettingsRoutes,
@@ -19,6 +19,6 @@ export const AppRoutes: RouteObject[] = [
             ...LabelsRoutes,
             ...ArchiveRoutes,
             ...TrashRoutes,
-        ]
-    }
-]
+        ],
+    },
+];

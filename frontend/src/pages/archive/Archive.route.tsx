@@ -3,9 +3,9 @@ import ArchivePage from "./Archive.page";
 
 const ArchiveRoutes: RouteObject[] = [
     {
-        path: 'archive',
-        element: <ArchivePage />
-    }
+        path: "archive",
+        element: <ArchivePage />,
+    },
 ];
 
 export default ArchiveRoutes;

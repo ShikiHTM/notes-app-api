@@ -4,11 +4,11 @@ import RegisterPage from "./RegisterPage.auth";
 
 export const authRoutes: RouteObject[] = [
     {
-        'path': 'login',
-        'element': <LoginPage />
+        path: "login",
+        element: <LoginPage />,
     },
     {
-        'path': 'register',
-        'element': <RegisterPage />
-    }
-]
+        path: "register",
+        element: <RegisterPage />,
+    },
+];

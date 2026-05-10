@@ -5,7 +5,8 @@ import type { INote } from "../types";
 export const notesQueryKey = ["notes"] as const;
 export const archivedNotesQueryKey = ["notes", "archived"] as const;
 export const trashedNotesQueryKey = ["notes", "trashed"] as const;
-export const noteQueryKey = (id: number | string) => ["note", String(id)] as const;
+export const noteQueryKey = (id: number | string) =>
+    ["note", String(id)] as const;
 
 export const useNotes = () => {
     return useQuery({

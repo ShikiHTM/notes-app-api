@@ -72,7 +72,7 @@ export const Modal: React.FC<IModalProps> = ({
             >
                 <div
                     className={`bg-white text-slate-800 dark:bg-gh-canvas-subtle dark:text-gh-fg w-full ${SIZE_CLASS[size]} max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col ${className}`}
-                    onClick={e => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
                 >
                     {(title || showCloseButton) && (
                         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-gh-border">
@@ -102,7 +102,7 @@ export const Modal: React.FC<IModalProps> = ({
                 </div>
             </div>
         </>,
-        document.body
+        document.body,
     );
 };
 

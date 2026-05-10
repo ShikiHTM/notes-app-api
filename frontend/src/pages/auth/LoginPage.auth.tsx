@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import api from "../../api/Axios"
-import type { ILoginRequest, IAuthResponse } from "../../types/auth.types"
+import api from "../../api/Axios";
+import type { ILoginRequest, IAuthResponse } from "../../types/auth.types";
 import { useState } from "react";
 import useToast from "../../hooks/Toast.hook";
 import { useAuth } from "../../hooks/Auth.hook";
@@ -15,33 +15,33 @@ export default function LoginPage() {
     const handleLogin = async (data: ILoginRequest) => {
         setIsLoading(true);
         try {
-            const response = await api.post('/auth/login', data);
+            const response = await api.post("/auth/login", data);
 
             const authData: IAuthResponse = response.data;
 
             login(authData.token, authData.user);
 
-            showToast('Đăng nhập thành công!', 'success');
+            showToast("Đăng nhập thành công!", "success");
 
             setTimeout(() => {
-                navigate('/');
+                navigate("/");
             }, 1500);
-
-        }catch(error) {
-            showToast('Sai email hoặc mật khẩu', 'error');
-        }finally {
+        } catch (error) {
+            showToast("Sai email hoặc mật khẩu", "error");
+        } finally {
             setIsLoading(false);
         }
-    }
+    };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-slate-100 dark:bg-gh-canvas" style={{
-            backgroundImage: 'radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.1) 0px, transparent 50%)'
-        }}>
-            <LoginCard
-                onLogin={handleLogin}
-                isLoading={isLoading}
-            />
+        <div
+            className="flex min-h-screen items-center justify-center bg-slate-100 dark:bg-gh-canvas"
+            style={{
+                backgroundImage:
+                    "radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.1) 0px, transparent 50%)",
+            }}
+        >
+            <LoginCard onLogin={handleLogin} isLoading={isLoading} />
         </div>
-    )
+    );
 }

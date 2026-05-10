@@ -3,9 +3,9 @@ import LabelsPage from "./Labels.page";
 
 const LabelsRoutes: RouteObject[] = [
     {
-        path: 'labels',
-        element: <LabelsPage />
-    }
+        path: "labels",
+        element: <LabelsPage />,
+    },
 ];
 
 export default LabelsRoutes;

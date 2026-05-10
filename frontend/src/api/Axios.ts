@@ -1,32 +1,36 @@
-import axios from 'axios';
+import axios from "axios";
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL: import.meta.env.VITE_API_URL + '/api/v1',
     headers: {
-        'Accept': 'application/json',
-    }
-})
+        Accept: "application/json",
+    },
+});
 
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('access_token');
-    if(token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
+    const token = localStorage.getItem("access_token");
+    if (token) {
+        config.headers["Authorization"] = `Bearer ${token}`;
     }
     return config;
-})
+});
 
 api.interceptors.response.use(
-    response => response,
+    (response) => response,
     (error) => {
         if (error.response) {
-            console.error('API Error:', error.response.status, error.response.data);
+            console.error(
+                "API Error:",
+                error.response.status,
+                error.response.data,
+            );
         } else if (error.request) {
-            console.error('No response received:', error.request);
+            console.error("No response received:", error.request);
         } else {
-            console.error('Error setting up request:', error.message);
+            console.error("Error setting up request:", error.message);
         }
         return Promise.reject(error);
-    }
-)
+    },
+);
 
 export default api;
