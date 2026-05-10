@@ -18,8 +18,9 @@ class VerificationController extends Controller
      * Resend verification email.
      * @authenticated
      */
-    public function resend(Request $request) {
-        if($request->user()->hasVerifiedEmail()) {
+    public function resend(Request $request)
+    {
+        if ($request->user()->hasVerifiedEmail()) {
             return response()->json(["message" => "Email already verified"], 409);
         };
 
@@ -35,14 +36,15 @@ class VerificationController extends Controller
      * @urlParam id int required The User ID.
      * @urlParam hash string required The verification hash.
      */
-    public function verify(Request $request) {
-        if(!$request->hasValidSignature()) {
+    public function verify(Request $request)
+    {
+        if (!$request->hasValidSignature()) {
             return response()->json(["message" => "Link expired or invalid"], 401);
         };
 
         $user = User::findOrFail($request->route('id'));
 
-        if($user->hasVerifiedEmail()) {
+        if ($user->hasVerifiedEmail()) {
             return response()->json(["message" => "Email already verified"], 409);
         };
 

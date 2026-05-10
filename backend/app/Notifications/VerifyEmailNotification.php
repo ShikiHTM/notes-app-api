@@ -45,13 +45,24 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
 
     protected function verificationUrl(object $notifiable)
     {
-        $url = URL::temporarySignedRoute(
+        $signedUrl = URL::temporarySignedRoute(
             'verification.verify',
             now()->addMinutes(60),
             ['id' => $notifiable->getKey(), 'hash' => sha1($notifiable->getEmailForVerification())]
         );
 
-        return str_replace(config('app.url'), 'https://api.shikii.dev', $url);
+        $signedUrl = str_replace(config('app.url'), 'https://api.shikii.dev', $signedUrl);
+
+        $parsed = parse_url($signedUrl);
+        parse_str($parsed['query'], $queryParams);
+        preg_match('/email\/verify\/(\d+)\/([^?]+)/', $parsed['path'], $matches);
+
+        return 'https://shikii.dev/verify?' . http_build_query([
+            'id'        => $matches[1],
+            'hash'      => $matches[2],
+            'expires'   => $queryParams['expires'],
+            'signature' => $queryParams['signature'],
+        ]);
     }
     /**
      * Get the array representation of the notification.
