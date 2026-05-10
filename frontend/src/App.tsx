@@ -41,15 +41,15 @@ function AppContent() {
 function App() {
     return (
         <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-                <ToastProvider>
+            <ToastProvider>
+                <AuthProvider>
                     <ModalProvider>
                         <BrowserRouter>
                             <AppContent />
                         </BrowserRouter>
                     </ModalProvider>
-                </ToastProvider>
-            </AuthProvider>
+                </AuthProvider>
+            </ToastProvider>
         </QueryClientProvider>
     );
 }

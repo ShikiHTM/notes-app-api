@@ -20,6 +20,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<IUser | undefined>(undefined);
     const [isInitialLoading, setIsInitialLoading] = useState(true);
 
+    const login = (token: string, userData: IUser) => {
+        localStorage.setItem("access_token", token);
+        setToken(token);
+        setUser(userData);
+    };
+
+    const logout = () => {
+        localStorage.removeItem("access_token");
+        setToken(null);
+        setUser(undefined);
+    };
+
     useEffect(() => {
         const fetchUser = async () => {
             await new Promise((res) => setTimeout(res, 2000));
@@ -32,24 +44,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                     setUser(authData);
                 } catch (error) {
                     logout();
+                    console.log(error);
                 }
             }
             setIsInitialLoading(false);
         };
         fetchUser();
     }, [token]);
-
-    const login = (token: string, userData: IUser) => {
-        localStorage.setItem("access_token", token);
-        setToken(token);
-        setUser(userData);
-    };
-
-    const logout = () => {
-        localStorage.removeItem("access_token");
-        setToken(null);
-        setUser(undefined);
-    };
 
     const value: IAuthTypes = {
         user,

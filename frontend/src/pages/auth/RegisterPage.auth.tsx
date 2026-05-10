@@ -25,7 +25,7 @@ export default function RegisterPage() {
             showToast("Đăng ký thành công!", "success");
 
             setTimeout(() => {
-                navigate("/login");
+                navigate("/");
             }, 1000);
         } catch (error) {
             if (isAxiosError(error)) {
