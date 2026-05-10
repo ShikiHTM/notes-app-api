@@ -28,7 +28,7 @@ class AuthController extends Controller
         $request->validate([
             'display_name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|min:6'
+            'password' => 'required|string|min:6',
         ]);
 
         $user = User::create([
@@ -45,7 +45,7 @@ class AuthController extends Controller
             'message' => 'register successfully',
             'user' => $user,
             'token' => $token,
-            'token_type' => 'Bearer'
+            'token_type' => 'Bearer',
         ], 201);
     }
 
@@ -61,12 +61,12 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
-        if(!Auth::attempt($request->only(['email', 'password']))) {
+        if (!Auth::attempt($request->only(['email', 'password']))) {
             return response()->json([
-                'error' => 'Wrong email or password'
+                'error' => 'Wrong email or password',
             ], 401);
         }
 
@@ -80,7 +80,7 @@ class AuthController extends Controller
             'message' => 'login successfully',
             'token' => $token,
             'token_type' => 'Bearer',
-            'user' => $user
+            'user' => $user,
         ], 200);
     }
 
@@ -95,7 +95,7 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'logout successfully'
+            'message' => 'logout successfully',
         ]);
     }
 
