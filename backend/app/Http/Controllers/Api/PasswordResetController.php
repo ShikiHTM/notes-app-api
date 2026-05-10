@@ -56,6 +56,37 @@ class PasswordResetController extends Controller
     }
 
     /**
+     * Request password reset (authenticated).
+     *
+     * Verifies the current password and sends a password reset email.
+     * @authenticated
+     * @bodyParam password string required Current password for confirmation.
+     */
+    public function requestPasswordReset(Request $request)
+    {
+        $request->validate(['password' => 'required|string']);
+
+        $user = $request->user();
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Mật khẩu hiện tại không đúng.'], 422);
+        }
+
+        $token = Str::random(64);
+
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $user->email],
+            ['token' => hash('sha256', $token), 'created_at' => now()]
+        );
+
+        $url = "https://shikii.dev/reset-password?token={$token}&email={$user->email}";
+
+        Mail::to($user->email)->queue(new ForgotPasswordMail($url));
+
+        return response()->json(['message' => 'Email đặt lại mật khẩu đã được gửi.']);
+    }
+
+    /**
      * Reset password.
      *
      * Validates the token and updates the user's password.

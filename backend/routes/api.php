@@ -29,6 +29,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/logout', [AuthController::class, 'logout']);
             Route::post('/email/verification-notification', [VerificationController::class, 'resend'])
                 ->middleware('throttle:6,1');
+            Route::post('/request-password-reset', [PasswordResetController::class, 'requestPasswordReset']);
         });
 
         Route::get('/me', [AuthController::class, 'me']);
