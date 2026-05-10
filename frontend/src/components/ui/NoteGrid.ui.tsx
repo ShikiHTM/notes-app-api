@@ -1,5 +1,5 @@
 import type React from "react";
-import type { EmptyVariant, INote } from "../../types";
+import type { INote } from "../../types";
 import NoteCard from "./NoteCard.ui";
 import NoteCardSkeleton from "./NoteCardSkeleton.ui";
 import type { NoteActionContext } from "../../hooks/NoteAction.hook";

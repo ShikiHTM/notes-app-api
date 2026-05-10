@@ -1,4 +1,4 @@
-import { vi, expect, beforeEach } from "vitest";
+import { vi, expect, beforeEach, test, describe } from "vitest";
 import useToast from "../hooks/Toast.hook";
 import { useModal } from "../hooks/Modal.hook";
 import { useAuth } from "../hooks/Auth.hook";
@@ -9,6 +9,7 @@ import {
     noteQueryKey,
 } from "../hooks/Note.hook";
 import type { ToastType } from "../types/toast.types";
+import type { IModalContextType } from "../context/Modal.context";
 
 // ─── Module mocks ────────────────────────────────────────────────
 
@@ -34,12 +35,12 @@ vi.mock("../api/Axios", () => ({ default: { get: vi.fn() } }));
 // ─── Context factories ───────────────────────────────────────────
 
 const makeToastCtx = () => ({
-    showToast: vi.fn<[string, ToastType], void>(),
-    removeToast: vi.fn<[string], void>(),
+    showToast: vi.fn<(msg: string, type: ToastType) => void>(),
+    removeToast: vi.fn<(msg: string) => void>(),
 });
 
 const makeModalCtx = () => ({
-    confirm: vi.fn<[any], Promise<boolean>>(),
+    confirm: vi.fn<IModalContextType['confirm']>(),
 });
 
 const makeAuthCtx = () => ({

@@ -1,4 +1,4 @@
-import { vi, expect, beforeEach } from "vitest";
+import { vi, expect, beforeEach, test, describe } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CreateButton } from "../components/ui/CreateButton.ui";
@@ -32,7 +32,7 @@ const makeNote = (overrides: Partial<INote> = {}): INote => ({
     content: "Test content",
     color: null,
     is_pinned: false,
-    is_archived: false,
+    archived_at: null,
     deleted_at: null,
     created_at: "2024-01-01",
     updated_at: "2024-01-01",

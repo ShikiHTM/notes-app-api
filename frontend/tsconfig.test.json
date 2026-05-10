@@ -1,0 +1,13 @@
+{
+    "extends": "./tsconfig.app.json",
+    "compilerOptions": {
+        "types": [
+            "vite/client",
+            "note",
+            "vitest/globals"
+        ]
+    },
+    "include": [
+        "src/**/*.test.*"
+    ]
+}

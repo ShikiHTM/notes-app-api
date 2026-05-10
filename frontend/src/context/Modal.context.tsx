@@ -9,7 +9,7 @@ interface IConfirmOpts {
     confirmColor?: string;
 }
 
-interface IModalContextType {
+export interface IModalContextType {
     confirm: (opts: IConfirmOpts) => Promise<boolean>;
 }
 
