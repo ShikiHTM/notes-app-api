@@ -1,25 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import { PiWarningFill } from "react-icons/pi";
 import { useAuth } from "../../hooks/Auth.hook";
+import { useSendVerificationEmail } from "../../hooks/SendVerificationEmail.hook";
 
 const VerifyBanner: React.FC = () => {
     const { user } = useAuth();
+    const [sent, setSent] = useState(false);
+    const { mutate: sendEmail, isPending } = useSendVerificationEmail();
+
+    const handleSend = () => {
+        sendEmail(undefined, {
+            onSuccess: () => setSent(true),
+        });
+    };
+
+    if (user?.email_verified_at) return null;
 
     return (
-        <div className={`w-full min-h-10 flex justify-center items-center bg-amber-400 text-white dark:bg-gh-attention ${user?.email_verified_at ? 'hidden' : ''}`}>
+        <div className="w-full min-h-10 flex justify-center items-center bg-amber-400 text-white dark:bg-gh-attention">
             <div className="flex gap-2">
-                {/* Logo */}
                 <PiWarningFill size={24} />
-
-                <p className="font-medium">Vui lòng xác minh địa chỉ email của bạn tại <button
-                    className="text-blue-600 font-medium hover:text-blue-900 bg-transparent underline cursor-pointer"
-                    onClick={() => {
-                    }}
-                >đây
-                </button></p>
+                {sent ? (
+                    <p className="font-medium">
+                        Một email đã được gửi đến <strong>{user?.email}</strong>. Vui lòng kiểm tra hộp thư của bạn.
+                    </p>
+                ) : (
+                    <p className="font-medium">
+                        Vui lòng xác minh địa chỉ email của bạn tại{" "}
+                        <button
+                            className="text-blue-600 font-medium hover:text-blue-900 bg-transparent underline cursor-pointer disabled:opacity-60"
+                            onClick={handleSend}
+                            disabled={isPending}
+                        >
+                            đây
+                        </button>
+                    </p>
+                )}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default VerifyBanner
+export default VerifyBanner;
