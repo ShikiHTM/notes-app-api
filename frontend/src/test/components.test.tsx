@@ -118,11 +118,11 @@ describe("NoteCard", () => {
 
     test("áp dụng background color từ note.color", () => {
         const { container } = render(
-            <NoteCard note={makeNote({ color: "#ff0000" })} />,
+            <NoteCard note={makeNote({ color: "RED" })} />,
         );
         expect(
             (container.firstChild as HTMLElement).style.backgroundColor,
-        ).toBe("rgb(255, 0, 0)");
+        ).toBe("rgba(248, 113, 113, 0.2)");
     });
 
     test("không có inline backgroundColor khi color là null", () => {
@@ -212,7 +212,7 @@ describe("LoginCard", () => {
 
     test("validation: hiện lỗi khi email không hợp lệ", async () => {
         render(<LoginCard onLogin={vi.fn()} isLoading={false} />);
-        const emailInput = screen.getByPlaceholderText("test@example.com");
+        const emailInput = screen.getByPlaceholderText("Email");
         // jsdom sanitizes type="email" values, bypass bằng Object.defineProperty
         Object.defineProperty(emailInput, "value", {
             configurable: true,
@@ -238,7 +238,7 @@ describe("LoginCard", () => {
 
     test("validation: hiện lỗi khi password ngắn hơn 8 ký tự", async () => {
         render(<LoginCard onLogin={vi.fn()} isLoading={false} />);
-        await userEvent.type(screen.getByPlaceholderText("******"), "1234567");
+        await userEvent.type(screen.getByPlaceholderText("Password"), "1234567");
         await userEvent.click(
             screen.getByRole("button", { name: /đăng nhập/i }),
         );
@@ -251,11 +251,11 @@ describe("LoginCard", () => {
         const onLogin = vi.fn();
         render(<LoginCard onLogin={onLogin} isLoading={false} />);
         await userEvent.type(
-            screen.getByPlaceholderText("test@example.com"),
+            screen.getByPlaceholderText("Email"),
             "user@example.com",
         );
         await userEvent.type(
-            screen.getByPlaceholderText("******"),
+            screen.getByPlaceholderText("Password"),
             "password123",
         );
         await userEvent.click(
@@ -278,7 +278,7 @@ describe("LoginCard", () => {
 
     test("toggle hiển thị/ẩn password", async () => {
         render(<LoginCard onLogin={vi.fn()} isLoading={false} />);
-        const passwordInput = screen.getByPlaceholderText("******");
+        const passwordInput = screen.getByPlaceholderText("Password");
         const toggleBtn = screen
             .getAllByRole("button")
             .find((b) => b.getAttribute("type") === "button")!;
