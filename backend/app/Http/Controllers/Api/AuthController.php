@@ -111,6 +111,45 @@ class AuthController extends Controller
     }
 
     /**
+     * Update Current Profile.
+     *
+     * Updates the authenticated user's display name and/or email.
+     * Changing the email resets the verification status and sends a new verification email.
+     *
+     * @authenticated
+     * @bodyParam name string The new display name. Example: John Doe
+     * @bodyParam email string The new email address. Example: john@example.com
+     */
+    public function update(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'name' => 'sometimes|required|string|min:3|max:255|unique:users,display_name,' . $user->id,
+            'email' => 'sometimes|required|string|email|unique:users,email,' . $user->id,
+        ]);
+
+        if (array_key_exists('name', $validated)) {
+            $user->display_name = $validated['name'];
+        }
+
+        $emailChanged = false;
+        if (array_key_exists('email', $validated) && $validated['email'] !== $user->email) {
+            $user->email = $validated['email'];
+            $user->email_verified_at = null;
+            $emailChanged = true;
+        }
+
+        $user->save();
+
+        if ($emailChanged) {
+            $user->sendEmailVerificationNotification();
+        }
+
+        return response()->json($user);
+    }
+
+    /**
      * Check username availability.
      *
      * Returns whether a display_name is available for registration.

@@ -35,6 +35,7 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::get('/me', [AuthController::class, 'me']);
+        Route::patch('/user', [AuthController::class, 'update']);
 
         // Image CRUD
         Route::apiResource('images', NoteImageController::class)->only(['index', 'store', 'destroy']);
