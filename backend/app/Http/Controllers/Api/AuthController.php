@@ -26,9 +26,9 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'display_name' => 'required|string|max:255',
+            'display_name' => 'required|string|min:3|max:255|unique:users,display_name',
             'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string|min:8',
         ]);
 
         $user = User::create([
@@ -108,5 +108,24 @@ class AuthController extends Controller
     public function me(Request $request)
     {
         return response()->json($request->user());
+    }
+
+    /**
+     * Check username availability.
+     *
+     * Returns whether a display_name is available for registration.
+     * @bodyParam username string required Display name to check. Example: john_doe
+     */
+    public function checkUsername(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string|min:3|max:255',
+        ]);
+
+        $exists = User::where('display_name', $request->username)->exists();
+
+        return response()->json([
+            'available' => !$exists,
+        ]);
     }
 }

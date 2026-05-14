@@ -14,6 +14,8 @@ Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('/register', [AuthController::class, 'register']);
         Route::post('/login', [AuthController::class, 'login']);
+        Route::post('/check-username', [AuthController::class, 'checkUsername'])
+            ->middleware('throttle:30,1');
         Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail']);
         Route::post('/reset-password', [PasswordResetController::class, 'reset']);
     });
