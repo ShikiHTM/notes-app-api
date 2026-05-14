@@ -1,21 +1,45 @@
 import type React from "react";
 import type { IRegisterCardProps, IRegisterRequest } from "../../types";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
     MdAccountCircle,
+    MdCheckCircle,
     MdEmail,
+    MdError,
     MdLock,
     MdNoteAlt,
     MdVisibility,
     MdVisibilityOff,
 } from "react-icons/md";
+import { useCheckUsername } from "../../hooks/CheckUsername.hook";
+
+const scorePassword = (pw: string): number => {
+    if (!pw) return 0;
+    let score = 0;
+    if (pw.length >= 8) score++;
+    if (pw.length >= 12) score++;
+    if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) score++;
+    if (/\d/.test(pw)) score++;
+    if (/[^A-Za-z0-9]/.test(pw)) score++;
+    return Math.min(score, 4);
+};
+
+const STRENGTH_LABEL = ["", "Yếu", "Trung bình", "Khá", "Mạnh"];
+const STRENGTH_COLOR = [
+    "bg-slate-200 dark:bg-gh-border",
+    "bg-red-500",
+    "bg-orange-500",
+    "bg-yellow-500",
+    "bg-green-500",
+];
 
 const RegisterCard: React.FC<IRegisterCardProps> = ({
     onRegister,
     isLoading,
 }) => {
     const navigate = useNavigate();
+    const nameRef = useRef<HTMLInputElement | null>(null);
     const [formData, setFormData] = useState<IRegisterRequest>();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -27,19 +51,26 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
         confirmPassword?: string;
     }>({});
 
+    useEffect(() => {
+        nameRef.current?.focus();
+    }, []);
+
+    const displayName = formData?.display_name ?? "";
+    const usernameStatus = useCheckUsername(displayName);
+
+    const password = formData?.password ?? "";
+    const pwScore = useMemo(() => scorePassword(password), [password]);
+
     const validate = () => {
-        const newErrors: {
-            display_name?: string;
-            email?: string;
-            password?: string;
-            confirmPassword?: string;
-        } = {};
+        const newErrors: typeof error = {};
 
         if (!formData?.display_name) {
             newErrors.display_name = "Tên người dùng không được để trống";
-        } else if (formData?.display_name.length < 3) {
+        } else if (formData.display_name.length < 3) {
             newErrors.display_name =
                 "Tên người dùng không được nhỏ hơn 3 ký tự";
+        } else if (usernameStatus === "taken") {
+            newErrors.display_name = "Tên người dùng đã được sử dụng";
         }
 
         if (!formData?.email) {
@@ -62,160 +93,285 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        console.log(formData);
         if (validate()) {
             onRegister(formData!);
         }
     };
+
+    const inputClasses =
+        "w-full block pl-12 pr-4 py-4 " +
+        "bg-white dark:bg-gh-canvas border border-slate-200 dark:border-gh-border rounded-xl " +
+        "text-slate-900 dark:text-gh-fg placeholder:text-slate-400 dark:placeholder:text-gh-fg-subtle " +
+        "focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 " +
+        "aria-[invalid=true]:border-red-400 aria-[invalid=true]:focus:ring-red-500/10 aria-[invalid=true]:focus:border-red-500 " +
+        "transition-all duration-200 shadow-sm";
+
+    const submitDisabled = isLoading || usernameStatus === "checking" || usernameStatus === "taken";
 
     return (
         <div className="w-full max-w-105 bg-white dark:bg-gh-canvas-subtle rounded-lg shadow-lg p-8">
             {/* Logo */}
             <div
                 className="text-white w-10 h-10 rounded-lg flex items-center justify-center m-auto"
-                style={{
-                    backgroundColor: "#6366f1",
-                }}
+                style={{ backgroundColor: "#6366f1" }}
             >
-                <MdNoteAlt size={30} />
+                <MdNoteAlt size={30} aria-hidden="true" />
             </div>
 
             <h2 className="font-bold text-gray-800 dark:text-gh-fg text-center mt-2 mb-2 text-4xl">
-                Chào mừng trở lại
+                Tạo tài khoản
             </h2>
             <p className="text-gray-400 dark:text-gh-fg-muted text-center text-sm mb-8">
-                Vui lòng đăng nhập để tiếp tục
+                Bắt đầu hành trình của bạn
             </p>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} noValidate>
+                {/* Display Name */}
                 <div className="w-full gap-5 px-4 mb-3 sm:px-0">
+                    <label htmlFor="register-name" className="sr-only">
+                        Tên người dùng
+                    </label>
                     <div className="relative group">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                            <MdAccountCircle className="w-6 h-6 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                            <MdAccountCircle
+                                className="w-6 h-6 text-slate-400 group-focus-within:text-indigo-500 transition-colors"
+                                aria-hidden="true"
+                            />
                         </div>
                         <input
+                            id="register-name"
+                            ref={nameRef}
                             type="text"
-                            placeholder="User Name"
-                            className="w-full block pl-12 pr-4 py-4
-                                    bg-white dark:bg-gh-canvas border border-slate-200 dark:border-gh-border rounded-xl
-                                    text-slate-900 dark:text-gh-fg placeholder:text-slate-400 dark:placeholder:text-gh-fg-subtle
-                                    focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500
-                                    transition-all duration-200 shadow-sm"
+                            autoComplete="username"
+                            placeholder="Tên người dùng"
+                            aria-invalid={!!error.display_name || usernameStatus === "taken"}
+                            aria-describedby="register-name-status"
+                            className={inputClasses}
                             onChange={(e) => {
                                 setFormData((prev) => ({
                                     ...prev!,
                                     display_name: e.target.value,
                                 }));
+                                if (error.display_name)
+                                    setError((p) => ({ ...p, display_name: undefined }));
                             }}
                         />
+                        {/* Availability indicator */}
+                        {displayName.length >= 3 && (
+                            <div
+                                className="absolute top-1/2 right-3 -translate-y-1/2 flex items-center"
+                                aria-hidden="true"
+                            >
+                                {usernameStatus === "checking" && (
+                                    <span className="w-4 h-4 border-2 border-slate-300 border-t-indigo-500 rounded-full animate-spin" />
+                                )}
+                                {usernameStatus === "available" && (
+                                    <MdCheckCircle className="w-5 h-5 text-green-500" />
+                                )}
+                                {usernameStatus === "taken" && (
+                                    <MdError className="w-5 h-5 text-red-500" />
+                                )}
+                            </div>
+                        )}
                     </div>
-                    {error.display_name && (
-                        <span className="text-xs text-red-500 mt-1 ml-2 animate-in fade-in slide-in-from-top-1">
-                            {error.display_name}
-                        </span>
-                    )}
+                    <div
+                        id="register-name-status"
+                        role="status"
+                        aria-live="polite"
+                        className="min-h-[1rem] mt-1 ml-2"
+                    >
+                        {error.display_name ? (
+                            <span className="text-xs text-red-500 animate-in fade-in slide-in-from-top-1">
+                                {error.display_name}
+                            </span>
+                        ) : usernameStatus === "available" ? (
+                            <span className="text-xs text-green-600 dark:text-green-400">
+                                Tên người dùng có thể sử dụng
+                            </span>
+                        ) : usernameStatus === "taken" ? (
+                            <span className="text-xs text-red-500">
+                                Tên người dùng đã được sử dụng
+                            </span>
+                        ) : null}
+                    </div>
                 </div>
+
+                {/* Email */}
                 <div className="w-full gap-5 px-4 mb-3 sm:px-0">
+                    <label htmlFor="register-email" className="sr-only">
+                        Email
+                    </label>
                     <div className="relative group">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                            <MdEmail className="w-6 h-6 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                            <MdEmail
+                                className="w-6 h-6 text-slate-400 group-focus-within:text-indigo-500 transition-colors"
+                                aria-hidden="true"
+                            />
                         </div>
                         <input
+                            id="register-email"
                             type="email"
+                            autoComplete="email"
                             placeholder="Email"
-                            className="w-full block pl-12 pr-4 py-4
-                                    bg-white dark:bg-gh-canvas border border-slate-200 dark:border-gh-border rounded-xl
-                                    text-slate-900 dark:text-gh-fg placeholder:text-slate-400 dark:placeholder:text-gh-fg-subtle
-                                    focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500
-                                    transition-all duration-200 shadow-sm"
+                            aria-invalid={!!error.email}
+                            aria-describedby={
+                                error.email ? "register-email-error" : undefined
+                            }
+                            className={inputClasses}
                             onChange={(e) => {
                                 setFormData((prev) => ({
                                     ...prev!,
                                     email: e.target.value,
                                 }));
+                                if (error.email)
+                                    setError((p) => ({ ...p, email: undefined }));
                             }}
                         />
                     </div>
                     {error.email && (
-                        <span className="text-xs text-red-500 mt-1 ml-2 animate-in fade-in slide-in-from-top-1">
+                        <span
+                            id="register-email-error"
+                            role="alert"
+                            className="text-xs text-red-500 mt-1 ml-2 animate-in fade-in slide-in-from-top-1"
+                        >
                             {error.email}
                         </span>
                     )}
                 </div>
+
+                {/* Password */}
                 <div className="w-full gap-5 px-4 mb-3 sm:px-0">
+                    <label htmlFor="register-password" className="sr-only">
+                        Mật khẩu
+                    </label>
                     <div className="relative group">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                            <MdLock className="w-6 h-6 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                            <MdLock
+                                className="w-6 h-6 text-slate-400 group-focus-within:text-indigo-500 transition-colors"
+                                aria-hidden="true"
+                            />
                         </div>
                         <input
+                            id="register-password"
                             type={showPassword ? "text" : "password"}
-                            placeholder="Password"
-                            className="w-full block pl-12 pr-4 py-4
-                                    bg-white dark:bg-gh-canvas border border-slate-200 dark:border-gh-border rounded-xl
-                                    text-slate-900 dark:text-gh-fg placeholder:text-slate-400 dark:placeholder:text-gh-fg-subtle
-                                    focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500
-                                    transition-all duration-200 shadow-sm"
+                            autoComplete="new-password"
+                            placeholder="Mật khẩu"
+                            aria-invalid={!!error.password}
+                            aria-describedby="register-password-strength"
+                            className={inputClasses}
                             onChange={(e) => {
                                 setFormData((prev) => ({
                                     ...prev!,
                                     password: e.target.value,
                                 }));
+                                if (error.password)
+                                    setError((p) => ({ ...p, password: undefined }));
                             }}
                         />
                         <button
                             type="button"
+                            aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                            aria-pressed={showPassword}
                             className="absolute top-1/2 right-2 -translate-1/2 text-slate-400 shadow-none"
                             onClick={() => setShowPassword(!showPassword)}
                         >
                             {showPassword ? (
-                                <MdVisibilityOff size={20} />
+                                <MdVisibilityOff size={20} aria-hidden="true" />
                             ) : (
-                                <MdVisibility size={20} />
+                                <MdVisibility size={20} aria-hidden="true" />
                             )}
                         </button>
                     </div>
+                    {/* Strength meter */}
+                    {password.length > 0 && (
+                        <div
+                            id="register-password-strength"
+                            className="mt-2 ml-1 flex items-center gap-2"
+                            aria-live="polite"
+                        >
+                            <div className="flex gap-1 flex-1">
+                                {[1, 2, 3, 4].map((i) => (
+                                    <div
+                                        key={i}
+                                        className={`h-1 flex-1 rounded transition-colors duration-200 ${
+                                            i <= pwScore
+                                                ? STRENGTH_COLOR[pwScore]
+                                                : "bg-slate-200 dark:bg-gh-border"
+                                        }`}
+                                    />
+                                ))}
+                            </div>
+                            <span className="text-xs text-slate-500 dark:text-gh-fg-muted min-w-[60px] text-right">
+                                {STRENGTH_LABEL[pwScore]}
+                            </span>
+                        </div>
+                    )}
                     {error.password && (
-                        <span className="text-xs text-red-500 mt-1 ml-2 animate-in fade-in slide-in-from-top-1">
+                        <span
+                            role="alert"
+                            className="text-xs text-red-500 mt-1 ml-2 block animate-in fade-in slide-in-from-top-1"
+                        >
                             {error.password}
                         </span>
                     )}
                 </div>
+
+                {/* Confirm Password */}
                 <div className="w-full gap-5 px-4 sm:px-0">
+                    <label htmlFor="register-confirm-password" className="sr-only">
+                        Xác nhận mật khẩu
+                    </label>
                     <div className="relative group">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                            <MdLock className="w-6 h-6 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                            <MdLock
+                                className="w-6 h-6 text-slate-400 group-focus-within:text-indigo-500 transition-colors"
+                                aria-hidden="true"
+                            />
                         </div>
                         <input
+                            id="register-confirm-password"
                             type={showConfirmPassword ? "text" : "password"}
-                            placeholder="Confirm Password"
-                            className="w-full block pl-12 pr-4 py-4
-                                    bg-white dark:bg-gh-canvas border border-slate-200 dark:border-gh-border rounded-xl
-                                    text-slate-900 dark:text-gh-fg placeholder:text-slate-400 dark:placeholder:text-gh-fg-subtle
-                                    focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500
-                                    transition-all duration-200 shadow-sm"
+                            autoComplete="new-password"
+                            placeholder="Xác nhận mật khẩu"
+                            aria-invalid={!!error.confirmPassword}
+                            aria-describedby={
+                                error.confirmPassword
+                                    ? "register-confirm-error"
+                                    : undefined
+                            }
+                            className={inputClasses}
                             onChange={(e) => {
                                 setConfirmPassword(e.target.value);
+                                if (error.confirmPassword)
+                                    setError((p) => ({ ...p, confirmPassword: undefined }));
                             }}
                         />
                         <button
                             type="button"
+                            aria-label={
+                                showConfirmPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"
+                            }
+                            aria-pressed={showConfirmPassword}
                             className="absolute top-1/2 right-2 -translate-1/2 text-slate-400 shadow-none"
                             onClick={() =>
                                 setShowConfirmPassword(!showConfirmPassword)
                             }
                         >
                             {showConfirmPassword ? (
-                                <MdVisibilityOff size={20} />
+                                <MdVisibilityOff size={20} aria-hidden="true" />
                             ) : (
-                                <MdVisibility size={20} />
+                                <MdVisibility size={20} aria-hidden="true" />
                             )}
                         </button>
                     </div>
                     {error.confirmPassword && (
-                        <span className="text-xs text-red-500 mt-1 ml-2 animate-in fade-in slide-in-from-top-1">
+                        <span
+                            id="register-confirm-error"
+                            role="alert"
+                            className="text-xs text-red-500 mt-1 ml-2 animate-in fade-in slide-in-from-top-1"
+                        >
                             {error.confirmPassword}
                         </span>
                     )}
@@ -223,6 +379,7 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
 
                 <button
                     type="submit"
+                    disabled={submitDisabled}
                     className="
                     w-full mt-5 flex items-center justify-center text-white
                     bg-indigo-600 p-4 rounded-xl font-semibold cursor-pointer
@@ -236,10 +393,12 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
 
                     active:scale-[0.98]
 
+                    disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-indigo-600 disabled:hover:ring-0
+
                     transition-all duration-300 ease-out
                 "
                 >
-                    {isLoading ? "Đang xử lý..." : "Đăng Ký"}
+                    {isLoading ? "Đang xử lý..." : "Đăng ký"}
                 </button>
             </form>
 
@@ -247,8 +406,16 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
             <p className="text-gray-400 dark:text-gh-fg-muted text-center text-sm mt-6">
                 Đã có tài khoản?{" "}
                 <span
-                    className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 cursor-pointer transition-colors"
+                    role="link"
+                    tabIndex={0}
+                    className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 cursor-pointer transition-colors focus:outline-none focus:underline"
                     onClick={() => navigate("/login")}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            navigate("/login");
+                        }
+                    }}
                 >
                     Đăng nhập ngay
                 </span>
