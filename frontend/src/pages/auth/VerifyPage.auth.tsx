@@ -21,15 +21,21 @@ export default function VerifyPage() {
             return;
         }
 
-        api.get(`/email/verify/${id}/${hash}`, { params: { expires, signature } })
-            .then(() => setState("success"))
+        api.get(`/email/verify/${id}/${hash}`, {
+            params: { expires, signature },
+        })
+            .then((res) => {
+                setState("success");
+                console.log(res.data);
+            })
             .catch((err) => {
                 setState("error");
                 setErrorMessage(
-                    err.response?.data?.message ?? "Liên kết đã hết hạn hoặc không hợp lệ.",
+                    err.response?.data?.message ??
+                        "Liên kết đã hết hạn hoặc không hợp lệ.",
                 );
             });
-    }, []);
+    }, [searchParams]);
 
     return (
         <div
@@ -50,7 +56,8 @@ export default function VerifyPage() {
                             Xác thực thành công!
                         </h2>
                         <p className="text-gh-fg-muted">
-                            Bạn đã xác thực email thành công. Bạn có thể đóng trang này.
+                            Bạn đã xác thực email thành công. Bạn có thể đóng
+                            trang này.
                         </p>
                     </>
                 )}
