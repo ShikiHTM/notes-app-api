@@ -16,7 +16,10 @@ Route::prefix('v1')->group(function () {
         Route::post('/login', [AuthController::class, 'login']);
         Route::post('/check-username', [AuthController::class, 'checkUsername'])
             ->middleware('throttle:30,1');
-        Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail']);
+        Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])
+            ->middleware('throttle:6,1');
+        Route::post('/forgot-password-by-username', [PasswordResetController::class, 'sendResetLinkByUsername'])
+            ->middleware('throttle:6,1');
         Route::post('/reset-password', [PasswordResetController::class, 'reset']);
     });
 

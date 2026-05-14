@@ -56,6 +56,39 @@ class PasswordResetController extends Controller
     }
 
     /**
+     * Request reset link by username.
+     *
+     * Sends a password reset email to the account matching the given display_name, if it exists.
+     * Always returns the same neutral response to avoid leaking account existence.
+     * @bodyParam username string required Display name (username) of the account.
+     */
+    public function sendResetLinkByUsername(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string|min:3|max:255',
+        ]);
+
+        $user = User::where('display_name', $request->username)->first();
+
+        if ($user) {
+            $token = Str::random(64);
+
+            DB::table('password_reset_tokens')->updateOrInsert(
+                ['email' => $user->email],
+                ['token' => hash('sha256', $token), 'created_at' => now()]
+            );
+
+            $url = "https://shikii.dev/reset-password?token={$token}&email={$user->email}";
+
+            Mail::to($user->email)->queue(new ForgotPasswordMail($url));
+        }
+
+        return response()->json([
+            'message' => 'If an account matches that username, a reset link has been sent to its email.',
+        ]);
+    }
+
+    /**
      * Request password reset (authenticated).
      *
      * Verifies the current password and sends a password reset email.
