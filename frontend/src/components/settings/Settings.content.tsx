@@ -3,8 +3,11 @@ import { MdEdit, MdDarkMode, MdLightMode } from "react-icons/md";
 import { useAuth } from "../../hooks/Auth.hook";
 import { useTheme } from "../../hooks/Theme.hook";
 import { useRequestPasswordReset } from "../../hooks/RequestPasswordReset.hook";
+import { useUpdateProfile } from "../../hooks/UpdateProfile.hook";
 
 const SettingsContent: React.FC = () => {
+    const { mutate: updateProfile, isPending: isUpdatingProfile } =
+        useUpdateProfile();
     const { user } = useAuth();
     const { theme, toggleTheme } = useTheme();
     const [name, setName] = useState(user?.display_name ?? "");
@@ -12,7 +15,8 @@ const SettingsContent: React.FC = () => {
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [currentPassword, setCurrentPassword] = useState("");
 
-    const { mutate: requestReset, isPending: isResetPending } = useRequestPasswordReset();
+    const { mutate: requestReset, isPending: isResetPending } =
+        useRequestPasswordReset();
 
     const isDirty =
         name !== (user?.display_name ?? "") || email !== (user?.email ?? "");
@@ -70,7 +74,9 @@ const SettingsContent: React.FC = () => {
                     </label>
 
                     <div className="flex flex-col gap-1">
-                        <span className="text-sm text-gh-fg-muted">Mật khẩu</span>
+                        <span className="text-sm text-gh-fg-muted">
+                            Mật khẩu
+                        </span>
                         <div className="flex gap-2">
                             <div className="flex-1 px-3 py-2 bg-gh-canvas-subtle border border-gh-border rounded-md text-gh-fg-muted select-none tracking-widest">
                                 ••••••••
@@ -86,11 +92,19 @@ const SettingsContent: React.FC = () => {
                     </div>
 
                     <button
-                        disabled={!isDirty}
-                        onClick={() => {}}
+                        disabled={!isDirty || isUpdatingProfile}
+                        onClick={() => {
+                            const payload: { name?: string; email?: string } =
+                                {};
+                            if (name !== (user?.display_name ?? ""))
+                                payload.name = name;
+                            if (email !== (user?.email ?? ""))
+                                payload.email = email;
+                            updateProfile(payload);
+                        }}
                         className="self-start px-4 py-2 bg-gh-accent-emphasis text-white rounded-md disabled:opacity-50 transition cursor-pointer hover:opacity-90"
                     >
-                        Lưu
+                        {isUpdatingProfile ? "Đang lưu..." : "Lưu"}
                     </button>
                 </div>
             </div>
@@ -137,13 +151,16 @@ const SettingsContent: React.FC = () => {
                             Xác nhận mật khẩu
                         </h3>
                         <p className="text-sm text-gh-fg-muted mb-4">
-                            Nhập mật khẩu hiện tại để gửi email đặt lại mật khẩu.
+                            Nhập mật khẩu hiện tại để gửi email đặt lại mật
+                            khẩu.
                         </p>
                         <input
                             type="password"
                             value={currentPassword}
                             onChange={(e) => setCurrentPassword(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter" && handlePasswordReset()}
+                            onKeyDown={(e) =>
+                                e.key === "Enter" && handlePasswordReset()
+                            }
                             placeholder="Mật khẩu hiện tại"
                             autoFocus
                             className="w-full px-3 py-2 bg-gh-canvas border border-gh-border rounded-md text-gh-fg focus:outline-none focus:ring-2 focus:ring-gh-accent mb-4"

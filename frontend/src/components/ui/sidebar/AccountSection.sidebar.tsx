@@ -3,6 +3,7 @@ import { MdAccountCircle } from "react-icons/md";
 import { LuChevronsUpDown } from "react-icons/lu";
 import UserDropMenu from "./UserDropMenu.sidebar";
 import SettingsModal from "../../modal/Settings.modal";
+import { useAuth } from "../../../hooks/Auth.hook";
 
 type Props = {
     isOpen: boolean;
@@ -19,6 +20,7 @@ const AccountSection: React.FC<Props> = ({
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [showSettings, setShowSettings] = useState(false);
+    const { user } = useAuth();
 
     const handleOpenSettings = () => {
         setShowSettings(true);
@@ -43,41 +45,41 @@ const AccountSection: React.FC<Props> = ({
 
     return (
         <>
-        <div
-            ref={containerRef}
-            className="relative mt-auto px-1 overflow-visible"
-        >
-            <button
-                className="flex justify-between items-center w-full p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-gh-canvas-inset transition-colors group cursor-pointer"
-                onClick={onAccountMenuToggle}
+            <div
+                ref={containerRef}
+                className="relative mt-auto px-1 overflow-visible"
             >
-                <div className="flex items-center gap-3 overflow-hidden">
-                    <div className="text-slate-600 dark:text-gh-fg-muted shrink-0">
-                        <MdAccountCircle size={24} />
+                <button
+                    className="flex justify-between items-center w-full p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-gh-canvas-inset transition-colors group cursor-pointer"
+                    onClick={onAccountMenuToggle}
+                >
+                    <div className="flex items-center gap-3 overflow-hidden">
+                        <div className="text-slate-600 dark:text-gh-fg-muted shrink-0">
+                            <MdAccountCircle size={24} />
+                        </div>
+                        {isOpen && (
+                            <span className="font-medium text-slate-700 dark:text-gh-fg whitespace-nowrap">
+                                {user?.display_name}
+                            </span>
+                        )}
                     </div>
+
                     {isOpen && (
-                        <span className="font-medium text-slate-700 dark:text-gh-fg whitespace-nowrap">
-                            Người dùng
-                        </span>
+                        <LuChevronsUpDown className="text-slate-400 group-hover:text-slate-600 dark:text-gh-fg-subtle dark:group-hover:text-gh-fg shrink-0" />
                     )}
-                </div>
+                </button>
 
-                {isOpen && (
-                    <LuChevronsUpDown className="text-slate-400 group-hover:text-slate-600 dark:text-gh-fg-subtle dark:group-hover:text-gh-fg shrink-0" />
+                {isAccountMenuOpen && (
+                    <div className="absolute left-0 bottom-full min-h-22 mb-3 w-full px-1 z-60">
+                        <UserDropMenu onOpenSettings={handleOpenSettings} />
+                    </div>
                 )}
-            </button>
+            </div>
 
-            {isAccountMenuOpen && (
-                <div className="absolute left-0 bottom-full min-h-22 mb-3 w-full px-1 z-60">
-                    <UserDropMenu onOpenSettings={handleOpenSettings} />
-                </div>
-            )}
-        </div>
-
-        <SettingsModal
-            isOpen={showSettings}
-            onClose={() => setShowSettings(false)}
-        />
+            <SettingsModal
+                isOpen={showSettings}
+                onClose={() => setShowSettings(false)}
+            />
         </>
     );
 };
