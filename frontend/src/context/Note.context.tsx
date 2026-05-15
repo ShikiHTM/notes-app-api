@@ -19,9 +19,10 @@ interface INoteContextValue {
     isDirty: boolean;
     isSaving: boolean;
     setTitle: (value: string) => void;
-    setContent: (value: string) => void;
+    updateContent: (rich: string, plain: string) => void;
     setColor: (value: NoteColor | null) => void;
     toggleLabel: (labelId: number) => void;
+    setImages: (images: INote["images"]) => void;
     save: () => Promise<void>;
 }
 
@@ -68,9 +69,15 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
         setIsDirty(true);
     };
 
-    const setContent = (content: string) => {
-        setNote((n) => (n ? { ...n, content } : n));
+    const updateContent = (rich: string, plain: string) => {
+        setNote((n) =>
+            n ? { ...n, content: plain, content_rich: rich } : n,
+        );
         setIsDirty(true);
+    };
+
+    const setImages = (images: INote["images"]) => {
+        setNote((n) => (n ? { ...n, images } : n));
     };
 
     const setColor = (color: NoteColor | null) => {
@@ -98,6 +105,7 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
             const res = await api.put<INote>(`/notes/${note.id}`, {
                 title: note.title,
                 content: note.content,
+                content_rich: note.content_rich ?? null,
                 color: note.color ?? null,
                 labels: (note.labels ?? []).map((l) => l.id),
             });
@@ -118,7 +126,15 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
         if (!note || !isDirty || isReadOnly) return;
         const timer = setTimeout(() => saveRef.current(), 800);
         return () => clearTimeout(timer);
-    }, [note?.title, note?.content, note?.color, note?.labels, isDirty, isReadOnly]);
+    }, [
+        note?.title,
+        note?.content,
+        note?.content_rich,
+        note?.color,
+        note?.labels,
+        isDirty,
+        isReadOnly,
+    ]);
 
     return (
         <NoteContext.Provider
@@ -129,9 +145,10 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
                 isDirty,
                 isSaving,
                 setTitle,
-                setContent,
+                updateContent,
                 setColor,
                 toggleLabel,
+                setImages,
                 save,
             }}
         >

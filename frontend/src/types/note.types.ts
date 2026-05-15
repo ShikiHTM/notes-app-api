@@ -2,6 +2,7 @@ import type { IconType } from "react-icons";
 import { FaTag, FaTrash } from "react-icons/fa";
 import { MdArchive, MdNote } from "react-icons/md";
 import type { ILabel } from "./label.types";
+import type { INoteImage } from "./image.types";
 
 export const NOTE_COLORS = [
     "RED",
@@ -38,6 +39,7 @@ export interface INote {
     id: number;
     title: string;
     content: string;
+    content_rich?: string | null;
     color?: NoteColor | null;
     is_pinned?: boolean;
     archived_at?: string | null;
@@ -45,6 +47,7 @@ export interface INote {
     created_at: string;
     updated_at: string;
     labels?: ILabel[];
+    images?: INoteImage[];
 }
 
 export type EmptyVariant = "notes" | "archive" | "trash" | "labels";

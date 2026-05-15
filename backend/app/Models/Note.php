@@ -14,6 +14,7 @@ class Note extends Model {
         'user_id',
         'title',
         'content',
+        'content_rich',
         'is_pinned',
         'pinned_at',
         'archived_at',

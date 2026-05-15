@@ -28,7 +28,7 @@ class NoteController extends Controller
     {
         $query = $request->user()->notes()
             ->whereNull('archived_at')
-            ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at', 'color'])
+            ->select(['id', 'title', 'content', 'content_rich', 'is_pinned', 'pinned_at', 'created_at', 'color'])
             ->with(['labels', 'images']);
 
         if ($request->filled('label_id')) {
@@ -48,7 +48,7 @@ class NoteController extends Controller
     {
         return $request->user()->notes()
             ->whereNotNull('archived_at')
-            ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at', 'archived_at', 'color'])
+            ->select(['id', 'title', 'content', 'content_rich', 'is_pinned', 'pinned_at', 'created_at', 'archived_at', 'color'])
             ->with(['labels', 'images'])
             ->latest('archived_at')
             ->get();
@@ -58,7 +58,7 @@ class NoteController extends Controller
     {
         return $request->user()->notes()
             ->onlyTrashed()
-            ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at', 'deleted_at', 'color'])
+            ->select(['id', 'title', 'content', 'content_rich', 'is_pinned', 'pinned_at', 'created_at', 'deleted_at', 'color'])
             ->with(['labels', 'images'])
             ->latest('deleted_at')
             ->get();
@@ -79,15 +79,22 @@ class NoteController extends Controller
         $validated = $request->validate([
             'title' => 'nullable|string|max:255',
             'content' => 'nullable|string',
+            'content_rich' => 'nullable|string',
             'password' => 'nullable|string|min:4',
             'labels' => 'array',
             'labels.*' => 'exists:labels,id'
         ]);
 
         return DB::transaction(function () use ($request, $validated) {
+            $plain = $validated['content'] ?? null;
+            if ($plain === null && !empty($validated['content_rich'])) {
+                $plain = $this->extractPlainText($validated['content_rich']);
+            }
+
             $note = $request->user()->notes()->create([
                 'title' => $validated['title'] ?? 'Untitled',
-                'content' => $validated['content'] ?? '',
+                'content' => $plain ?? '',
+                'content_rich' => $validated['content_rich'] ?? null,
                 'password' => !empty($validated['password']) ? Hash::make($validated['password']) : null,
             ]);
 
@@ -140,6 +147,7 @@ class NoteController extends Controller
         $validated = $request->validate([
             'title' => 'sometimes|nullable|string|max:255',
             'content' => 'sometimes|string|nullable',
+            'content_rich' => 'sometimes|nullable|string',
             'is_pinned' => 'sometimes|boolean',
             'archived_at' => 'sometimes|nullable|date',
             'color' => 'sometimes|nullable|in:RED,CYAN,YELLOW,LIME,PURPLE,BLACK,WHITE',
@@ -153,6 +161,13 @@ class NoteController extends Controller
 
         if (isset($validated['is_pinned'])) {
             $validated['pinned_at'] = $validated['is_pinned'] ? now() : null;
+        }
+
+        // If rich content is provided and plain content isn't, derive plain text
+        // from the Tiptap JSON so Meilisearch and previews stay accurate.
+        if (array_key_exists('content_rich', $validated)
+            && !array_key_exists('content', $validated)) {
+            $validated['content'] = $this->extractPlainText($validated['content_rich']);
         }
 
         $labels = $validated['labels'] ?? null;
@@ -193,7 +208,7 @@ class NoteController extends Controller
 
             $notes = Note::with(['labels', 'images'])
                 ->whereIn('id', $noteIds)
-                ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at', 'color'])
+                ->select(['id', 'title', 'content', 'content_rich', 'is_pinned', 'pinned_at', 'created_at', 'color'])
                 ->orderBy('is_pinned', 'desc')
                 ->orderBy('pinned_at', 'desc')
                 ->latest()
@@ -243,6 +258,39 @@ class NoteController extends Controller
 
         $note->restore();
         return response()->json($note);
+    }
+
+    /**
+     * Extract plain text from a Tiptap/ProseMirror JSON document string.
+     * Concatenates `text` node contents and inserts newlines at block boundaries.
+     */
+    private function extractPlainText(?string $rich): string
+    {
+        if (!$rich) return '';
+        $doc = json_decode($rich, true);
+        if (!is_array($doc)) return '';
+
+        $blockTypes = ['paragraph', 'heading', 'listItem', 'blockquote', 'codeBlock'];
+
+        $walk = function (array $node) use (&$walk, $blockTypes): string {
+            $type = $node['type'] ?? null;
+
+            if ($type === 'text') {
+                return $node['text'] ?? '';
+            }
+
+            $parts = [];
+            foreach ($node['content'] ?? [] as $child) {
+                if (is_array($child)) {
+                    $parts[] = $walk($child);
+                }
+            }
+            $text = implode('', $parts);
+
+            return in_array($type, $blockTypes, true) ? $text . "\n" : $text;
+        };
+
+        return trim($walk($doc));
     }
 
     public function handleYjsWebhook(Request $request)

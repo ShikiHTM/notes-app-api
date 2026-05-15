@@ -26,6 +26,14 @@ const NoteRow: React.FC<INoteRowProps> = ({
             onClick={() => onClick?.(note)}
             style={tint ? { backgroundColor: tint } : undefined}
         >
+            {note.images && note.images.length > 0 && (
+                <img
+                    src={note.images[0].image_url}
+                    alt=""
+                    className="w-12 h-12 rounded-md object-cover shrink-0"
+                    loading="lazy"
+                />
+            )}
             <div className="flex-1 min-w-0">
                 {note.title && (
                     <h3 className="font-semibold text-slate-800 dark:text-gh-fg truncate">

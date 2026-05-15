@@ -25,6 +25,17 @@ const NoteCard: React.FC<INoteCardProps> = ({
             onClick={() => onClick?.(note)}
             style={tint ? { backgroundColor: tint } : undefined}
         >
+            {note.images && note.images.length > 0 && (
+                <div className="-mx-4 -mt-4 mb-1 overflow-hidden rounded-t-xl">
+                    <img
+                        src={note.images[0].image_url}
+                        alt=""
+                        className="w-full max-h-40 object-cover"
+                        loading="lazy"
+                    />
+                </div>
+            )}
+
             {note.title && (
                 <h3 className="font-semibold text-slate-800 dark:text-gh-fg line-clamp-1">
                     {note.title}

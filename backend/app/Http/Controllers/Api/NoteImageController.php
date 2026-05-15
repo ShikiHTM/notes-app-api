@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Note;
 use App\Models\NoteImage;
 use Illuminate\Http\Request;
 use App\Services\CloudinaryService;
@@ -60,9 +61,14 @@ class NoteImageController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'note_id' => 'required',
-            'image_url' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            'note_id' => 'required|integer|exists:notes,id',
+            'image_url' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
+
+        $note = Note::findOrFail($request->note_id);
+        if ($request->user()->id !== $note->user_id) {
+            return response()->json(['message' => 'Forbidden.'], 403);
+        }
 
         $file = $request->file('image_url');
 
@@ -126,13 +132,11 @@ class NoteImageController extends Controller
      * @urlParam id int required The Image ID.
      * @authenticated
      */
-    public function destroy($id) {
-        $image = NoteImage::findOrFail($id);
+    public function destroy(Request $request, $id) {
+        $image = NoteImage::with('note')->findOrFail($id);
 
-        if(!$image) {
-            return response()->json([
-                'message' => 'Image not found.'
-            ], 404);
+        if ($request->user()->id !== $image->note->user_id) {
+            return response()->json(['message' => 'Forbidden.'], 403);
         }
 
         CloudinaryService::delete($image->public_id);
@@ -153,12 +157,15 @@ class NoteImageController extends Controller
      * @authenticated
      */
     public function index(Request $request) {
-        $query = NoteImage::query();
+        $request->validate([
+            'note_id' => 'required|integer|exists:notes,id',
+        ]);
 
-        if($request->has('note_id')) {
-            $query->where('note_id', $request->note_id);
+        $note = Note::findOrFail($request->note_id);
+        if ($request->user()->id !== $note->user_id) {
+            return response()->json(['message' => 'Forbidden.'], 403);
         }
 
-        return response()->json($query->get());
+        return response()->json($note->images()->get());
     }
 }
