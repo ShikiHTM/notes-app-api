@@ -1,4 +1,5 @@
 import type React from "react";
+import { useEffect } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import { NoteProvider, useNoteContext } from "../../context/Note.context";
 import { NOTE_COLOR_CSS } from "../../types";
@@ -9,7 +10,18 @@ import NoteSkeleton from "../../components/note/skeleton.note";
 import NoteLabels from "../../components/note/labels.note";
 
 const NoteEditorContent: React.FC = () => {
-    const { isLoading, note } = useNoteContext();
+    const { isLoading, note, save } = useNoteContext();
+
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+                e.preventDefault();
+                save();
+            }
+        };
+        window.addEventListener("keydown", handler);
+        return () => window.removeEventListener("keydown", handler);
+    }, [save]);
 
     if (isLoading) {
         return <NoteSkeleton />;
