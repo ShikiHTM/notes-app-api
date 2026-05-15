@@ -55,9 +55,15 @@ const ToolbarButton: React.FC<{
 );
 
 const NoteArea: React.FC = () => {
-    const { note, isReadOnly, updateContent, save } = useNoteContext();
+    const { note, isReadOnly, updateContent, setImages, save } =
+        useNoteContext();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const previousSrcsRef = useRef<Set<string>>(new Set());
+    const imagesRef = useRef(note?.images ?? []);
+
+    useEffect(() => {
+        imagesRef.current = note?.images ?? [];
+    }, [note?.images]);
 
     const noteId = note?.id ?? 0;
     const { mutate: uploadImage, isPending: isUploading } =
@@ -117,12 +123,24 @@ const NoteArea: React.FC = () => {
                 );
                 previousSrcsRef.current = current;
 
-                if (removed.length > 0 && note?.images) {
+                if (removed.length > 0) {
+                    const live = imagesRef.current;
+                    const removedIds: number[] = [];
                     for (const src of removed) {
-                        const match = note.images.find(
+                        const match = live.find(
                             (img) => img.image_url === src,
                         );
-                        if (match) deleteImageById(match.id);
+                        if (match) {
+                            removedIds.push(match.id);
+                            deleteImageById(match.id);
+                        }
+                    }
+                    if (removedIds.length > 0) {
+                        const next = live.filter(
+                            (img) => !removedIds.includes(img.id),
+                        );
+                        imagesRef.current = next;
+                        setImages(next);
                     }
                 }
             },
@@ -149,10 +167,13 @@ const NoteArea: React.FC = () => {
                         .setImage({ src: image.image_url })
                         .run();
                     previousSrcsRef.current = collectImageSrcs(editor);
+                    const next = [...imagesRef.current, image];
+                    imagesRef.current = next;
+                    setImages(next);
                 },
             });
         },
-        [editor, noteId, uploadImage],
+        [editor, noteId, uploadImage, setImages],
     );
 
     const onFilePick = (e: React.ChangeEvent<HTMLInputElement>) => {

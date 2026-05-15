@@ -8,6 +8,7 @@ import NoteArea from "../../components/note/area.note";
 import NoteToolbar from "../../components/note/toolbar.note";
 import NoteSkeleton from "../../components/note/skeleton.note";
 import NoteLabels from "../../components/note/labels.note";
+import NoteUnlockGate from "../../components/note/unlock.note";
 
 const NoteEditorContent: React.FC = () => {
     const { isLoading, note, save } = useNoteContext();
@@ -36,6 +37,7 @@ const NoteEditorContent: React.FC = () => {
     }
 
     const tint = note.color ? NOTE_COLOR_CSS[note.color] : undefined;
+    const isLockedAndRedacted = note.is_locked && note.content_rich == null;
 
     return (
         <div
@@ -44,8 +46,14 @@ const NoteEditorContent: React.FC = () => {
         >
             <NoteToolbar />
             <NoteHeader />
-            <NoteLabels />
-            <NoteArea />
+            {isLockedAndRedacted ? (
+                <NoteUnlockGate />
+            ) : (
+                <>
+                    <NoteLabels />
+                    <NoteArea />
+                </>
+            )}
         </div>
     );
 };

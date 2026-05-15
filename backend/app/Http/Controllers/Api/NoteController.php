@@ -28,7 +28,7 @@ class NoteController extends Controller
     {
         $query = $request->user()->notes()
             ->whereNull('archived_at')
-            ->select(['id', 'title', 'content', 'content_rich', 'is_pinned', 'pinned_at', 'created_at', 'color'])
+            ->select(['id', 'title', 'content', 'content_rich', 'password', 'is_pinned', 'pinned_at', 'created_at', 'color'])
             ->with(['labels', 'images']);
 
         if ($request->filled('label_id')) {
@@ -41,27 +41,30 @@ class NoteController extends Controller
         return $query->orderBy('is_pinned', 'desc')
             ->orderBy('pinned_at', 'desc')
             ->latest()
-            ->get();
+            ->get()
+            ->each->redactIfLocked();
     }
 
     public function archived(Request $request)
     {
         return $request->user()->notes()
             ->whereNotNull('archived_at')
-            ->select(['id', 'title', 'content', 'content_rich', 'is_pinned', 'pinned_at', 'created_at', 'archived_at', 'color'])
+            ->select(['id', 'title', 'content', 'content_rich', 'password', 'is_pinned', 'pinned_at', 'created_at', 'archived_at', 'color'])
             ->with(['labels', 'images'])
             ->latest('archived_at')
-            ->get();
+            ->get()
+            ->each->redactIfLocked();
     }
 
     public function trashed(Request $request)
     {
         return $request->user()->notes()
             ->onlyTrashed()
-            ->select(['id', 'title', 'content', 'content_rich', 'is_pinned', 'pinned_at', 'created_at', 'deleted_at', 'color'])
+            ->select(['id', 'title', 'content', 'content_rich', 'password', 'is_pinned', 'pinned_at', 'created_at', 'deleted_at', 'color'])
             ->with(['labels', 'images'])
             ->latest('deleted_at')
-            ->get();
+            ->get()
+            ->each->redactIfLocked();
     }
 
     /**
@@ -119,6 +122,31 @@ class NoteController extends Controller
             return response()->json(['error' => 'Forbidden: You are not allowed to view this note.'], 403);
         }
 
+        return response()->json($note->redactIfLocked());
+    }
+
+    /**
+     * Unlock a password-protected note.
+     *
+     * Returns the full note (including content and images) when the password matches.
+     * @urlParam id int required The Note ID.
+     * @bodyParam password string required The note's password.
+     * @authenticated
+     */
+    public function unlock(Request $request, string $id)
+    {
+        $request->validate(['password' => 'required|string']);
+
+        $note = Note::with(['labels', 'images'])->findOrFail($id);
+
+        if ($request->user()->id !== $note->user_id) {
+            return response()->json(['error' => 'Forbidden.'], 403);
+        }
+
+        if (!$note->password || !Hash::check($request->password, $note->password)) {
+            return response()->json(['error' => 'Mật khẩu không đúng.'], 403);
+        }
+
         return response()->json($note);
     }
 
@@ -153,6 +181,8 @@ class NoteController extends Controller
             'color' => 'sometimes|nullable|in:RED,CYAN,YELLOW,LIME,PURPLE,BLACK,WHITE',
             'labels' => 'sometimes|array',
             'labels.*' => 'integer|exists:labels,id',
+            'password' => 'sometimes|nullable|string|min:4',
+            'current_password' => 'sometimes|nullable|string',
         ]);
 
         if($request->user()->id !== $note->user_id) {
@@ -162,6 +192,23 @@ class NoteController extends Controller
         if (isset($validated['is_pinned'])) {
             $validated['pinned_at'] = $validated['is_pinned'] ? now() : null;
         }
+
+        // Password set/change/remove. Changing or removing requires current_password to match.
+        if (array_key_exists('password', $validated)) {
+            if ($note->password) {
+                $current = $request->input('current_password');
+                if (!$current || !Hash::check($current, $note->password)) {
+                    return response()->json(
+                        ['error' => 'Mật khẩu hiện tại không đúng.'],
+                        403,
+                    );
+                }
+            }
+            $validated['password'] = $validated['password']
+                ? Hash::make($validated['password'])
+                : null;
+        }
+        unset($validated['current_password']);
 
         // If rich content is provided and plain content isn't, derive plain text
         // from the Tiptap JSON so Meilisearch and previews stay accurate.
@@ -208,11 +255,12 @@ class NoteController extends Controller
 
             $notes = Note::with(['labels', 'images'])
                 ->whereIn('id', $noteIds)
-                ->select(['id', 'title', 'content', 'content_rich', 'is_pinned', 'pinned_at', 'created_at', 'color'])
+                ->select(['id', 'title', 'content', 'content_rich', 'password', 'is_pinned', 'pinned_at', 'created_at', 'color'])
                 ->orderBy('is_pinned', 'desc')
                 ->orderBy('pinned_at', 'desc')
                 ->latest()
-                ->get();
+                ->get()
+                ->each->redactIfLocked();
 
             return response()->json($notes);
         } catch (\Exception) {

@@ -23,6 +23,7 @@ interface INoteContextValue {
     setColor: (value: NoteColor | null) => void;
     toggleLabel: (labelId: number) => void;
     setImages: (images: INote["images"]) => void;
+    replaceNote: (note: INote) => void;
     save: () => Promise<void>;
 }
 
@@ -78,6 +79,11 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
 
     const setImages = (images: INote["images"]) => {
         setNote((n) => (n ? { ...n, images } : n));
+    };
+
+    const replaceNote = (n: INote) => {
+        setNote(n);
+        setIsDirty(false);
     };
 
     const setColor = (color: NoteColor | null) => {
@@ -149,6 +155,7 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
                 setColor,
                 toggleLabel,
                 setImages,
+                replaceNote,
                 save,
             }}
         >

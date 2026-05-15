@@ -28,10 +28,35 @@ class Note extends Model {
         'password'
     ];
 
+    protected $appends = [
+        'is_locked',
+    ];
+
     protected $casts = [
         'is_pinned' => 'boolean',
         'pinned_at' => 'datetime'
     ];
+
+    public function getIsLockedAttribute(): bool
+    {
+        return !empty($this->password);
+    }
+
+    /**
+     * Strip protected content from a locked note before serializing.
+     * Mutates the model in place; returns it for chaining.
+     */
+    public function redactIfLocked(): self
+    {
+        if ($this->is_locked) {
+            $this->content = null;
+            $this->content_rich = null;
+            if ($this->relationLoaded('images')) {
+                $this->setRelation('images', collect());
+            }
+        }
+        return $this;
+    }
 
     public function user() {
         return $this->belongsTo(User::class);

@@ -51,6 +51,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/notes/trashed', [NoteController::class, 'trashed']);
         Route::post('/notes/{id}/restore', [NoteController::class, 'restore']);
         Route::delete('/notes/{id}/force', [NoteController::class, 'forceDestroy']);
+        Route::post('/notes/{id}/unlock', [NoteController::class, 'unlock']);
         Route::apiResource('notes', NoteController::class);
 
         Route::apiResource('labels', LabelController::class);

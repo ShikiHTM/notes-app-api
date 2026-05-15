@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { MdArrowBack, MdCheckCircle, MdSync } from "react-icons/md";
 import { useNoteContext } from "../../context/Note.context";
 import NoteColorPicker from "./colorPicker.note";
+import NoteLockToggle from "./lockToggle.note";
 
 const NoteToolbar: React.FC = () => {
     const { note, isReadOnly, isDirty, isSaving } = useNoteContext();
@@ -59,6 +60,7 @@ const NoteToolbar: React.FC = () => {
 
             <div className="flex items-center gap-2">
                 <NoteColorPicker />
+                <NoteLockToggle />
                 {renderStatus()}
             </div>
         </div>

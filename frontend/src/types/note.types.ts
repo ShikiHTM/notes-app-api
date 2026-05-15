@@ -38,10 +38,11 @@ export const NOTE_COLOR_LABEL: Record<NoteColor, string> = {
 export interface INote {
     id: number;
     title: string;
-    content: string;
+    content: string | null;
     content_rich?: string | null;
     color?: NoteColor | null;
     is_pinned?: boolean;
+    is_locked?: boolean;
     archived_at?: string | null;
     deleted_at?: string | null;
     created_at: string;
