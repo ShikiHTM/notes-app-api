@@ -9,9 +9,10 @@ import LoginCard from "../components/auth/LoginCard.auth";
 import RegisterCard from "../components/auth/RegisterCard.auth";
 import { ViewModeProvider } from "../context/ViewMode.context";
 import type { INote } from "../types";
+import type { ReactNode } from "react";
 
-const renderWithViewMode: typeof render = (ui, options) =>
-    render(<ViewModeProvider>{ui}</ViewModeProvider>, options);
+const renderWithViewMode = (ui: ReactNode) =>
+    render(<ViewModeProvider>{ui}</ViewModeProvider>);
 
 // ─── Module mocks ────────────────────────────────────────────────
 
