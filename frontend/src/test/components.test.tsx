@@ -7,7 +7,11 @@ import NoteCard from "../components/ui/NoteCard.ui";
 import NoteGrid from "../components/ui/NoteGrid.ui";
 import LoginCard from "../components/auth/LoginCard.auth";
 import RegisterCard from "../components/auth/RegisterCard.auth";
+import { ViewModeProvider } from "../context/ViewMode.context";
 import type { INote } from "../types";
+
+const renderWithViewMode: typeof render = (ui, options) =>
+    render(<ViewModeProvider>{ui}</ViewModeProvider>, options);
 
 // ─── Module mocks ────────────────────────────────────────────────
 
@@ -22,6 +26,10 @@ vi.mock("react-router-dom", () => ({
 
 vi.mock("../hooks/NoteAction.hook", () => ({
     useNoteActions: (...args: any[]) => mockUseNoteActions(...args),
+}));
+
+vi.mock("../hooks/CheckUsername.hook", () => ({
+    useCheckUsername: () => "available",
 }));
 
 // ─── Fixtures ────────────────────────────────────────────────────
@@ -151,19 +159,21 @@ describe("NoteCard", () => {
 
 describe("NoteGrid", () => {
     test("hiển thị đúng số skeleton theo skeletonCount khi loading", () => {
-        const { container } = render(
+        const { container } = renderWithViewMode(
             <NoteGrid notes={[]} isLoading skeletonCount={3} />,
         );
         expect((container.firstChild as HTMLElement).childElementCount).toBe(3);
     });
 
     test("hiển thị default empty message khi notes rỗng", () => {
-        render(<NoteGrid notes={[]} />);
+        renderWithViewMode(<NoteGrid notes={[]} />);
         expect(screen.getByText("Chưa có ghi chú nào")).toBeInTheDocument();
     });
 
     test("hiển thị custom empty message", () => {
-        render(<NoteGrid notes={[]} emptyMessage="Không có gì cả" />);
+        renderWithViewMode(
+            <NoteGrid notes={[]} emptyMessage="Không có gì cả" />,
+        );
         expect(screen.getByText("Không có gì cả")).toBeInTheDocument();
     });
 
@@ -172,13 +182,13 @@ describe("NoteGrid", () => {
             makeNote({ id: 1, title: "Note A" }),
             makeNote({ id: 2, title: "Note B" }),
         ];
-        render(<NoteGrid notes={notes} />);
+        renderWithViewMode(<NoteGrid notes={notes} />);
         expect(screen.getByText("Note A")).toBeInTheDocument();
         expect(screen.getByText("Note B")).toBeInTheDocument();
     });
 
     test("không hiển thị empty message khi đang loading", () => {
-        render(<NoteGrid notes={[]} isLoading />);
+        renderWithViewMode(<NoteGrid notes={[]} isLoading />);
         expect(
             screen.queryByText("Chưa có ghi chú nào"),
         ).not.toBeInTheDocument();
@@ -238,12 +248,15 @@ describe("LoginCard", () => {
 
     test("validation: hiện lỗi khi password ngắn hơn 8 ký tự", async () => {
         render(<LoginCard onLogin={vi.fn()} isLoading={false} />);
-        await userEvent.type(screen.getByPlaceholderText("Password"), "1234567");
+        await userEvent.type(
+            screen.getByPlaceholderText("Mật khẩu"),
+            "1234567",
+        );
         await userEvent.click(
             screen.getByRole("button", { name: /đăng nhập/i }),
         );
         expect(
-            screen.getByText("Mật khẩu phải có ít nhất 6 ký tự"),
+            screen.getByText("Mật khẩu phải có ít nhất 8 ký tự"),
         ).toBeInTheDocument();
     });
 
@@ -255,7 +268,7 @@ describe("LoginCard", () => {
             "user@example.com",
         );
         await userEvent.type(
-            screen.getByPlaceholderText("Password"),
+            screen.getByPlaceholderText("Mật khẩu"),
             "password123",
         );
         await userEvent.click(
@@ -278,7 +291,7 @@ describe("LoginCard", () => {
 
     test("toggle hiển thị/ẩn password", async () => {
         render(<LoginCard onLogin={vi.fn()} isLoading={false} />);
-        const passwordInput = screen.getByPlaceholderText("Password");
+        const passwordInput = screen.getByPlaceholderText("Mật khẩu");
         const toggleBtn = screen
             .getAllByRole("button")
             .find((b) => b.getAttribute("type") === "button")!;
@@ -313,7 +326,10 @@ describe("RegisterCard", () => {
 
     test("validation: hiện lỗi khi display_name ngắn hơn 3 ký tự", async () => {
         render(<RegisterCard onRegister={vi.fn()} isLoading={false} />);
-        await userEvent.type(screen.getByPlaceholderText("User Name"), "ab");
+        await userEvent.type(
+            screen.getByPlaceholderText("Tên người dùng"),
+            "ab",
+        );
         await userEvent.click(screen.getByRole("button", { name: /đăng ký/i }));
         expect(
             screen.getByText("Tên người dùng không được nhỏ hơn 3 ký tự"),
@@ -323,11 +339,11 @@ describe("RegisterCard", () => {
     test("validation: hiện lỗi khi mật khẩu không khớp", async () => {
         render(<RegisterCard onRegister={vi.fn()} isLoading={false} />);
         await userEvent.type(
-            screen.getByPlaceholderText("Password"),
+            screen.getByPlaceholderText("Mật khẩu"),
             "password123",
         );
         await userEvent.type(
-            screen.getByPlaceholderText("Confirm Password"),
+            screen.getByPlaceholderText("Xác nhận mật khẩu"),
             "different123",
         );
         await userEvent.click(screen.getByRole("button", { name: /đăng ký/i }));
@@ -340,7 +356,7 @@ describe("RegisterCard", () => {
         const onRegister = vi.fn();
         render(<RegisterCard onRegister={onRegister} isLoading={false} />);
         await userEvent.type(
-            screen.getByPlaceholderText("User Name"),
+            screen.getByPlaceholderText("Tên người dùng"),
             "TestUser",
         );
         await userEvent.type(
@@ -348,11 +364,11 @@ describe("RegisterCard", () => {
             "user@example.com",
         );
         await userEvent.type(
-            screen.getByPlaceholderText("Password"),
+            screen.getByPlaceholderText("Mật khẩu"),
             "password123",
         );
         await userEvent.type(
-            screen.getByPlaceholderText("Confirm Password"),
+            screen.getByPlaceholderText("Xác nhận mật khẩu"),
             "password123",
         );
         await userEvent.click(screen.getByRole("button", { name: /đăng ký/i }));
