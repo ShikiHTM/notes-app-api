@@ -25,8 +25,18 @@ export const useLabels = () =>
     useQuery({
         queryKey: labelsQueryKey,
         queryFn: async () => {
-            const res = await api.get<ILabel[]>("/labels");
-            return res.data;
+            const res = await api.get<ILabel[] | { data: ILabel[] }>("/labels");
+            const body = res.data as unknown;
+            if (Array.isArray(body)) return body;
+            if (
+                body &&
+                typeof body === "object" &&
+                Array.isArray((body as { data?: unknown }).data)
+            ) {
+                return (body as { data: ILabel[] }).data;
+            }
+            console.warn("Unexpected /labels response shape:", body);
+            return [] as ILabel[];
         },
     });
 

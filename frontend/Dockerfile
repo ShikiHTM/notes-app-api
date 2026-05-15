@@ -6,6 +6,9 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml .npmrc ./
 RUN pnpm install --frozen-lockfile
 
+ARG VITE_API_URL=https://api.shikii.dev
+ENV VITE_API_URL=${VITE_API_URL}
+
 COPY . .
 RUN pnpm build
 

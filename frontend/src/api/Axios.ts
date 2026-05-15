@@ -1,9 +1,14 @@
 import axios from "axios";
 
-console.log(import.meta.env.VITE_API_URL);
+const apiOrigin = import.meta.env.VITE_API_URL ?? "";
+if (!apiOrigin) {
+    console.warn(
+        "VITE_API_URL is not set — API requests will be relative to the current origin.",
+    );
+}
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL + "/api/v1",
+    baseURL: `${apiOrigin}/api/v1`,
     headers: {
         Accept: "application/json",
     },
