@@ -21,6 +21,7 @@ interface INoteContextValue {
     setTitle: (value: string) => void;
     setContent: (value: string) => void;
     setColor: (value: NoteColor | null) => void;
+    toggleLabel: (labelId: number) => void;
     save: () => Promise<void>;
 }
 
@@ -77,6 +78,19 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
         setIsDirty(true);
     };
 
+    const toggleLabel = (labelId: number) => {
+        setNote((n) => {
+            if (!n) return n;
+            const current = n.labels ?? [];
+            const exists = current.some((l) => l.id === labelId);
+            const nextLabels = exists
+                ? current.filter((l) => l.id !== labelId)
+                : [...current, { id: labelId, user_id: 0, name: "", color: null }];
+            return { ...n, labels: nextLabels };
+        });
+        setIsDirty(true);
+    };
+
     const save = async () => {
         if (!note || isReadOnly || !isDirty || isSaving) return;
         setIsSaving(true);
@@ -85,6 +99,7 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
                 title: note.title,
                 content: note.content,
                 color: note.color ?? null,
+                labels: (note.labels ?? []).map((l) => l.id),
             });
             setNote(res.data);
             setIsDirty(false);
@@ -103,7 +118,7 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
         if (!note || !isDirty || isReadOnly) return;
         const timer = setTimeout(() => saveRef.current(), 800);
         return () => clearTimeout(timer);
-    }, [note?.title, note?.content, note?.color, isDirty, isReadOnly]);
+    }, [note?.title, note?.content, note?.color, note?.labels, isDirty, isReadOnly]);
 
     return (
         <NoteContext.Provider
@@ -116,6 +131,7 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
                 setTitle,
                 setContent,
                 setColor,
+                toggleLabel,
                 save,
             }}
         >

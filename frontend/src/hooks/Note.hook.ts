@@ -7,12 +7,16 @@ export const archivedNotesQueryKey = ["notes", "archived"] as const;
 export const trashedNotesQueryKey = ["notes", "trashed"] as const;
 export const noteQueryKey = (id: number | string) =>
     ["note", String(id)] as const;
+export const notesByLabelQueryKey = (labelId: number) =>
+    ["notes", "label", labelId] as const;
 
-export const useNotes = () => {
+export const useNotes = (labelId?: number | null) => {
     return useQuery({
-        queryKey: notesQueryKey,
+        queryKey: labelId ? notesByLabelQueryKey(labelId) : notesQueryKey,
         queryFn: async () => {
-            const res = await api.get<INote[]>("/notes");
+            const res = await api.get<INote[]>("/notes", {
+                params: labelId ? { label_id: labelId } : undefined,
+            });
             return res.data;
         },
     });

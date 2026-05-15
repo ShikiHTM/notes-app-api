@@ -6,6 +6,7 @@ import NoteHeader from "../../components/note/header.note";
 import NoteArea from "../../components/note/area.note";
 import NoteToolbar from "../../components/note/toolbar.note";
 import NoteSkeleton from "../../components/note/skeleton.note";
+import NoteLabels from "../../components/note/labels.note";
 
 const NoteEditorContent: React.FC = () => {
     const { isLoading, note } = useNoteContext();
@@ -31,6 +32,7 @@ const NoteEditorContent: React.FC = () => {
         >
             <NoteToolbar />
             <NoteHeader />
+            <NoteLabels />
             <NoteArea />
         </div>
     );

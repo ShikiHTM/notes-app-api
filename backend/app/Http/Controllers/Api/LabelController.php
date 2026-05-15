@@ -63,8 +63,9 @@ class LabelController extends Controller
             'name' => 'required|string|max:50',
             'color' => [
                 'sometimes',
+                'nullable',
                 'string',
-                'regex:/^#(a-fA-F0-9){6}|[a-fA-F0-9]{3}' // Hex color
+                'regex:/^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/',
             ],
         ]);
 

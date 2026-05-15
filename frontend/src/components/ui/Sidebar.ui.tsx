@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import SidebarHeader from "./sidebar/SidebarHeader.sidebar";
 import SidebarNav from "./sidebar/SidebarNav.sidebar";
+import SidebarLabels from "./sidebar/SidebarLabels.sidebar";
 import AccountSection from "./sidebar/AccountSection.sidebar";
 import MobileHamburger from "./sidebar/MobileHamburger.sidebar";
 import MobileOverlay from "./sidebar/MobileOverlay.sidebar";
@@ -59,6 +60,8 @@ const Sidebar: React.FC = () => {
                     onTabChange={(tab) => navigate(`/${tab}`)}
                     isOpen={isSidebarOpen}
                 />
+
+                <SidebarLabels isOpen={isSidebarOpen} />
 
                 <AccountSection
                     isOpen={isSidebarOpen}

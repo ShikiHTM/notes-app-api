@@ -1,6 +1,6 @@
 import type React from "react";
 import type { INote } from "../../types";
-import { NOTE_COLOR_CSS } from "../../types";
+import { DEFAULT_LABEL_COLOR, NOTE_COLOR_CSS } from "../../types";
 import {
     useNoteActions,
     type NoteActionContext,
@@ -34,6 +34,25 @@ const NoteCard: React.FC<INoteCardProps> = ({
             <p className="text-sm text-slate-600 dark:text-gh-fg-muted line-clamp-4 whitespace-pre-wrap">
                 {note.content}
             </p>
+
+            {note.labels && note.labels.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-1">
+                    {note.labels.map((label) => (
+                        <span
+                            key={label.id}
+                            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium text-white"
+                            style={{
+                                backgroundColor:
+                                    label.color ?? DEFAULT_LABEL_COLOR,
+                            }}
+                        >
+                            <span className="max-w-[100px] truncate">
+                                {label.name}
+                            </span>
+                        </span>
+                    ))}
+                </div>
+            )}
 
             {actionsContext && actions && (
                 <div

@@ -3,3 +3,4 @@ export * from "./user.types";
 export * from "./toast.types";
 export * from "./ui.types";
 export * from "./note.types";
+export * from "./label.types";

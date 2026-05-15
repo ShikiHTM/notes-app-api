@@ -26,11 +26,19 @@ class NoteController extends Controller
      */
     public function index(Request $request)
     {
-        return $request->user()->notes()
+        $query = $request->user()->notes()
             ->whereNull('archived_at')
             ->select(['id', 'title', 'content', 'is_pinned', 'pinned_at', 'created_at', 'color'])
-            ->with(['labels', 'images'])
-            ->orderBy('is_pinned', 'desc')
+            ->with(['labels', 'images']);
+
+        if ($request->filled('label_id')) {
+            $labelId = $request->input('label_id');
+            $query->whereHas('labels', function ($q) use ($labelId) {
+                $q->where('labels.id', $labelId);
+            });
+        }
+
+        return $query->orderBy('is_pinned', 'desc')
             ->orderBy('pinned_at', 'desc')
             ->latest()
             ->get();
@@ -135,6 +143,8 @@ class NoteController extends Controller
             'is_pinned' => 'sometimes|boolean',
             'archived_at' => 'sometimes|nullable|date',
             'color' => 'sometimes|nullable|in:RED,CYAN,YELLOW,LIME,PURPLE,BLACK,WHITE',
+            'labels' => 'sometimes|array',
+            'labels.*' => 'integer|exists:labels,id',
         ]);
 
         if($request->user()->id !== $note->user_id) {
@@ -145,7 +155,16 @@ class NoteController extends Controller
             $validated['pinned_at'] = $validated['is_pinned'] ? now() : null;
         }
 
+        $labels = $validated['labels'] ?? null;
+        unset($validated['labels']);
+
         $note->update($validated);
+
+        if ($labels !== null) {
+            $note->labels()->sync($labels);
+        }
+
+        $note->load('labels');
 
         broadcast(new NoteMetadataUpdated($note))->toOthers();
 
