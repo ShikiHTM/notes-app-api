@@ -6,6 +6,7 @@ import { AuthProvider } from "./context/Auth.context";
 import { ProtectedRoute } from "./routes/Protected.route";
 import { AppRoutes } from "./routes/index.route";
 import { ModalProvider } from "./context/Modal.context";
+import { ViewModeProvider } from "./context/ViewMode.context";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -44,9 +45,11 @@ function App() {
             <ToastProvider>
                 <AuthProvider>
                     <ModalProvider>
-                        <BrowserRouter>
-                            <AppContent />
-                        </BrowserRouter>
+                        <ViewModeProvider>
+                            <BrowserRouter>
+                                <AppContent />
+                            </BrowserRouter>
+                        </ViewModeProvider>
                     </ModalProvider>
                 </AuthProvider>
             </ToastProvider>

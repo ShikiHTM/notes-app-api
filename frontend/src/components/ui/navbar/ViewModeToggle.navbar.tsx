@@ -1,23 +1,20 @@
 import { MdViewList, MdViewModule } from "react-icons/md";
+import { useViewMode } from "../../../hooks/ViewMode.hook";
 
-type Props = {
-    viewMode: "card" | "list";
-    onToggle: () => void;
+const ViewModeToggle: React.FC = () => {
+    const { viewMode, toggleViewMode } = useViewMode();
+    const isGrid = viewMode === "grid";
+
+    return (
+        <button
+            onClick={toggleViewMode}
+            className="hover:text-indigo-600 dark:hover:text-gh-accent transition-colors cursor-pointer"
+            title={isGrid ? "Chuyển sang danh sách" : "Chuyển sang lưới"}
+            aria-label="Chuyển chế độ xem"
+        >
+            {isGrid ? <MdViewList size={24} /> : <MdViewModule size={24} />}
+        </button>
+    );
 };
-
-const ViewModeToggle: React.FC<Props> = ({ viewMode, onToggle }) => (
-    <button
-        onClick={onToggle}
-        className="hover:text-indigo-600 transition-colors cursor-pointer"
-        title={viewMode === "card" ? "Chế độ thẻ" : "Chế độ lưới"}
-        aria-label="Chuyển chế độ xem"
-    >
-        {viewMode === "card" ? (
-            <MdViewList size={24} />
-        ) : (
-            <MdViewModule size={24} />
-        )}
-    </button>
-);
 
 export default ViewModeToggle;
