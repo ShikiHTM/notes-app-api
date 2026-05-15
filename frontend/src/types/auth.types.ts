@@ -36,4 +36,5 @@ export type IAuthTypes = {
     isInitialLoading: boolean;
     login: (token: string, userData: any) => void;
     logout: () => void;
+    setUser: (user: IUser) => void;
 };

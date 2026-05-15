@@ -13,7 +13,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\VerifyEmailNotification;
 
-#[Fillable(['display_name', 'email', 'password', 'pfp_url'])]
+#[Fillable(['display_name', 'email', 'password', 'pfp_url', 'pfp_public_id'])]
 #[Hidden(['password', 'remember_token'])]
 
 /**

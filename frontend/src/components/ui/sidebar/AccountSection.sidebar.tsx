@@ -55,7 +55,15 @@ const AccountSection: React.FC<Props> = ({
                 >
                     <div className="flex items-center gap-3 overflow-hidden">
                         <div className="text-slate-600 dark:text-gh-fg-muted shrink-0">
-                            <MdAccountCircle size={24} />
+                            {user?.pfp_url ? (
+                                <img
+                                    src={user.pfp_url}
+                                    alt={user.display_name}
+                                    className="w-6 h-6 rounded-full object-cover"
+                                />
+                            ) : (
+                                <MdAccountCircle size={24} />
+                            )}
                         </div>
                         {isOpen && (
                             <span className="font-medium text-slate-700 dark:text-gh-fg whitespace-nowrap">

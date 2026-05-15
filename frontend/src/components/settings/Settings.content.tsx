@@ -1,13 +1,26 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { MdEdit, MdDarkMode, MdLightMode } from "react-icons/md";
 import { useAuth } from "../../hooks/Auth.hook";
 import { useTheme } from "../../hooks/Theme.hook";
 import { useRequestPasswordReset } from "../../hooks/RequestPasswordReset.hook";
-import { useUpdateProfile } from "../../hooks/UpdateProfile.hook";
+import {
+    useUpdateAvatar,
+    useUpdateProfile,
+} from "../../hooks/UpdateProfile.hook";
 
 const SettingsContent: React.FC = () => {
     const { mutate: updateProfile, isPending: isUpdatingProfile } =
         useUpdateProfile();
+    const { mutate: updateAvatar, isPending: isUpdatingAvatar } =
+        useUpdateAvatar();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        e.target.value = "";
+        if (!file) return;
+        updateAvatar(file);
+    };
     const { user } = useAuth();
     const { theme, toggleTheme } = useTheme();
     const [name, setName] = useState(user?.display_name ?? "");
@@ -40,15 +53,33 @@ const SettingsContent: React.FC = () => {
             <div className="flex gap-6 items-start">
                 <button
                     type="button"
-                    className="relative group w-28 h-28 rounded-full bg-gh-canvas-inset overflow-hidden flex items-center justify-center shrink-0 cursor-pointer"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUpdatingAvatar}
+                    aria-label="Đổi ảnh đại diện"
+                    className="relative group w-28 h-28 rounded-full bg-gh-canvas-inset overflow-hidden flex items-center justify-center shrink-0 cursor-pointer disabled:cursor-progress"
                 >
-                    <span className="text-3xl font-semibold text-gh-fg-muted">
-                        {(user?.display_name ?? "?").charAt(0).toUpperCase()}
-                    </span>
+                    {user?.pfp_url ? (
+                        <img
+                            src={user.pfp_url}
+                            alt={user.display_name}
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <span className="text-3xl font-semibold text-gh-fg-muted">
+                            {(user?.display_name ?? "?").charAt(0).toUpperCase()}
+                        </span>
+                    )}
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                         <MdEdit size={28} className="text-white" />
                     </div>
                 </button>
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                    className="hidden"
+                />
 
                 <div className="flex-1 flex flex-col gap-4">
                     <label className="flex flex-col gap-1">

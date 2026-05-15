@@ -3,94 +3,70 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
+use Intervention\Image\Format;
+use Intervention\Image\ImageManager;
 
+/**
+ * @group Profile
+ *
+ * APIs for managing the authenticated user's avatar.
+ */
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
-    {
-        // TODO: Admin only endpoint to list all users, with pagination and search by display_name or email
-        $users = User::query()
-            ->when($request->input('search'), function ($query, $search) {
-                $query->where('display_name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            })
-            ->paginate(10);
+    protected ImageManager $manager;
 
-        return response()->json($users);
+    public function __construct(ImageManager $manager)
+    {
+        $this->manager = $manager;
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Upload or replace the authenticated user's avatar.
+     *
+     * Compresses the file to WebP and stores it in Cloudinary.
+     * @bodyParam avatar file required The image file (Max 5MB).
+     * @authenticated
      */
-    public function store(Request $request)
+    public function updateAvatar(Request $request)
     {
-
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
         $request->validate([
-            'display_name' => 'nullable|string|max:255',
-            'email' => 'nullable|string|email|unique:users,email,' . $request->user()->id,
-            'pfp_url' => 'nullable|url|max:255',
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ]);
 
-        // If nothing is provided, do nothing;
-        if(!$request->hasAny(['display_name', 'email', 'pfp_url']))
-        {
-            return response()->json([
-                'message' => 'No changes provided'
-            ], 400);
-        }
-
         $user = $request->user();
+        $oldPublicId = $user->pfp_public_id;
 
-        if ($request->has('display_name'))
-        {
-            $user->display_name = $request->display_name;
+        try {
+            $compressed = $this->manager->decode($request->file('avatar'))
+                ->scale(width: 512)
+                ->encodeUsingFormat(Format::WEBP, ['quality' => 80]);
+
+            $tempPath = sys_get_temp_dir() . '/' . uniqid('avatar_') . '.webp';
+            file_put_contents($tempPath, $compressed);
+
+            $upload = CloudinaryService::upload($tempPath, [
+                'folder' => 'notes-app/avatars',
+            ]);
+
+            unlink($tempPath);
+
+            if (! $upload) {
+                throw new \Exception('Upload to Cloudinary failed. Please try again later.');
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
         }
 
-        else if ($request->has('email'))
-        {
-            $user->email = $request->email;
-            $user->email_verified_at = null;
-            $user->sendEmailVerificationNotification();
-        }
+        $user->pfp_url = $upload['secure_url'];
+        $user->pfp_public_id = $upload['public_id'];
+        $user->save();
 
-        else if ($request->has('pfp_url'))
-        {
-            $user->pfp_url = $request->pfp_url;
+        if ($oldPublicId) {
+            CloudinaryService::delete($oldPublicId);
         }
 
         return response()->json($user);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $user = User::findOrFail($id);
-
-        $user->delete();
-
-        return response()->json(null, 204);
     }
 }

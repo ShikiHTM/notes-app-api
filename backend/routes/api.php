@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\LabelController;
 use App\Http\Controllers\Api\NoteController;
 use App\Http\Controllers\Api\NoteImageController;
 use App\Http\Controllers\Api\PasswordResetController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\VerificationController;
 
 use Illuminate\Http\Request;
@@ -39,6 +40,7 @@ Route::prefix('v1')->group(function () {
 
         Route::get('/me', [AuthController::class, 'me']);
         Route::patch('/user', [AuthController::class, 'update']);
+        Route::post('/user/avatar', [UserController::class, 'updateAvatar']);
 
         // Image CRUD
         Route::apiResource('images', NoteImageController::class)->only(['index', 'store', 'destroy']);

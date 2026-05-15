@@ -1,9 +1,10 @@
 FROM php:8.4-fpm-alpine AS builder
 
 RUN apk add --no-cache \
-    git curl zip unzip libpng-dev libzip-dev oniguruma-dev libxml2-dev icu-dev netcat-openbsd
+    git curl zip unzip libpng-dev libjpeg-turbo-dev libwebp-dev libzip-dev oniguruma-dev libxml2-dev icu-dev netcat-openbsd
 
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl
+RUN docker-php-ext-configure gd --with-jpeg --with-webp \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl
 
 RUN apk add --no-cache $PHPIZE_DEPS && pecl install redis && docker-php-ext-enable redis
 
@@ -16,7 +17,7 @@ RUN composer install --no-interaction --optimize-autoloader --no-dev
 
 FROM php:8.4-fpm-alpine
 
-RUN apk add --no-cache libpng libzip libintl icu-libs
+RUN apk add --no-cache libpng libjpeg-turbo libwebp libzip libintl icu-libs
 
 COPY --from=builder /usr/local/lib/php/extensions /usr/local/lib/php/extensions
 COPY --from=builder /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
