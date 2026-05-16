@@ -42,7 +42,7 @@ services:
     container_name: notes-app-nginx
     restart: unless-stopped
     ports:
-      - "8000:80"
+      - "8085:80"
     networks:
       - notes-network
     depends_on:
