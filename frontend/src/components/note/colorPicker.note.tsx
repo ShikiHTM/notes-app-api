@@ -29,7 +29,9 @@ const NoteColorPicker: React.FC = () => {
         return () => document.removeEventListener("mousedown", handler);
     }, [open]);
 
-    if (!note || isReadOnly) return null;
+    const isOwner =
+        note?.viewer_permission == null || note.viewer_permission === "OWNER";
+    if (!note || isReadOnly || !isOwner) return null;
 
     const pick = (value: NoteColor | null) => {
         setColor(value);
@@ -41,19 +43,19 @@ const NoteColorPicker: React.FC = () => {
             <button
                 type="button"
                 onClick={() => setOpen((v) => !v)}
-                aria-label="Chọn màu ghi chú"
+                aria-label="Pick note color"
                 className="rounded p-1 text-slate-500 hover:bg-slate-100 dark:text-gh-fg-muted dark:hover:bg-gh-canvas-inset cursor-pointer"
             >
                 <MdPalette size={18} />
             </button>
 
             {open && (
-                <div className="absolute right-0 mt-2 z-50 flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-gh-border bg-white dark:bg-gh-canvas-subtle shadow-lg p-2">
+                <div className="absolute right-0 mt-2 z-50 grid grid-cols-4 sm:flex sm:items-center gap-1.5 rounded-lg border border-slate-200 dark:border-gh-border bg-white dark:bg-gh-canvas-subtle shadow-lg p-2">
                     <button
                         type="button"
                         onClick={() => pick(null)}
-                        title="Mặc định"
-                        aria-label="Mặc định"
+                        title="Default"
+                        aria-label="Default"
                         className={`flex h-7 w-7 items-center justify-center rounded-full border transition cursor-pointer ${
                             note.color == null
                                 ? "border-gh-accent ring-2 ring-gh-accent/30"
