@@ -2,7 +2,7 @@
 
 A real-time collaborative note-taking application with rich-text editing, label organization, sharing, full-text search, and offline (PWA) support.
 
-**Official Website:** [https://shiki.dev](https://shiki.dev)
+**Official Website:** [https://shikii.dev](https://shikii.dev)
 
 ---
 
