@@ -50,7 +50,7 @@ const NoteColorPicker: React.FC = () => {
             </button>
 
             {open && (
-                <div className="absolute right-0 mt-2 z-50 grid grid-cols-4 sm:flex sm:items-center gap-1.5 rounded-lg border border-slate-200 dark:border-gh-border bg-white dark:bg-gh-canvas-subtle shadow-lg p-2">
+                <div className="absolute right-0 mt-2 z-50 grid grid-cols-4 sm:flex sm:items-center gap-1.5 w-max rounded-lg border border-slate-200 dark:border-gh-border bg-white dark:bg-gh-canvas-subtle shadow-lg p-2">
                     <button
                         type="button"
                         onClick={() => pick(null)}
