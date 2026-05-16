@@ -15,7 +15,6 @@ services:
     restart: unless-stopped
     working_dir: /var/www
     env_file:
-      - .env
       - stack.env
     networks:
       - notes-network
@@ -29,7 +28,6 @@ services:
     restart: unless-stopped
     working_dir: /var/www
     env_file:
-      - .env
       - stack.env
     entrypoint: []
     command: php artisan queue:work redis --tries=3 --sleep=3
