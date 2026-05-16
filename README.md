@@ -151,7 +151,7 @@ notes-app-api/
 │
 ├── docker/                   # Nginx config for the webserver container
 │   └── nginx.conf
-├── docker-compose.yml        # Orchestrates frontend / backend / nginx / db / redis / hocuspocus / meilisearch / tunnel
+├── docker-compose.yml        # Orchestrates frontend / backend / queue / nginx / db / redis / hocuspocus / meilisearch / tunnel
 ├── .env.example
 └── README.md
 ```
@@ -162,6 +162,7 @@ notes-app-api/
 | --- | --- | --- |
 | `frontend` | `notes-app-frontend` | Static React PWA bundle |
 | `backend` | `notes-app-backend` | Laravel API (PHP-FPM) |
+| `queue` | `notes-app-backend` | Laravel queue worker (drains the Redis queue for emails and other async jobs) |
 | `webserver` | `notes-app-nginx` | Nginx reverse proxy, port `8000` |
 | `db` | `mysql:8.0` | Primary database |
 | `redis` | `redis:alpine` | Cache / queue driver |

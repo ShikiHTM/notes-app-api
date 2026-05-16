@@ -4,8 +4,8 @@ services:
     container_name: notes-app-frontend
     restart: unless-stopped
     environment:
-      API_URL: ${FRONTEND_API_URL:-}
-      YJS_URL: ${FRONTEND_YJS_URL:-}
+      API_URL: ${FRONTEND_API_URL}
+      YJS_URL: ${FRONTEND_YJS_URL}
     networks:
       - notes-network
 
@@ -20,6 +20,21 @@ services:
       - notes-network
     depends_on:
       - db
+      - redis
+
+  queue:
+    image: shikihtm/notes-app-backend:latest
+    container_name: notes-app-queue
+    restart: unless-stopped
+    working_dir: /var/www
+    env_file:
+      - .env
+    entrypoint: []
+    command: php artisan queue:work redis --tries=3 --sleep=3
+    networks:
+      - notes-network
+    depends_on:
+      - backend
       - redis
 
   webserver:
