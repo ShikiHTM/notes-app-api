@@ -16,6 +16,7 @@ services:
     working_dir: /var/www
     env_file:
       - .env
+      - stack.env
     networks:
       - notes-network
     depends_on:
@@ -29,6 +30,7 @@ services:
     working_dir: /var/www
     env_file:
       - .env
+      - stack.env
     entrypoint: []
     command: php artisan queue:work redis --tries=3 --sleep=3
     networks:
