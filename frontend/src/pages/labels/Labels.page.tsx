@@ -123,7 +123,7 @@ const LabelRow: React.FC<{ label: ILabel }> = ({ label }) => {
             <span className="flex-1 text-slate-800 dark:text-gh-fg truncate">
                 {label.name}
             </span>
-            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+            <div className="flex items-center gap-1 md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100 transition">
                 <button
                     type="button"
                     onClick={startEdit}
@@ -197,10 +197,13 @@ const LabelsPage: React.FC = () => {
                     <button
                         type="submit"
                         disabled={!newName.trim() || isCreating}
-                        className="px-4 py-2 bg-gh-accent-emphasis text-white rounded-md disabled:opacity-50 transition cursor-pointer hover:opacity-90 flex items-center gap-2"
+                        aria-label="Create label"
+                        className="shrink-0 px-3 sm:px-4 py-2 bg-gh-accent-emphasis text-white rounded-md disabled:opacity-50 transition cursor-pointer hover:opacity-90 flex items-center gap-2"
                     >
                         <FaTag size={14} />
-                        {isCreating ? "Creating…" : "Create"}
+                        <span className="hidden sm:inline">
+                            {isCreating ? "Creating…" : "Create"}
+                        </span>
                     </button>
                 </div>
                 <ColorSwatches value={newColor} onChange={setNewColor} />
