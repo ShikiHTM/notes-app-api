@@ -77,12 +77,12 @@ describe("useToast test cases", () => {
     });
 
     test.each<[string, ToastType]>([
-        ["Lưu thành công", "success"],
-        ["Có lỗi xảy ra", "error"],
-        ["Đang xử lý", "info"],
-        ["Cảnh báo", "warning"],
+        ["Saved successfully", "success"],
+        ["An error occurred", "error"],
+        ["Processing", "info"],
+        ["Warning", "warning"],
     ])(
-        'useToast – showToast("%s", "%s") gọi context đúng args',
+        'useToast – showToast("%s", "%s") calls context with correct args',
         (message, type) => {
             const ctx = makeToastCtx();
             mockUseContext.mockReturnValue(ctx);
@@ -92,7 +92,7 @@ describe("useToast test cases", () => {
         },
     );
 
-    test("useToast – removeToast gọi đúng id", () => {
+    test("useToast – removeToast is called with the correct id", () => {
         const ctx = makeToastCtx();
         mockUseContext.mockReturnValue(ctx);
         useToast().removeToast("abc123");
@@ -100,7 +100,7 @@ describe("useToast test cases", () => {
         expect(ctx.removeToast).toHaveBeenCalledWith("abc123");
     });
 
-    test("useToast – removeToast không trigger showToast", () => {
+    test("useToast – removeToast does not trigger showToast", () => {
         const ctx = makeToastCtx();
         mockUseContext.mockReturnValue(ctx);
         useToast().removeToast("xyz");
@@ -149,15 +149,15 @@ describe("useAuth test cases", () => {
 // ─── Note query keys ─────────────────────────────────────────────
 
 describe("Note query", () => {
-    test('notesQueryKey là ["notes"]', () => {
+    test('notesQueryKey is ["notes"]', () => {
         expect(notesQueryKey).toEqual(["notes"]);
     });
 
-    test("noteQueryKey chuyển id number thành string", () => {
+    test("noteQueryKey converts a number id to a string", () => {
         expect(noteQueryKey(5)).toEqual(["note", "5"]);
     });
 
-    test("noteQueryKey chấp nhận string id", () => {
+    test("noteQueryKey accepts a string id", () => {
         expect(noteQueryKey("abc")).toEqual(["note", "abc"]);
     });
 });
@@ -165,7 +165,7 @@ describe("Note query", () => {
 // ─── useNotes ────────────────────────────────────────────────────
 
 describe("useNotes test cases", () => {
-    test("useNotes – gọi useQuery với notesQueryKey", () => {
+    test("useNotes – calls useQuery with notesQueryKey", () => {
         useNotes();
         expect(mockUseQuery).toHaveBeenCalledWith(
             expect.objectContaining({ queryKey: notesQueryKey }),
@@ -176,28 +176,28 @@ describe("useNotes test cases", () => {
 // ─── useNote ─────────────────────────────────────────────────────
 
 describe("useNote test cases", () => {
-    test("useNote – gọi useQuery với noteQueryKey đúng id", () => {
+    test("useNote – calls useQuery with the correct noteQueryKey id", () => {
         useNote(3);
         expect(mockUseQuery).toHaveBeenCalledWith(
             expect.objectContaining({ queryKey: noteQueryKey(3) }),
         );
     });
 
-    test("useNote – enabled khi id là số hữu hạn", () => {
+    test("useNote – enabled when id is a finite number", () => {
         useNote(1);
         expect(mockUseQuery).toHaveBeenCalledWith(
             expect.objectContaining({ enabled: true }),
         );
     });
 
-    test("useNote – disabled khi id là NaN", () => {
+    test("useNote – disabled when id is NaN", () => {
         useNote(NaN);
         expect(mockUseQuery).toHaveBeenCalledWith(
             expect.objectContaining({ enabled: false }),
         );
     });
 
-    test("useNote – disabled khi id là Infinity", () => {
+    test("useNote – disabled when id is Infinity", () => {
         useNote(Infinity);
         expect(mockUseQuery).toHaveBeenCalledWith(
             expect.objectContaining({ enabled: false }),
