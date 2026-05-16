@@ -2,9 +2,10 @@
     "name": "yjs-server",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "index.mts",
     "scripts": {
-        "start": "node index.mjs"
+        "start": "tsx index.mts",
+        "dev": "tsx watch index.mts"
     },
     "keywords": [],
     "author": "",
@@ -15,6 +16,7 @@
         "@hocuspocus/server": "^3.4.4",
         "axios": "^1.15.2",
         "dotenv": "^17.4.2",
+        "tsx": "^4.22.0",
         "winston": "^3.19.0",
         "yjs": "^13.6.30"
     },

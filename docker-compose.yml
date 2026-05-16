@@ -60,12 +60,19 @@ services:
     networks:
       - notes-network
 
-  # hocuspocus:
-  #   image: shikihtm/notes-app-yjs:latest
-  #   container_name: notes-yjs-server
-  #   restart: unless-stopped
-  #   networks:
-  #     - notes-network
+  hocuspocus:
+    image: shikihtm/notes-app-yjs:latest
+    container_name: notes-yjs-server
+    restart: unless-stopped
+    environment:
+      PORT: 1234
+      DEBOUNCE: 1000
+      API_URL: http://webserver/api/v1
+      NODE_ENV: production
+    networks:
+      - notes-network
+    depends_on:
+      - backend
 
   meilisearch:
     image: getmeili/meilisearch:latest

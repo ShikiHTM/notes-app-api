@@ -9,6 +9,9 @@ RUN pnpm install --frozen-lockfile
 ARG VITE_API_URL=https://api.shikii.dev
 ENV VITE_API_URL=${VITE_API_URL}
 
+ARG VITE_YJS_URL=wss://yjs.shikii.dev
+ENV VITE_YJS_URL=${VITE_YJS_URL}
+
 COPY . .
 RUN pnpm build
 
