@@ -24,7 +24,7 @@ const NoteUnlockGate: React.FC = () => {
                     setPassword("");
                 },
                 onError: (error) => {
-                    let msg = "Sai mật khẩu";
+                    let msg = "Incorrect password";
                     if (error instanceof AxiosError) {
                         const data = error.response?.data;
                         if (typeof data?.error === "string") msg = data.error;
@@ -50,17 +50,17 @@ const NoteUnlockGate: React.FC = () => {
                 </div>
                 <div className="text-center">
                     <h2 className="font-semibold text-slate-800 dark:text-gh-fg">
-                        Ghi chú đã được khóa
+                        Note is locked
                     </h2>
                     <p className="text-sm text-slate-500 dark:text-gh-fg-muted mt-1">
-                        Nhập mật khẩu để xem nội dung
+                        Enter the password to view the content
                     </p>
                 </div>
                 <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Mật khẩu"
+                    placeholder="Password"
                     autoFocus
                     className="w-full px-3 py-2 bg-gh-canvas border border-gh-border rounded-md text-gh-fg focus:outline-none focus:ring-2 focus:ring-gh-accent"
                 />
@@ -69,7 +69,7 @@ const NoteUnlockGate: React.FC = () => {
                     disabled={!password || isPending}
                     className="w-full px-4 py-2 bg-gh-accent-emphasis text-white rounded-md disabled:opacity-50 transition cursor-pointer hover:opacity-90"
                 >
-                    {isPending ? "Đang mở khóa…" : "Mở khóa"}
+                    {isPending ? "Unlocking…" : "Unlock"}
                 </button>
             </form>
         </div>

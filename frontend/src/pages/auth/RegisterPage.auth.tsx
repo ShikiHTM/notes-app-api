@@ -22,7 +22,7 @@ export default function RegisterPage() {
 
             login(authData.token, authData.user);
 
-            showToast("Đăng ký thành công!", "success");
+            showToast("Registration successful!", "success");
 
             setTimeout(() => {
                 navigate("/");

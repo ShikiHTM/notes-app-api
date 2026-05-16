@@ -19,7 +19,7 @@ const UserDropMenu: React.FC<Props> = ({ onOpenSettings }) => {
                     onClick={onOpenSettings}
                 >
                     <MdSettings size={16} />
-                    Cài đặt
+                    Settings
                 </button>
 
                 <div className="h-px bg-slate-200 dark:bg-gh-border my-1 mx-4" />
@@ -28,8 +28,8 @@ const UserDropMenu: React.FC<Props> = ({ onOpenSettings }) => {
                     className="w-full flex gap-2 items-center text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100 dark:text-gh-danger dark:hover:bg-gh-danger-subtle transition-colors cursor-pointer"
                     onClick={async () => {
                         const ok = await confirm({
-                            message: "Bạn có chắc muốn đăng xuất?",
-                            confirmText: "Đăng xuất",
+                            message: "Are you sure you want to log out?",
+                            confirmText: "Log out",
                             confirmColor: "bg-red-500",
                         });
 
@@ -37,7 +37,7 @@ const UserDropMenu: React.FC<Props> = ({ onOpenSettings }) => {
                     }}
                 >
                     <MdLogout size={16} />
-                    Đăng xuất
+                    Log out
                 </button>
             </div>
         </>

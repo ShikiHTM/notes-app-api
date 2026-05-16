@@ -31,7 +31,7 @@ const NoteEditorContent: React.FC = () => {
     if (!note) {
         return (
             <div className="py-20 text-center text-slate-400 dark:text-gh-fg-subtle">
-                Không tìm thấy ghi chú
+                Note not found
             </div>
         );
     }

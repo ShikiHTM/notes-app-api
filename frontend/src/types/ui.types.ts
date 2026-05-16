@@ -1,4 +1,4 @@
-export interface ISidebarItem extends Object {
+export interface ISidebarItem {
     id: SidebarTab;
     label: string;
     icon: React.ReactNode;
@@ -10,6 +10,7 @@ const SIDEBAR_TAB = {
     LABELS: "labels",
     ARCHIVE: "archive",
     TRASH: "trash",
+    SHARED: "shared"
 } as const;
 
 export type SidebarTab = (typeof SIDEBAR_TAB)[keyof typeof SIDEBAR_TAB];

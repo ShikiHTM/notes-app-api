@@ -61,11 +61,11 @@ export const useSetNotePassword = () => {
         onSuccess: (note) => {
             qc.setQueryData(noteQueryKey(note.id), note);
             invalidateLists(qc);
-            showToast("Đã đặt mật khẩu", "success");
+            showToast("Password set", "success");
         },
         onError: (error) =>
             showToast(
-                extractErrorMessage(error, "Không thể đặt mật khẩu"),
+                extractErrorMessage(error, "Failed to set password"),
                 "error",
             ),
     });
@@ -89,11 +89,11 @@ export const useRemoveNotePassword = () => {
         onSuccess: (note) => {
             qc.setQueryData(noteQueryKey(note.id), note);
             invalidateLists(qc);
-            showToast("Đã gỡ mật khẩu", "success");
+            showToast("Password removed", "success");
         },
         onError: (error) =>
             showToast(
-                extractErrorMessage(error, "Không thể gỡ mật khẩu"),
+                extractErrorMessage(error, "Failed to remove password"),
                 "error",
             ),
     });

@@ -8,11 +8,11 @@ const TrashPage: React.FC = () => {
     return (
         <div className="flex flex-col gap-4">
             <h1 className="text-2xl font-semibold text-slate-800 dark:text-gh-fg">
-                Thùng rác
+                Trash
             </h1>
             <NoteGrid
                 notes={notes}
-                emptyMessage="Thùng rác trống"
+                emptyMessage="Trash is empty"
                 actionsContext="trash"
                 isLoading={isLoading}
             />

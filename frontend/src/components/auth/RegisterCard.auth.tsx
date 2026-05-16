@@ -25,7 +25,7 @@ const scorePassword = (pw: string): number => {
     return Math.min(score, 4);
 };
 
-const STRENGTH_LABEL = ["", "Yếu", "Trung bình", "Khá", "Mạnh"];
+const STRENGTH_LABEL = ["", "Weak", "Fair", "Good", "Strong"];
 const STRENGTH_COLOR = [
     "bg-slate-200 dark:bg-gh-border",
     "bg-red-500",
@@ -65,28 +65,28 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
         const newErrors: typeof error = {};
 
         if (!formData?.display_name) {
-            newErrors.display_name = "Tên người dùng không được để trống";
+            newErrors.display_name = "Username is required";
         } else if (formData.display_name.length < 3) {
             newErrors.display_name =
-                "Tên người dùng không được nhỏ hơn 3 ký tự";
+                "Username must be at least 3 characters";
         } else if (usernameStatus === "taken") {
-            newErrors.display_name = "Tên người dùng đã được sử dụng";
+            newErrors.display_name = "Username is already taken";
         }
 
         if (!formData?.email) {
-            newErrors.email = "Email không được để trống";
+            newErrors.email = "Email is required";
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = "Email không hợp lệ";
+            newErrors.email = "Invalid email";
         }
 
         if (!formData?.password) {
-            newErrors.password = "Mật khẩu không được để trống";
+            newErrors.password = "Password is required";
         } else if (formData.password.length < 8) {
-            newErrors.password = "Mật khẩu phải có ít nhất 8 ký tự";
+            newErrors.password = "Password must be at least 8 characters";
         }
 
         if (confirmPassword !== formData?.password) {
-            newErrors.confirmPassword = "Mật khẩu không trùng khớp";
+            newErrors.confirmPassword = "Passwords do not match";
         }
 
         setError(newErrors);
@@ -121,17 +121,17 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
             </div>
 
             <h2 className="font-bold text-gray-800 dark:text-gh-fg text-center mt-2 mb-2 text-4xl">
-                Tạo tài khoản
+                Create account
             </h2>
             <p className="text-gray-400 dark:text-gh-fg-muted text-center text-sm mb-8">
-                Bắt đầu hành trình của bạn
+                Start your journey
             </p>
 
             <form onSubmit={handleSubmit} noValidate>
                 {/* Display Name */}
                 <div className="w-full gap-5 px-4 mb-3 sm:px-0">
                     <label htmlFor="register-name" className="sr-only">
-                        Tên người dùng
+                        Username
                     </label>
                     <div className="relative group">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
@@ -145,7 +145,7 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
                             ref={nameRef}
                             type="text"
                             autoComplete="username"
-                            placeholder="Tên người dùng"
+                            placeholder="Username"
                             aria-invalid={!!error.display_name || usernameStatus === "taken"}
                             aria-describedby="register-name-status"
                             className={inputClasses}
@@ -188,11 +188,11 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
                             </span>
                         ) : usernameStatus === "available" ? (
                             <span className="text-xs text-green-600 dark:text-green-400">
-                                Tên người dùng có thể sử dụng
+                                Username is available
                             </span>
                         ) : usernameStatus === "taken" ? (
                             <span className="text-xs text-red-500">
-                                Tên người dùng đã được sử dụng
+                                Username is already taken
                             </span>
                         ) : null}
                     </div>
@@ -244,7 +244,7 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
                 {/* Password */}
                 <div className="w-full gap-5 px-4 mb-3 sm:px-0">
                     <label htmlFor="register-password" className="sr-only">
-                        Mật khẩu
+                        Password
                     </label>
                     <div className="relative group">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
@@ -257,7 +257,7 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
                             id="register-password"
                             type={showPassword ? "text" : "password"}
                             autoComplete="new-password"
-                            placeholder="Mật khẩu"
+                            placeholder="Password"
                             aria-invalid={!!error.password}
                             aria-describedby="register-password-strength"
                             className={inputClasses}
@@ -272,7 +272,7 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
                         />
                         <button
                             type="button"
-                            aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                            aria-label={showPassword ? "Hide password" : "Show password"}
                             aria-pressed={showPassword}
                             className="absolute top-1/2 right-2 -translate-1/2 text-slate-400 shadow-none"
                             onClick={() => setShowPassword(!showPassword)}
@@ -321,7 +321,7 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
                 {/* Confirm Password */}
                 <div className="w-full gap-5 px-4 sm:px-0">
                     <label htmlFor="register-confirm-password" className="sr-only">
-                        Xác nhận mật khẩu
+                        Confirm password
                     </label>
                     <div className="relative group">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
@@ -334,7 +334,7 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
                             id="register-confirm-password"
                             type={showConfirmPassword ? "text" : "password"}
                             autoComplete="new-password"
-                            placeholder="Xác nhận mật khẩu"
+                            placeholder="Confirm password"
                             aria-invalid={!!error.confirmPassword}
                             aria-describedby={
                                 error.confirmPassword
@@ -351,7 +351,7 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
                         <button
                             type="button"
                             aria-label={
-                                showConfirmPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"
+                                showConfirmPassword ? "Hide password" : "Show password"
                             }
                             aria-pressed={showConfirmPassword}
                             className="absolute top-1/2 right-2 -translate-1/2 text-slate-400 shadow-none"
@@ -398,13 +398,13 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
                     transition-all duration-300 ease-out
                 "
                 >
-                    {isLoading ? "Đang xử lý..." : "Đăng ký"}
+                    {isLoading ? "Processing..." : "Sign up"}
                 </button>
             </form>
 
             {/* Footer */}
             <p className="text-gray-400 dark:text-gh-fg-muted text-center text-sm mt-6">
-                Đã có tài khoản?{" "}
+                Already have an account?{" "}
                 <span
                     role="link"
                     tabIndex={0}
@@ -417,7 +417,7 @@ const RegisterCard: React.FC<IRegisterCardProps> = ({
                         }
                     }}
                 >
-                    Đăng nhập ngay
+                    Sign in now
                 </span>
             </p>
         </div>

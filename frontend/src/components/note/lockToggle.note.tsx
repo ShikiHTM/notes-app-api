@@ -21,6 +21,9 @@ const NoteLockToggle: React.FC = () => {
 
     if (!note) return null;
     if (isReadOnly) return null;
+    const isOwner =
+        note.viewer_permission == null || note.viewer_permission === "OWNER";
+    if (!isOwner) return null;
 
     const isLocked = !!note.is_locked;
 
@@ -76,8 +79,8 @@ const NoteLockToggle: React.FC = () => {
             <button
                 type="button"
                 onClick={openMenu}
-                title={isLocked ? "Đổi/Gỡ mật khẩu" : "Đặt mật khẩu"}
-                aria-label="Quản lý mật khẩu ghi chú"
+                title={isLocked ? "Change/Remove password" : "Set password"}
+                aria-label="Manage note password"
                 className="p-1 rounded text-slate-500 dark:text-gh-fg-muted hover:bg-slate-100 dark:hover:bg-gh-canvas-inset cursor-pointer"
             >
                 {isLocked ? <MdLock size={18} /> : <MdLockOpen size={18} />}
@@ -89,27 +92,27 @@ const NoteLockToggle: React.FC = () => {
                         <h3 className="font-semibold text-gh-fg mb-1 flex items-center gap-2">
                             {mode === "set" && (
                                 <>
-                                    <MdLock size={18} /> Đặt mật khẩu cho ghi chú
+                                    <MdLock size={18} /> Set password for note
                                 </>
                             )}
                             {mode === "change" && (
                                 <>
-                                    <MdLockReset size={18} /> Đổi mật khẩu
+                                    <MdLockReset size={18} /> Change password
                                 </>
                             )}
                             {mode === "remove" && (
                                 <>
-                                    <MdLockOpen size={18} /> Gỡ mật khẩu
+                                    <MdLockOpen size={18} /> Remove password
                                 </>
                             )}
                         </h3>
                         <p className="text-sm text-gh-fg-muted mb-4">
                             {mode === "set" &&
-                                "Mật khẩu tối thiểu 4 ký tự. Nội dung và ảnh sẽ bị ẩn cho đến khi bạn nhập đúng mật khẩu."}
+                                "Password must be at least 4 characters. Content and images will be hidden until you enter the correct password."}
                             {mode === "change" &&
-                                "Nhập mật khẩu hiện tại và mật khẩu mới."}
+                                "Enter the current password and the new password."}
                             {mode === "remove" &&
-                                "Nhập mật khẩu hiện tại để gỡ khóa ghi chú này."}
+                                "Enter the current password to unlock this note."}
                         </p>
 
                         <div className="flex flex-col gap-3">
@@ -118,7 +121,7 @@ const NoteLockToggle: React.FC = () => {
                                     type="password"
                                     value={current}
                                     onChange={(e) => setCurrent(e.target.value)}
-                                    placeholder="Mật khẩu hiện tại"
+                                    placeholder="Current password"
                                     autoFocus
                                     className="w-full px-3 py-2 bg-gh-canvas border border-gh-border rounded-md text-gh-fg focus:outline-none focus:ring-2 focus:ring-gh-accent"
                                 />
@@ -132,11 +135,7 @@ const NoteLockToggle: React.FC = () => {
                                         onChange={(e) =>
                                             setNext(e.target.value)
                                         }
-                                        placeholder={
-                                            mode === "set"
-                                                ? "Mật khẩu mới"
-                                                : "Mật khẩu mới"
-                                        }
+                                        placeholder="New password"
                                         className="w-full px-3 py-2 bg-gh-canvas border border-gh-border rounded-md text-gh-fg focus:outline-none focus:ring-2 focus:ring-gh-accent"
                                     />
                                     <input
@@ -145,12 +144,12 @@ const NoteLockToggle: React.FC = () => {
                                         onChange={(e) =>
                                             setConfirm(e.target.value)
                                         }
-                                        placeholder="Xác nhận mật khẩu mới"
+                                        placeholder="Confirm new password"
                                         className="w-full px-3 py-2 bg-gh-canvas border border-gh-border rounded-md text-gh-fg focus:outline-none focus:ring-2 focus:ring-gh-accent"
                                     />
                                     {next && confirm && next !== confirm && (
                                         <span className="text-xs text-red-600 dark:text-gh-danger">
-                                            Mật khẩu xác nhận không khớp
+                                            Passwords do not match
                                         </span>
                                     )}
                                 </>
@@ -169,7 +168,7 @@ const NoteLockToggle: React.FC = () => {
                                         }}
                                         className="px-3 py-2 text-sm text-red-600 dark:text-gh-danger hover:underline cursor-pointer"
                                     >
-                                        Gỡ mật khẩu
+                                        Remove password
                                     </button>
                                 )}
                             </div>
@@ -179,7 +178,7 @@ const NoteLockToggle: React.FC = () => {
                                     onClick={reset}
                                     className="px-4 py-2 border border-gh-border text-gh-fg rounded-md hover:bg-gh-canvas-subtle transition cursor-pointer text-sm"
                                 >
-                                    Hủy
+                                    Cancel
                                 </button>
                                 {mode === "remove" ? (
                                     <button
@@ -188,7 +187,7 @@ const NoteLockToggle: React.FC = () => {
                                         disabled={!canSubmitRemove || pending}
                                         className="px-4 py-2 bg-red-500 text-white rounded-md disabled:opacity-50 transition cursor-pointer hover:opacity-90 text-sm"
                                     >
-                                        {isRemoving ? "Đang gỡ…" : "Gỡ"}
+                                        {isRemoving ? "Removing…" : "Remove"}
                                     </button>
                                 ) : (
                                     <button
@@ -197,7 +196,7 @@ const NoteLockToggle: React.FC = () => {
                                         disabled={!canSubmitSet || pending}
                                         className="px-4 py-2 bg-gh-accent-emphasis text-white rounded-md disabled:opacity-50 transition cursor-pointer hover:opacity-90 text-sm"
                                     >
-                                        {isSetting ? "Đang lưu…" : "Lưu"}
+                                        {isSetting ? "Saving…" : "Save"}
                                     </button>
                                 )}
                             </div>

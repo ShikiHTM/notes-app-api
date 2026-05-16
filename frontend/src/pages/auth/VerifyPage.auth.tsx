@@ -17,7 +17,7 @@ export default function VerifyPage() {
 
         if (!id || !hash || !expires || !signature) {
             setState("error");
-            setErrorMessage("Liên kết không hợp lệ.");
+            setErrorMessage("Invalid link.");
             return;
         }
 
@@ -32,7 +32,7 @@ export default function VerifyPage() {
                 setState("error");
                 setErrorMessage(
                     err.response?.data?.message ??
-                        "Liên kết đã hết hạn hoặc không hợp lệ.",
+                        "The link has expired or is invalid.",
                 );
             });
     }, [searchParams]);
@@ -47,17 +47,17 @@ export default function VerifyPage() {
         >
             <div className="bg-white dark:bg-gh-canvas-subtle rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
                 {state === "loading" && (
-                    <p className="text-gh-fg-muted">Đang xác thực email...</p>
+                    <p className="text-gh-fg-muted">Verifying email...</p>
                 )}
                 {state === "success" && (
                     <>
                         <div className="text-5xl mb-4">✅</div>
                         <h2 className="text-xl font-semibold text-gh-fg mb-2">
-                            Xác thực thành công!
+                            Verification successful!
                         </h2>
                         <p className="text-gh-fg-muted">
-                            Bạn đã xác thực email thành công. Bạn có thể đóng
-                            trang này.
+                            Your email has been verified. You can close this
+                            page.
                         </p>
                     </>
                 )}
@@ -65,7 +65,7 @@ export default function VerifyPage() {
                     <>
                         <div className="text-5xl mb-4">❌</div>
                         <h2 className="text-xl font-semibold text-gh-fg mb-2">
-                            Xác thực thất bại
+                            Verification failed
                         </h2>
                         <p className="text-gh-fg-muted">{errorMessage}</p>
                     </>

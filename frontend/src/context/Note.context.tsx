@@ -11,6 +11,8 @@ import type { INote, NoteColor } from "../types";
 import api from "../api/Axios";
 import useToast from "../hooks/Toast.hook";
 import { notesQueryKey } from "../hooks/Note.hook";
+import { useAuth } from "../hooks/Auth.hook";
+import { useNoteCollab, type CollabHandle } from "../hooks/NoteCollab.hook";
 
 interface INoteContextValue {
     note: INote | null;
@@ -18,6 +20,7 @@ interface INoteContextValue {
     isReadOnly: boolean;
     isDirty: boolean;
     isSaving: boolean;
+    collab: CollabHandle | null;
     setTitle: (value: string) => void;
     updateContent: (rich: string, plain: string) => void;
     setColor: (value: NoteColor | null) => void;
@@ -41,6 +44,12 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
     const [isLoading, setIsLoading] = useState(true);
     const { showToast } = useToast();
     const qc = useQueryClient();
+    const { token } = useAuth();
+
+    // Open a Yjs collaboration session for this note. Locked notes don't
+    // participate (the server rejects them anyway).
+    const collabNoteId = note && !note.is_locked ? noteId : null;
+    const collab = useNoteCollab(collabNoteId, token);
 
     useEffect(() => {
         let cancelled = false;
@@ -52,7 +61,7 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
                 if (!cancelled) setNote(res.data);
             })
             .catch(() => {
-                if (!cancelled) showToast("Không tải được ghi chú", "error");
+                if (!cancelled) showToast("Failed to load note", "error");
             })
             .finally(() => {
                 if (!cancelled) setIsLoading(false);
@@ -63,7 +72,11 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
         };
     }, [noteId]);
 
-    const isReadOnly = !!note?.deleted_at;
+    const isReadOnly =
+        !!note?.deleted_at ||
+        (note?.viewer_permission != null &&
+            note.viewer_permission !== "OWNER" &&
+            note.viewer_permission !== "READ_AND_WRITE");
 
     const setTitle = (title: string) => {
         setNote((n) => (n ? { ...n, title } : n));
@@ -119,7 +132,7 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
             setIsDirty(false);
             qc.invalidateQueries({ queryKey: notesQueryKey });
         } catch {
-            showToast("Lưu thất bại", "error");
+            showToast("Failed to save", "error");
         } finally {
             setIsSaving(false);
         }
@@ -150,6 +163,7 @@ export function NoteProvider({ noteId, children }: INoteProviderProps) {
                 isReadOnly,
                 isDirty,
                 isSaving,
+                collab,
                 setTitle,
                 updateContent,
                 setColor,

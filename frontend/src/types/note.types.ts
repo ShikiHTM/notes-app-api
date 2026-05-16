@@ -26,13 +26,13 @@ export const NOTE_COLOR_CSS: Record<NoteColor, string> = {
 };
 
 export const NOTE_COLOR_LABEL: Record<NoteColor, string> = {
-    RED: "Đỏ",
-    CYAN: "Xanh ngọc",
-    YELLOW: "Vàng",
-    LIME: "Xanh chanh",
-    PURPLE: "Tím",
-    BLACK: "Đen",
-    WHITE: "Trắng",
+    RED: "Red",
+    CYAN: "Cyan",
+    YELLOW: "Yellow",
+    LIME: "Lime",
+    PURPLE: "Purple",
+    BLACK: "Black",
+    WHITE: "White",
 };
 
 export interface INote {
@@ -49,6 +49,14 @@ export interface INote {
     updated_at: string;
     labels?: ILabel[];
     images?: INoteImage[];
+    viewer_permission?: "OWNER" | "READ" | "READ_AND_WRITE" | null;
+    shared_permission?: "READ" | "READ_AND_WRITE" | null;
+    user?: {
+        id: number;
+        display_name: string;
+        email: string;
+        pfp_url?: string | null;
+    };
 }
 
 export type EmptyVariant = "notes" | "archive" | "trash" | "labels";

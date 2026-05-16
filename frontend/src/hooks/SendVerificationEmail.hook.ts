@@ -12,10 +12,10 @@ export const useSendVerificationEmail = () => {
             return response.data;
         },
         onSuccess: () => {
-            showToast("Email xác thực đã được gửi!", "success");
+            showToast("Verification email sent!", "success");
         },
         onError: (error) => {
-            let message = "Gửi email xác thực thất bại";
+            let message = "Failed to send verification email";
             if (error instanceof AxiosError && error.response?.data?.message) {
                 message = error.response.data.message;
             }

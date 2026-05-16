@@ -12,10 +12,10 @@ export const useRequestPasswordReset = () => {
             return response.data;
         },
         onSuccess: () => {
-            showToast("Email đặt lại mật khẩu đã được gửi!", "success");
+            showToast("Password reset email sent!", "success");
         },
         onError: (error) => {
-            let message = "Gửi email thất bại";
+            let message = "Failed to send email";
             if (error instanceof AxiosError && error.response?.data?.message) {
                 message = error.response.data.message;
             }

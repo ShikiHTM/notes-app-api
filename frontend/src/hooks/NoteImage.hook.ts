@@ -45,11 +45,11 @@ export const useUploadNoteImage = (noteId: number) => {
                     : old,
             );
             qc.invalidateQueries({ queryKey: notesQueryKey });
-            showToast("Đã tải ảnh", "success");
+            showToast("Image uploaded", "success");
         },
         onError: (error) =>
             showToast(
-                extractErrorMessage(error, "Không thể tải ảnh"),
+                extractErrorMessage(error, "Failed to upload image"),
                 "error",
             ),
     });
@@ -76,11 +76,11 @@ export const useDeleteNoteImage = (noteId: number) => {
                     : old,
             );
             qc.invalidateQueries({ queryKey: notesQueryKey });
-            showToast("Đã xóa ảnh", "success");
+            showToast("Image deleted", "success");
         },
         onError: (error) =>
             showToast(
-                extractErrorMessage(error, "Không thể xóa ảnh"),
+                extractErrorMessage(error, "Failed to delete image"),
                 "error",
             ),
     });

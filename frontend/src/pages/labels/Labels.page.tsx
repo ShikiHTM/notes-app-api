@@ -21,7 +21,7 @@ const ColorSwatches: React.FC<{
                 key={c}
                 type="button"
                 onClick={() => onChange(c)}
-                aria-label={`Chọn màu ${c}`}
+                aria-label={`Pick color ${c}`}
                 className={`w-6 h-6 rounded-full transition ring-offset-2 dark:ring-offset-gh-canvas ${
                     value.toLowerCase() === c.toLowerCase()
                         ? "ring-2 ring-slate-500 dark:ring-gh-fg"
@@ -63,8 +63,8 @@ const LabelRow: React.FC<{ label: ILabel }> = ({ label }) => {
 
     const handleDelete = async () => {
         const ok = await confirm({
-            message: `Xóa nhãn "${label.name}"? Các ghi chú liên kết sẽ không bị xóa.`,
-            confirmText: "Xóa",
+            message: `Delete label "${label.name}"? Linked notes will not be deleted.`,
+            confirmText: "Delete",
             confirmColor: "bg-red-500",
         });
         if (!ok) return;
@@ -99,7 +99,7 @@ const LabelRow: React.FC<{ label: ILabel }> = ({ label }) => {
                         onClick={cancelEdit}
                         className="px-3 py-1.5 text-sm border border-gh-border text-gh-fg rounded-md hover:bg-gh-canvas-subtle transition cursor-pointer flex items-center gap-1.5"
                     >
-                        <FaTimes size={12} /> Hủy
+                        <FaTimes size={12} /> Cancel
                     </button>
                     <button
                         type="button"
@@ -107,7 +107,7 @@ const LabelRow: React.FC<{ label: ILabel }> = ({ label }) => {
                         disabled={!name.trim() || isSaving}
                         className="px-3 py-1.5 text-sm bg-gh-accent-emphasis text-white rounded-md disabled:opacity-50 transition cursor-pointer hover:opacity-90 flex items-center gap-1.5"
                     >
-                        <FaCheck size={12} /> {isSaving ? "Đang lưu…" : "Lưu"}
+                        <FaCheck size={12} /> {isSaving ? "Saving…" : "Save"}
                     </button>
                 </div>
             </div>
@@ -127,7 +127,7 @@ const LabelRow: React.FC<{ label: ILabel }> = ({ label }) => {
                 <button
                     type="button"
                     onClick={startEdit}
-                    aria-label="Sửa nhãn"
+                    aria-label="Edit label"
                     className="p-1.5 rounded-full text-slate-600 dark:text-gh-fg-muted hover:bg-slate-100 dark:hover:bg-gh-canvas-inset cursor-pointer"
                 >
                     <FaPen size={14} />
@@ -136,7 +136,7 @@ const LabelRow: React.FC<{ label: ILabel }> = ({ label }) => {
                     type="button"
                     onClick={handleDelete}
                     disabled={isDeleting}
-                    aria-label="Xóa nhãn"
+                    aria-label="Delete label"
                     className="p-1.5 rounded-full text-red-600 dark:text-gh-danger hover:bg-red-50 dark:hover:bg-gh-canvas-inset cursor-pointer disabled:opacity-50"
                 >
                     <FaTrash size={14} />
@@ -171,7 +171,7 @@ const LabelsPage: React.FC = () => {
     return (
         <div className="flex flex-col gap-6">
             <h1 className="text-2xl font-semibold text-slate-800 dark:text-gh-fg">
-                Nhãn
+                Labels
             </h1>
 
             <form
@@ -179,7 +179,7 @@ const LabelsPage: React.FC = () => {
                 className="flex flex-col gap-3 rounded-lg border border-slate-200 dark:border-gh-border bg-white dark:bg-gh-canvas-subtle p-4"
             >
                 <h2 className="text-sm font-semibold text-gh-fg-muted">
-                    Tạo nhãn mới
+                    Create new label
                 </h2>
                 <div className="flex items-center gap-3">
                     <span
@@ -190,7 +190,7 @@ const LabelsPage: React.FC = () => {
                         type="text"
                         value={newName}
                         onChange={(e) => setNewName(e.target.value)}
-                        placeholder="Tên nhãn"
+                        placeholder="Label name"
                         maxLength={50}
                         className="flex-1 px-3 py-2 bg-gh-canvas border border-gh-border rounded-md text-gh-fg focus:outline-none focus:ring-2 focus:ring-gh-accent"
                     />
@@ -200,7 +200,7 @@ const LabelsPage: React.FC = () => {
                         className="px-4 py-2 bg-gh-accent-emphasis text-white rounded-md disabled:opacity-50 transition cursor-pointer hover:opacity-90 flex items-center gap-2"
                     >
                         <FaTag size={14} />
-                        {isCreating ? "Đang tạo…" : "Tạo"}
+                        {isCreating ? "Creating…" : "Create"}
                     </button>
                 </div>
                 <ColorSwatches value={newColor} onChange={setNewColor} />
@@ -208,11 +208,11 @@ const LabelsPage: React.FC = () => {
 
             {isLoading ? (
                 <div className="text-slate-400 dark:text-gh-fg-subtle">
-                    Đang tải…
+                    Loading…
                 </div>
             ) : labels.length === 0 ? (
                 <div className="flex items-center justify-center py-12 text-slate-400 dark:text-gh-fg-subtle">
-                    Chưa có nhãn nào
+                    No labels yet
                 </div>
             ) : (
                 <div className="flex flex-col gap-2">

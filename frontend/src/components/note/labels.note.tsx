@@ -10,6 +10,10 @@ const NoteLabels: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
+    const isOwner =
+        note?.viewer_permission == null || note.viewer_permission === "OWNER";
+    const canManage = !isReadOnly && isOwner;
+
     useEffect(() => {
         if (!isOpen) return;
         const handler = (e: MouseEvent) => {
@@ -47,11 +51,11 @@ const NoteLabels: React.FC = () => {
                 >
                     <FaTag size={10} />
                     <span className="max-w-[140px] truncate">{label.name}</span>
-                    {!isReadOnly && (
+                    {canManage && (
                         <button
                             type="button"
                             onClick={() => toggleLabel(label.id)}
-                            aria-label={`Bỏ nhãn ${label.name}`}
+                            aria-label={`Remove label ${label.name}`}
                             className="hover:opacity-80 cursor-pointer"
                         >
                             <FaTimes size={10} />
@@ -60,22 +64,22 @@ const NoteLabels: React.FC = () => {
                 </span>
             ))}
 
-            {!isReadOnly && (
+            {canManage && (
                 <button
                     type="button"
                     onClick={() => setIsOpen((v) => !v)}
                     className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-slate-300 dark:border-gh-border px-2.5 py-1 text-xs text-slate-500 dark:text-gh-fg-muted hover:bg-slate-100 dark:hover:bg-gh-canvas-inset cursor-pointer"
                 >
                     <FaPlus size={10} />
-                    Nhãn
+                    Label
                 </button>
             )}
 
-            {isOpen && (
+            {isOpen && canManage && (
                 <div className="absolute top-full left-0 mt-2 z-30 w-64 max-h-72 overflow-y-auto bg-white dark:bg-gh-canvas-subtle border border-slate-200 dark:border-gh-border rounded-lg shadow-lg p-1">
                     {allLabels.length === 0 ? (
                         <div className="px-3 py-2 text-sm text-slate-500 dark:text-gh-fg-muted">
-                            Chưa có nhãn nào
+                            No labels yet
                         </div>
                     ) : (
                         allLabels.map((label) => {

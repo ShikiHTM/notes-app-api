@@ -66,7 +66,7 @@ class NoteImageController extends Controller
         ]);
 
         $note = Note::findOrFail($request->note_id);
-        if ($request->user()->id !== $note->user_id) {
+        if (!$note->isWritableBy($request->user())) {
             return response()->json(['message' => 'Forbidden.'], 403);
         }
 
@@ -135,7 +135,7 @@ class NoteImageController extends Controller
     public function destroy(Request $request, $id) {
         $image = NoteImage::with('note')->findOrFail($id);
 
-        if ($request->user()->id !== $image->note->user_id) {
+        if (!$image->note->isWritableBy($request->user())) {
             return response()->json(['message' => 'Forbidden.'], 403);
         }
 
@@ -162,7 +162,7 @@ class NoteImageController extends Controller
         ]);
 
         $note = Note::findOrFail($request->note_id);
-        if ($request->user()->id !== $note->user_id) {
+        if (!$note->isReadableBy($request->user())) {
             return response()->json(['message' => 'Forbidden.'], 403);
         }
 

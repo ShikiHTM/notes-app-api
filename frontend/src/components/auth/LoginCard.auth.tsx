@@ -26,15 +26,15 @@ const LoginCard: React.FC<ILoginCardProps> = ({ onLogin, isLoading }) => {
         const newErrors: { email?: string; password?: string } = {};
 
         if (!formData?.email) {
-            newErrors.email = "Email không được để trống";
+            newErrors.email = "Email is required";
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = "Email không hợp lệ";
+            newErrors.email = "Invalid email";
         }
 
         if (!formData?.password) {
-            newErrors.password = "Mật khẩu không được để trống";
+            newErrors.password = "Password is required";
         } else if (formData.password.length < 8) {
-            newErrors.password = "Mật khẩu phải có ít nhất 8 ký tự";
+            newErrors.password = "Password must be at least 8 characters";
         }
 
         setError(newErrors);
@@ -70,10 +70,10 @@ const LoginCard: React.FC<ILoginCardProps> = ({ onLogin, isLoading }) => {
             </div>
 
             <h2 className="font-bold text-gray-800 dark:text-gh-fg text-center mt-2 mb-2 text-4xl">
-                Chào mừng trở lại
+                Welcome back
             </h2>
             <p className="text-gray-400 dark:text-gh-fg-muted text-center text-sm mb-8">
-                Vui lòng đăng nhập để tiếp tục
+                Please sign in to continue
             </p>
 
             <form onSubmit={handleSubmit} noValidate>
@@ -118,7 +118,7 @@ const LoginCard: React.FC<ILoginCardProps> = ({ onLogin, isLoading }) => {
                 </div>
                 <div className="w-full gap-5 px-4 sm:px-0">
                     <label htmlFor="login-password" className="sr-only">
-                        Mật khẩu
+                        Password
                     </label>
                     <div className="relative group">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
@@ -131,7 +131,7 @@ const LoginCard: React.FC<ILoginCardProps> = ({ onLogin, isLoading }) => {
                             id="login-password"
                             type={showPassword ? "text" : "password"}
                             autoComplete="current-password"
-                            placeholder="Mật khẩu"
+                            placeholder="Password"
                             aria-invalid={!!error.password}
                             aria-describedby={
                                 error.password ? "login-password-error" : undefined
@@ -148,7 +148,7 @@ const LoginCard: React.FC<ILoginCardProps> = ({ onLogin, isLoading }) => {
                         />
                         <button
                             type="button"
-                            aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                            aria-label={showPassword ? "Hide password" : "Show password"}
                             aria-pressed={showPassword}
                             className="absolute top-1/2 right-2 -translate-1/2 text-slate-400 shadow-none"
                             onClick={() => setShowPassword(!showPassword)}
@@ -192,13 +192,13 @@ const LoginCard: React.FC<ILoginCardProps> = ({ onLogin, isLoading }) => {
                     transition-all duration-300 ease-out
                 "
                 >
-                    {isLoading ? "Đang xử lý..." : "Đăng nhập"}
+                    {isLoading ? "Processing..." : "Sign in"}
                 </button>
             </form>
 
             {/* Footer */}
             <p className="text-gray-400 dark:text-gh-fg-muted text-center text-sm mt-6">
-                Chưa có tài khoản?{" "}
+                Don't have an account?{" "}
                 <span
                     role="link"
                     tabIndex={0}
@@ -211,11 +211,11 @@ const LoginCard: React.FC<ILoginCardProps> = ({ onLogin, isLoading }) => {
                         }
                     }}
                 >
-                    Đăng ký ngay
+                    Sign up now
                 </span>
             </p>
             <p className="text-gray-400 dark:text-gh-fg-muted text-center text-sm mt-2">
-                Quên mật khẩu?{" "}
+                Forgot password?{" "}
                 <span
                     role="link"
                     tabIndex={0}
@@ -228,7 +228,7 @@ const LoginCard: React.FC<ILoginCardProps> = ({ onLogin, isLoading }) => {
                         }
                     }}
                 >
-                    Lấy lại mật khẩu
+                    Reset password
                 </span>
             </p>
         </div>

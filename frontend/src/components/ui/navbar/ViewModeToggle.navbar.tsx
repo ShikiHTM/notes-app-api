@@ -9,8 +9,8 @@ const ViewModeToggle: React.FC = () => {
         <button
             onClick={toggleViewMode}
             className="hover:text-indigo-600 dark:hover:text-gh-accent transition-colors cursor-pointer"
-            title={isGrid ? "Chuyển sang danh sách" : "Chuyển sang lưới"}
-            aria-label="Chuyển chế độ xem"
+            title={isGrid ? "Switch to list view" : "Switch to grid view"}
+            aria-label="Toggle view mode"
         >
             {isGrid ? <MdViewList size={24} /> : <MdViewModule size={24} />}
         </button>

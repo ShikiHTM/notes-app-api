@@ -69,10 +69,10 @@ export const useNoteActions = (
             return { previous };
         },
         onSuccess: () =>
-            showToast(note.is_pinned ? "Đã bỏ ghim" : "Đã ghim", "success"),
+            showToast(note.is_pinned ? "Unpinned" : "Pinned", "success"),
         onError: (_e, _v, ctx) => {
             if (ctx?.previous) qc.setQueryData(notesQueryKey, ctx.previous);
-            showToast("Không thể ghim", "error");
+            showToast("Failed to pin", "error");
         },
         onSettled: () => qc.invalidateQueries({ queryKey: notesQueryKey }),
     });
@@ -89,10 +89,10 @@ export const useNoteActions = (
             );
             return { previous, sourceKey };
         },
-        onSuccess: () => showToast("Đã chuyển vào thùng rác", "success"),
+        onSuccess: () => showToast("Moved to trash", "success"),
         onError: (_e, _v, ctx) => {
             if (ctx?.previous) qc.setQueryData(ctx.sourceKey, ctx.previous);
-            showToast("Không thể xóa", "error");
+            showToast("Failed to delete", "error");
         },
         onSettled: () => {
             qc.invalidateQueries({ queryKey: notesQueryKey });
@@ -117,10 +117,10 @@ export const useNoteActions = (
             );
             return { previous };
         },
-        onSuccess: () => showToast("Đã lưu trữ", "success"),
+        onSuccess: () => showToast("Archived", "success"),
         onError: (_e, _v, ctx) => {
             if (ctx?.previous) qc.setQueryData(notesQueryKey, ctx.previous);
-            showToast("Không thể lưu trữ", "error");
+            showToast("Failed to archive", "error");
         },
         onSettled: () => {
             qc.invalidateQueries({ queryKey: notesQueryKey });
@@ -138,11 +138,11 @@ export const useNoteActions = (
             );
             return { previous };
         },
-        onSuccess: () => showToast("Đã bỏ lưu trữ", "success"),
+        onSuccess: () => showToast("Unarchived", "success"),
         onError: (_e, _v, ctx) => {
             if (ctx?.previous)
                 qc.setQueryData(archivedNotesQueryKey, ctx.previous);
-            showToast("Không thể bỏ lưu trữ", "error");
+            showToast("Failed to unarchive", "error");
         },
         onSettled: () => {
             qc.invalidateQueries({ queryKey: notesQueryKey });
@@ -160,11 +160,11 @@ export const useNoteActions = (
             );
             return { previous };
         },
-        onSuccess: () => showToast("Đã khôi phục", "success"),
+        onSuccess: () => showToast("Restored", "success"),
         onError: (_e, _v, ctx) => {
             if (ctx?.previous)
                 qc.setQueryData(trashedNotesQueryKey, ctx.previous);
-            showToast("Không thể khôi phục", "error");
+            showToast("Failed to restore", "error");
         },
         onSettled: () => {
             qc.invalidateQueries({ queryKey: notesQueryKey });
@@ -182,11 +182,11 @@ export const useNoteActions = (
             );
             return { previous };
         },
-        onSuccess: () => showToast("Đã xóa vĩnh viễn", "success"),
+        onSuccess: () => showToast("Permanently deleted", "success"),
         onError: (_e, _v, ctx) => {
             if (ctx?.previous)
                 qc.setQueryData(trashedNotesQueryKey, ctx.previous);
-            showToast("Không thể xóa vĩnh viễn", "error");
+            showToast("Failed to delete permanently", "error");
         },
         onSettled: () =>
             qc.invalidateQueries({ queryKey: trashedNotesQueryKey }),
@@ -196,8 +196,8 @@ export const useNoteActions = (
 
     const onArchive = async () => {
         const ok = await confirm({
-            message: "Chuyển ghi chú vào lưu trữ?",
-            confirmText: "Lưu trữ",
+            message: "Move this note to archive?",
+            confirmText: "Archive",
         });
         if (!ok) return;
         archiveMutation.mutate();
@@ -207,8 +207,8 @@ export const useNoteActions = (
 
     const onSoftDelete = async () => {
         const ok = await confirm({
-            message: "Chuyển ghi chú vào thùng rác?",
-            confirmText: "Xóa",
+            message: "Move this note to trash?",
+            confirmText: "Delete",
             confirmColor: "bg-red-500",
         });
         if (!ok) return;
@@ -219,8 +219,8 @@ export const useNoteActions = (
 
     const onHardDelete = async () => {
         const ok = await confirm({
-            message: "Xóa vĩnh viễn ghi chú này? Hành động không thể hoàn tác.",
-            confirmText: "Xóa vĩnh viễn",
+            message: "Hard delete this note? This action cannot be undo",
+            confirmText: "Hard delete",
             confirmColor: "bg-red-500",
         });
         if (!ok) return;
@@ -231,21 +231,21 @@ export const useNoteActions = (
         return (
             <div className="flex gap-1">
                 <ActionButton
-                    label={note.is_pinned ? "Bỏ ghim" : "Ghim"}
+                    label={note.is_pinned ? "Unpinned" : "Pinned"}
                     onClick={onPin}
                     disabled={pinMutation.isPending}
                 >
                     <MdPushPin size={16} />
                 </ActionButton>
                 <ActionButton
-                    label="Lưu trữ"
+                    label="Archive"
                     onClick={onArchive}
                     disabled={archiveMutation.isPending}
                 >
                     <MdArchive size={16} />
                 </ActionButton>
                 <ActionButton
-                    label="Xóa"
+                    label="Delete"
                     onClick={onSoftDelete}
                     danger
                     disabled={softDeleteMutation.isPending}
@@ -260,14 +260,14 @@ export const useNoteActions = (
         return (
             <div className="flex gap-1">
                 <ActionButton
-                    label="Bỏ lưu trữ"
+                    label="Unarchive"
                     onClick={onUnarchive}
                     disabled={unarchiveMutation.isPending}
                 >
                     <MdUnarchive size={16} />
                 </ActionButton>
                 <ActionButton
-                    label="Xóa"
+                    label="Delete"
                     onClick={onSoftDelete}
                     danger
                     disabled={softDeleteMutation.isPending}
@@ -282,14 +282,14 @@ export const useNoteActions = (
         return (
             <div className="flex gap-1">
                 <ActionButton
-                    label="Khôi phục"
+                    label="Restore"
                     onClick={onRestore}
                     disabled={restoreMutation.isPending}
                 >
                     <MdRestore size={16} />
                 </ActionButton>
                 <ActionButton
-                    label="Xóa vĩnh viễn"
+                    label="Hard Delete"
                     onClick={onHardDelete}
                     danger
                     disabled={hardDeleteMutation.isPending}

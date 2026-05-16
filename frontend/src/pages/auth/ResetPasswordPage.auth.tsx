@@ -21,7 +21,7 @@ export default function ResetPasswordPage() {
         e.preventDefault();
 
         if (password !== passwordConfirmation) {
-            showToast("Mật khẩu xác nhận không khớp.", "error");
+            showToast("Passwords do not match.", "error");
             return;
         }
 
@@ -34,10 +34,10 @@ export default function ResetPasswordPage() {
                 password_confirmation: passwordConfirmation,
             });
             setDone(true);
-            showToast("Đặt lại mật khẩu thành công!", "success");
+            showToast("Password reset successful!", "success");
             setTimeout(() => navigate("/login"), 2000);
         } catch (error) {
-            let message = "Đặt lại mật khẩu thất bại.";
+            let message = "Password reset failed.";
             if (error instanceof AxiosError && error.response?.data?.message) {
                 message = error.response.data.message;
             }
@@ -51,7 +51,7 @@ export default function ResetPasswordPage() {
         return (
             <div className="flex min-h-screen items-center justify-center bg-slate-100 dark:bg-gh-canvas">
                 <div className="bg-white dark:bg-gh-canvas-subtle rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
-                    <p className="text-red-500 font-medium">Liên kết không hợp lệ.</p>
+                    <p className="text-red-500 font-medium">Invalid link.</p>
                 </div>
             </div>
         );
@@ -67,21 +67,21 @@ export default function ResetPasswordPage() {
         >
             <div className="bg-white dark:bg-gh-canvas-subtle rounded-2xl shadow-lg p-8 max-w-md w-full">
                 <h2 className="text-2xl font-semibold text-gh-fg mb-2">
-                    Đặt lại mật khẩu
+                    Reset password
                 </h2>
                 <p className="text-sm text-gh-fg-muted mb-6">
-                    Nhập mật khẩu mới cho tài khoản <strong>{email}</strong>.
+                    Enter a new password for account <strong>{email}</strong>.
                 </p>
 
                 {done ? (
                     <p className="text-green-600 font-medium text-center">
-                        Đặt lại mật khẩu thành công! Đang chuyển hướng...
+                        Password reset successful! Redirecting...
                     </p>
                 ) : (
                     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                         <label className="flex flex-col gap-1">
                             <span className="text-sm text-gh-fg-muted">
-                                Mật khẩu mới
+                                New password
                             </span>
                             <input
                                 type="password"
@@ -89,21 +89,21 @@ export default function ResetPasswordPage() {
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                                 minLength={8}
-                                placeholder="Mật khẩu mới"
+                                placeholder="New password"
                                 className="px-3 py-2 bg-gh-canvas border border-gh-border rounded-md text-gh-fg focus:outline-none focus:ring-2 focus:ring-gh-accent"
                             />
                         </label>
 
                         <label className="flex flex-col gap-1">
                             <span className="text-sm text-gh-fg-muted">
-                                Xác nhận mật khẩu
+                                Confirm password
                             </span>
                             <input
                                 type="password"
                                 value={passwordConfirmation}
                                 onChange={(e) => setPasswordConfirmation(e.target.value)}
                                 required
-                                placeholder="Xác nhận mật khẩu mới"
+                                placeholder="Confirm new password"
                                 className="px-3 py-2 bg-gh-canvas border border-gh-border rounded-md text-gh-fg focus:outline-none focus:ring-2 focus:ring-gh-accent"
                             />
                         </label>
@@ -113,7 +113,7 @@ export default function ResetPasswordPage() {
                             disabled={isLoading || !password || !passwordConfirmation}
                             className="mt-2 px-4 py-2 bg-gh-accent-emphasis text-white rounded-md disabled:opacity-50 transition hover:opacity-90 cursor-pointer font-medium"
                         >
-                            {isLoading ? "Đang xử lý..." : "Đặt lại mật khẩu"}
+                            {isLoading ? "Processing..." : "Reset password"}
                         </button>
                     </form>
                 )}

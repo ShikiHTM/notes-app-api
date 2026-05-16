@@ -22,17 +22,17 @@ const VerifyBanner: React.FC = () => {
                 <PiWarningFill size={24} />
                 {sent ? (
                     <p className="font-medium">
-                        Một email đã được gửi đến <strong>{user?.email}</strong>. Vui lòng kiểm tra hộp thư của bạn.
+                        An email has been sent to <strong>{user?.email}</strong>. Please check your inbox.
                     </p>
                 ) : (
                     <p className="font-medium">
-                        Vui lòng xác minh địa chỉ email của bạn tại{" "}
+                        Please verify your email address{" "}
                         <button
                             className="text-blue-600 font-medium hover:text-blue-900 bg-transparent underline cursor-pointer disabled:opacity-60"
                             onClick={handleSend}
                             disabled={isPending}
                         >
-                            đây
+                            here
                         </button>
                     </p>
                 )}

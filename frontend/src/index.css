@@ -123,3 +123,28 @@ body {
     pointer-events: none;
     height: 0;
 }
+
+/* Remote collaborator carets (Tiptap CollaborationCaret) */
+.tiptap-content .collaboration-carat__caret {
+    position: relative;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    margin-left: -1px;
+    margin-right: -1px;
+    pointer-events: none;
+    word-break: normal;
+}
+.tiptap-content .collaboration-carat__label {
+    position: absolute;
+    top: -1.4em;
+    left: -1px;
+    font-size: 0.65rem;
+    line-height: 1;
+    padding: 0.15rem 0.35rem;
+    border-radius: 0.25rem;
+    color: white;
+    white-space: nowrap;
+    user-select: none;
+    font-weight: 600;
+    pointer-events: none;
+}

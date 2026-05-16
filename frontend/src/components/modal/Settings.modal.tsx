@@ -14,7 +14,7 @@ const SettingsModal: React.FC<ISettingsProps> = ({ isOpen, onClose }) => {
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title="Cài đặt"
+            title="Settings"
             size="xl"
             showCloseButton
         >

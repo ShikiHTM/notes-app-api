@@ -5,7 +5,7 @@ const SettingsPage: React.FC = () => {
     return (
         <div className="p-6">
             <h1 className="text-2xl font-semibold mb-4 text-slate-800 dark:text-gh-fg">
-                Cài đặt
+                Settings
             </h1>
             <SettingsContent />
         </div>

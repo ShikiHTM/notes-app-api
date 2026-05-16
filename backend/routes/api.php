@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\LabelController;
 use App\Http\Controllers\Api\NoteController;
 use App\Http\Controllers\Api\NoteImageController;
+use App\Http\Controllers\Api\NoteShareController;
 use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\VerificationController;
@@ -49,9 +50,14 @@ Route::prefix('v1')->group(function () {
         Route::get('/notes/search', [NoteController::class, 'search']);
         Route::get('/notes/archived', [NoteController::class, 'archived']);
         Route::get('/notes/trashed', [NoteController::class, 'trashed']);
+        Route::get('/notes/shared-with-me', [NoteShareController::class, 'sharedWithMe']);
         Route::post('/notes/{id}/restore', [NoteController::class, 'restore']);
         Route::delete('/notes/{id}/force', [NoteController::class, 'forceDestroy']);
         Route::post('/notes/{id}/unlock', [NoteController::class, 'unlock']);
+        Route::get('/notes/{id}/shares', [NoteShareController::class, 'index']);
+        Route::post('/notes/{id}/shares', [NoteShareController::class, 'store']);
+        Route::put('/notes/{id}/shares/{userId}', [NoteShareController::class, 'update']);
+        Route::delete('/notes/{id}/shares/{userId}', [NoteShareController::class, 'destroy']);
         Route::apiResource('notes', NoteController::class);
 
         Route::apiResource('labels', LabelController::class);

@@ -18,7 +18,7 @@ interface INoteGridProps {
 
 const NoteGrid: React.FC<INoteGridProps> = ({
     notes,
-    emptyMessage = "Chưa có ghi chú nào",
+    emptyMessage = "No notes yet",
     onCardClick,
     actionsContext,
     isLoading,

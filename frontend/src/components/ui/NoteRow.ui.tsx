@@ -27,16 +27,6 @@ const NoteRow: React.FC<INoteRowProps> = ({
             onClick={() => onClick?.(note)}
             style={tint ? { backgroundColor: tint } : undefined}
         >
-            {!note.is_locked &&
-                note.images &&
-                note.images.length > 0 && (
-                    <img
-                        src={note.images[0].image_url}
-                        alt=""
-                        className="w-12 h-12 rounded-md object-cover shrink-0"
-                        loading="lazy"
-                    />
-                )}
             {note.is_locked && (
                 <div className="w-12 h-12 rounded-md bg-slate-100 dark:bg-gh-canvas-inset flex items-center justify-center shrink-0">
                     <MdLock
@@ -53,7 +43,7 @@ const NoteRow: React.FC<INoteRowProps> = ({
                 )}
                 <p className="text-sm text-slate-600 dark:text-gh-fg-muted truncate">
                     {note.is_locked
-                        ? "Ghi chú đã được khóa"
+                        ? "Note is locked"
                         : note.content || "—"}
                 </p>
                 {note.labels && note.labels.length > 0 && (

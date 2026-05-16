@@ -26,26 +26,13 @@ const NoteCard: React.FC<INoteCardProps> = ({
             onClick={() => onClick?.(note)}
             style={tint ? { backgroundColor: tint } : undefined}
         >
-            {!note.is_locked &&
-                note.images &&
-                note.images.length > 0 && (
-                    <div className="-mx-4 -mt-4 mb-1 overflow-hidden rounded-t-xl">
-                        <img
-                            src={note.images[0].image_url}
-                            alt=""
-                            className="w-full max-h-40 object-cover"
-                            loading="lazy"
-                        />
-                    </div>
-                )}
-
             {note.title && (
                 <h3 className="font-semibold text-slate-800 dark:text-gh-fg line-clamp-1 flex items-center gap-1.5">
                     {note.is_locked && (
                         <MdLock
                             size={14}
                             className="text-slate-500 dark:text-gh-fg-muted shrink-0"
-                            aria-label="Đã khóa"
+                            aria-label="Locked"
                         />
                     )}
                     {note.title}
@@ -55,7 +42,7 @@ const NoteCard: React.FC<INoteCardProps> = ({
             {note.is_locked ? (
                 <p className="text-sm text-slate-400 dark:text-gh-fg-subtle italic flex items-center gap-1.5">
                     {!note.title && <MdLock size={14} />}
-                    Ghi chú đã được khóa
+                    Note is locked
                 </p>
             ) : (
                 <p className="text-sm text-slate-600 dark:text-gh-fg-muted line-clamp-4 whitespace-pre-wrap">

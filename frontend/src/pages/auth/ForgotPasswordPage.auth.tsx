@@ -52,11 +52,11 @@ export default function ForgotPasswordPage() {
         const trimmed = email.trim();
 
         if (!trimmed) {
-            setFieldError("Email không được để trống");
+            setFieldError("Email is required");
             return;
         }
         if (!/\S+@\S+\.\S+/.test(trimmed)) {
-            setFieldError("Email không hợp lệ");
+            setFieldError("Invalid email");
             return;
         }
 
@@ -69,7 +69,7 @@ export default function ForgotPasswordPage() {
             const message =
                 error instanceof AxiosError && error.response?.data?.message
                     ? error.response.data.message
-                    : "Có lỗi xảy ra, vui lòng thử lại.";
+                    : "An error occurred, please try again.";
             showToast(message, "error");
         } finally {
             setIsLoading(false);
@@ -81,11 +81,11 @@ export default function ForgotPasswordPage() {
         const trimmed = username.trim();
 
         if (!trimmed) {
-            setFieldError("Tên người dùng không được để trống");
+            setFieldError("Username is required");
             return;
         }
         if (trimmed.length < 3) {
-            setFieldError("Tên người dùng phải có ít nhất 3 ký tự");
+            setFieldError("Username must be at least 3 characters");
             return;
         }
 
@@ -100,7 +100,7 @@ export default function ForgotPasswordPage() {
             const message =
                 error instanceof AxiosError && error.response?.data?.message
                     ? error.response.data.message
-                    : "Có lỗi xảy ra, vui lòng thử lại.";
+                    : "An error occurred, please try again.";
             showToast(message, "error");
         } finally {
             setIsLoading(false);
@@ -132,10 +132,10 @@ export default function ForgotPasswordPage() {
                 {phase === "email" && (
                     <>
                         <h2 className="font-bold text-gray-800 dark:text-gh-fg text-center mt-3 mb-2 text-3xl">
-                            Quên mật khẩu?
+                            Forgot password?
                         </h2>
                         <p className="text-gray-400 dark:text-gh-fg-muted text-center text-sm mb-8">
-                            Nhập email của bạn để nhận liên kết đặt lại mật khẩu.
+                            Enter your email to receive a password reset link.
                         </p>
 
                         <form onSubmit={handleSubmitEmail} noValidate>
@@ -182,12 +182,12 @@ export default function ForgotPasswordPage() {
                                 disabled={isLoading}
                                 className={submitButtonClasses}
                             >
-                                {isLoading ? "Đang gửi..." : "Gửi liên kết đặt lại"}
+                                {isLoading ? "Sending..." : "Send reset link"}
                             </button>
                         </form>
 
                         <div className="mt-6 text-center text-sm text-gray-400 dark:text-gh-fg-muted">
-                            Không nhớ email?{" "}
+                            Don't remember your email?{" "}
                             <button
                                 type="button"
                                 className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 cursor-pointer transition-colors focus:outline-none focus:underline"
@@ -196,7 +196,7 @@ export default function ForgotPasswordPage() {
                                     setPhase("username");
                                 }}
                             >
-                                Thử với tên người dùng
+                                Try with username
                             </button>
                         </div>
 
@@ -206,7 +206,7 @@ export default function ForgotPasswordPage() {
                                 className="inline-flex items-center gap-1 text-gray-400 dark:text-gh-fg-muted hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                             >
                                 <MdArrowBack size={16} aria-hidden="true" />
-                                Quay lại đăng nhập
+                                Back to sign in
                             </Link>
                         </div>
                     </>
@@ -216,17 +216,17 @@ export default function ForgotPasswordPage() {
                 {phase === "username" && (
                     <>
                         <h2 className="font-bold text-gray-800 dark:text-gh-fg text-center mt-3 mb-2 text-3xl">
-                            Khôi phục bằng tên người dùng
+                            Recover by username
                         </h2>
                         <p className="text-gray-400 dark:text-gh-fg-muted text-center text-sm mb-8">
-                            Nhập tên người dùng của bạn. Nếu tài khoản tồn tại,
-                            chúng tôi sẽ gửi liên kết đặt lại đến email đã đăng ký.
+                            Enter your username. If the account exists, we will
+                            send a reset link to the registered email.
                         </p>
 
                         <form onSubmit={handleSubmitUsername} noValidate>
                             <div className="w-full">
                                 <label htmlFor="fp-username" className="sr-only">
-                                    Tên người dùng
+                                    Username
                                 </label>
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
@@ -240,7 +240,7 @@ export default function ForgotPasswordPage() {
                                         ref={inputRef}
                                         type="text"
                                         autoComplete="username"
-                                        placeholder="Tên người dùng"
+                                        placeholder="Username"
                                         value={username}
                                         aria-invalid={!!fieldError}
                                         aria-describedby={
@@ -269,7 +269,7 @@ export default function ForgotPasswordPage() {
                                 disabled={isLoading}
                                 className={submitButtonClasses}
                             >
-                                {isLoading ? "Đang gửi..." : "Gửi liên kết đặt lại"}
+                                {isLoading ? "Sending..." : "Send reset link"}
                             </button>
                         </form>
 
@@ -283,7 +283,7 @@ export default function ForgotPasswordPage() {
                                 }}
                             >
                                 <MdArrowBack size={16} aria-hidden="true" />
-                                Quay lại nhập email
+                                Back to email
                             </button>
                         </div>
                     </>
@@ -293,16 +293,16 @@ export default function ForgotPasswordPage() {
                 {phase === "sent" && (
                     <>
                         <h2 className="font-bold text-gray-800 dark:text-gh-fg text-center mt-3 mb-2 text-3xl">
-                            Kiểm tra email của bạn
+                            Check your email
                         </h2>
                         <p className="text-gray-400 dark:text-gh-fg-muted text-center text-sm mb-6">
-                            Nếu thông tin bạn cung cấp khớp với một tài khoản,
-                            chúng tôi đã gửi một liên kết đặt lại mật khẩu đến
-                            email đã đăng ký.
+                            If the information you provided matches an account,
+                            we have sent a password reset link to the
+                            registered email.
                         </p>
                         <p className="text-gray-400 dark:text-gh-fg-muted text-center text-xs mb-8">
-                            Liên kết sẽ hết hạn sau 60 phút. Nếu bạn không thấy email,
-                            hãy kiểm tra hộp thư rác.
+                            The link will expire in 60 minutes. If you don't see the email,
+                            please check your spam folder.
                         </p>
 
                         <button
@@ -310,11 +310,11 @@ export default function ForgotPasswordPage() {
                             onClick={() => navigate("/login")}
                             className={submitButtonClasses}
                         >
-                            Quay lại đăng nhập
+                            Back to sign in
                         </button>
 
                         <div className="mt-4 text-center text-sm text-gray-400 dark:text-gh-fg-muted">
-                            Không nhận được email?{" "}
+                            Didn't receive an email?{" "}
                             <button
                                 type="button"
                                 className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 cursor-pointer transition-colors focus:outline-none focus:underline"
@@ -323,7 +323,7 @@ export default function ForgotPasswordPage() {
                                     setPhase("email");
                                 }}
                             >
-                                Thử lại
+                                Try again
                             </button>
                         </div>
                     </>

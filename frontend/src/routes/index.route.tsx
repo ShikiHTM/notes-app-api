@@ -6,6 +6,7 @@ import NotesRoutes from "../pages/notes/Notes.route";
 import LabelsRoutes from "../pages/labels/Labels.route";
 import ArchiveRoutes from "../pages/archive/Archive.route";
 import TrashRoutes from "../pages/trash/Trash.route";
+import SharedRoutes from "../pages/shared/Shared.route";
 
 export const AppRoutes: RouteObject[] = [
     {
@@ -17,6 +18,7 @@ export const AppRoutes: RouteObject[] = [
             ...SettingsRoutes,
             ...NotesRoutes,
             ...LabelsRoutes,
+            ...SharedRoutes,
             ...ArchiveRoutes,
             ...TrashRoutes,
         ],

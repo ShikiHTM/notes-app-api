@@ -118,9 +118,12 @@ class NoteController extends Controller
     {
         $note = Note::with(['labels', 'images'])->findOrFail($id);
 
-        if ($request->user()->id !== $note->user_id) {
+        if (!$note->isReadableBy($request->user())) {
             return response()->json(['error' => 'Forbidden: You are not allowed to view this note.'], 403);
         }
+
+        // Annotate viewer's permission so the frontend can render correctly.
+        $note->viewer_permission = $note->permissionFor($request->user());
 
         return response()->json($note->redactIfLocked());
     }
@@ -146,6 +149,8 @@ class NoteController extends Controller
         if (!$note->password || !Hash::check($request->password, $note->password)) {
             return response()->json(['error' => 'Mật khẩu không đúng.'], 403);
         }
+
+        $note->viewer_permission = $note->permissionFor($request->user());
 
         return response()->json($note);
     }
@@ -185,8 +190,18 @@ class NoteController extends Controller
             'current_password' => 'sometimes|nullable|string',
         ]);
 
-        if($request->user()->id !== $note->user_id) {
-            return response()->json(['error' => 'Forbidden: you\'re not own this note'], 403);
+        $viewerPermission = $note->permissionFor($request->user());
+        $isOwner = $viewerPermission === 'OWNER';
+
+        if (!$isOwner && $viewerPermission !== 'READ_AND_WRITE' && $viewerPermission !== 'WRITE') {
+            return response()->json(['error' => 'Forbidden: you do not have permission to edit this note'], 403);
+        }
+
+        // Non-owners can only edit content/title, not metadata like color, pinning,
+        // archiving, labels, password, or sharing.
+        if (!$isOwner) {
+            $allowedForCollaborator = ['title', 'content', 'content_rich'];
+            $validated = array_intersect_key($validated, array_flip($allowedForCollaborator));
         }
 
         if (isset($validated['is_pinned'])) {
@@ -227,6 +242,7 @@ class NoteController extends Controller
         }
 
         $note->load('labels');
+        $note->viewer_permission = $note->permissionFor($request->user());
 
         broadcast(new NoteMetadataUpdated($note))->toOthers();
 

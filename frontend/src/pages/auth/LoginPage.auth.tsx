@@ -21,13 +21,13 @@ export default function LoginPage() {
 
             login(authData.token, authData.user);
 
-            showToast("Đăng nhập thành công!", "success");
+            showToast("Signed in successfully!", "success");
 
             setTimeout(() => {
                 navigate("/");
             }, 1500);
         } catch (error) {
-            showToast("Sai email hoặc mật khẩu", "error");
+            showToast("Incorrect email or password", "error");
         } finally {
             setIsLoading(false);
         }

@@ -51,10 +51,10 @@ export const useCreateLabel = () => {
         },
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: labelsQueryKey });
-            showToast("Đã tạo nhãn", "success");
+            showToast("Label created", "success");
         },
         onError: (error) =>
-            showToast(extractErrorMessage(error, "Không thể tạo nhãn"), "error"),
+            showToast(extractErrorMessage(error, "Failed to create label"), "error"),
     });
 };
 
@@ -77,11 +77,11 @@ export const useUpdateLabel = () => {
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: labelsQueryKey });
             qc.invalidateQueries({ queryKey: notesQueryKey });
-            showToast("Đã cập nhật nhãn", "success");
+            showToast("Label updated", "success");
         },
         onError: (error) =>
             showToast(
-                extractErrorMessage(error, "Không thể cập nhật nhãn"),
+                extractErrorMessage(error, "Failed to update label"),
                 "error",
             ),
     });
@@ -99,9 +99,9 @@ export const useDeleteLabel = () => {
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: labelsQueryKey });
             qc.invalidateQueries({ queryKey: notesQueryKey });
-            showToast("Đã xóa nhãn", "success");
+            showToast("Label deleted", "success");
         },
         onError: (error) =>
-            showToast(extractErrorMessage(error, "Không thể xóa nhãn"), "error"),
+            showToast(extractErrorMessage(error, "Failed to delete label"), "error"),
     });
 };

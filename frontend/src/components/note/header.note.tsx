@@ -11,7 +11,7 @@ const NoteHeader: React.FC = () => {
             onChange={(e) => setTitle(e.target.value)}
             onBlur={() => save()}
             readOnly={isReadOnly}
-            placeholder="Tiêu đề"
+            placeholder="Title"
             className="w-full bg-transparent text-2xl font-semibold text-slate-800 dark:text-gh-fg outline-none placeholder:text-slate-400 dark:placeholder:text-gh-fg-subtle"
         />
     );

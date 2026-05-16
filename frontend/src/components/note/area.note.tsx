@@ -3,6 +3,8 @@ import { useEditor, EditorContent, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
+import Collaboration from "@tiptap/extension-collaboration";
+import CollaborationCaret from "@tiptap/extension-collaboration-caret";
 import {
     MdFormatBold,
     MdFormatItalic,
@@ -20,6 +22,27 @@ import {
     useDeleteNoteImage,
     useUploadNoteImage,
 } from "../../hooks/NoteImage.hook";
+import { useAuth } from "../../hooks/Auth.hook";
+
+const CARET_COLORS = [
+    "#ef4444",
+    "#f97316",
+    "#eab308",
+    "#22c55e",
+    "#06b6d4",
+    "#3b82f6",
+    "#a855f7",
+    "#ec4899",
+];
+
+function pickCaretColor(seed: number | string): string {
+    const key = String(seed);
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+        hash = (hash * 31 + key.charCodeAt(i)) | 0;
+    }
+    return CARET_COLORS[Math.abs(hash) % CARET_COLORS.length];
+}
 
 const collectImageSrcs = (editor: Editor): Set<string> => {
     const srcs = new Set<string>();
@@ -55,31 +78,38 @@ const ToolbarButton: React.FC<{
 );
 
 const NoteArea: React.FC = () => {
-    const { note, isReadOnly, updateContent, setImages, save } =
+    const { note, isReadOnly, updateContent, setImages, save, collab } =
         useNoteContext();
+    const { user } = useAuth();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const previousSrcsRef = useRef<Set<string>>(new Set());
     const imagesRef = useRef(note?.images ?? []);
+    const seededRef = useRef(false);
 
     useEffect(() => {
         imagesRef.current = note?.images ?? [];
     }, [note?.images]);
 
+    // Reset the seed flag when switching notes so the new doc gets seeded once.
+    useEffect(() => {
+        seededRef.current = false;
+    }, [note?.id]);
+
     const noteId = note?.id ?? 0;
+    const isOwner = note?.viewer_permission === "OWNER";
     const { mutate: uploadImage, isPending: isUploading } =
         useUploadNoteImage(noteId);
     const { mutate: deleteImageById } = useDeleteNoteImage(noteId);
 
     const initialContent = useMemo(() => {
-        if (!note) return "";
+        if (!note) return null;
         if (note.content_rich) {
             try {
                 return JSON.parse(note.content_rich);
             } catch {
-                /* fall through to plain content */
+                /* fall through */
             }
         }
-        // Wrap legacy plain text as a single paragraph
         const text = note.content ?? "";
         return text
             ? {
@@ -91,17 +121,40 @@ const NoteArea: React.FC = () => {
                           : undefined,
                   })),
               }
-            : "";
+            : null;
     }, [note?.id]);
+
+    const caretColor = useMemo(
+        () => (user ? pickCaretColor(user.id) : "#3b82f6"),
+        [user?.id],
+    );
 
     const editor = useEditor(
         {
-            extensions: [
-                StarterKit,
-                Image.configure({ inline: false, allowBase64: false }),
-                Placeholder.configure({ placeholder: "Nội dung ghi chú…" }),
-            ],
-            content: initialContent,
+            extensions: collab
+                ? [
+                      // History is provided by the Collaboration extension; disable
+                      // StarterKit's history to avoid a conflict.
+                      StarterKit.configure({ undoRedo: false }),
+                      Image.configure({ inline: false, allowBase64: false }),
+                      Placeholder.configure({ placeholder: "Note content…" }),
+                      Collaboration.configure({ document: collab.ydoc }),
+                      CollaborationCaret.configure({
+                          provider: collab.provider,
+                          user: {
+                              name: user?.display_name ?? "Anonymous",
+                              color: caretColor,
+                          },
+                      }),
+                  ]
+                : [
+                      StarterKit,
+                      Image.configure({ inline: false, allowBase64: false }),
+                      Placeholder.configure({ placeholder: "Note content…" }),
+                  ],
+            // Without yjs, seed from REST content; with yjs, Y.Doc is the source
+            // of truth and we seed via setContent on first sync (owner only).
+            content: collab ? undefined : initialContent ?? "",
             editable: !isReadOnly,
             editorProps: {
                 attributes: {
@@ -116,7 +169,10 @@ const NoteArea: React.FC = () => {
                 const text = e.getText();
                 updateContent(json, text);
 
-                // Detect images removed from the doc and delete them on the server.
+                // Only the owner reconciles attached images; otherwise every
+                // collaborator would race to DELETE the same image.
+                if (!isOwner) return;
+
                 const current = collectImageSrcs(e);
                 const removed = [...previousSrcsRef.current].filter(
                     (src) => !current.has(src),
@@ -148,10 +204,32 @@ const NoteArea: React.FC = () => {
                 save();
             },
         },
-        [note?.id],
+        // Depend on the stable provider/ydoc refs (not the collab object),
+        // so status/isSynced changes don't tear down the editor mid-flight.
+        [note?.id, collab?.ydoc, collab?.provider],
     );
 
-    // Keep editable in sync if note becomes read-only
+    // Seed the Y.Doc once on first sync if it's empty and we have existing
+    // REST content. Only the owner seeds to avoid duplicated insertions when
+    // multiple collaborators happen to be the first to connect.
+    useEffect(() => {
+        if (!editor || !collab || !collab.isSynced) return;
+        if (seededRef.current) return;
+        if (!isOwner) {
+            seededRef.current = true;
+            return;
+        }
+        if (!editor.isEmpty) {
+            seededRef.current = true;
+            return;
+        }
+        if (initialContent) {
+            editor.commands.setContent(initialContent, { emitUpdate: false });
+            previousSrcsRef.current = collectImageSrcs(editor);
+        }
+        seededRef.current = true;
+    }, [editor, collab?.isSynced, isOwner, initialContent]);
+
     useEffect(() => {
         editor?.setEditable(!isReadOnly);
     }, [editor, isReadOnly]);
@@ -185,7 +263,7 @@ const NoteArea: React.FC = () => {
     if (!editor) {
         return (
             <div className="w-full flex-1 text-slate-400 dark:text-gh-fg-subtle">
-                Đang tải trình soạn thảo…
+                Loading editor…
             </div>
         );
     }
@@ -195,7 +273,7 @@ const NoteArea: React.FC = () => {
             {!isReadOnly && (
                 <div className="flex items-center gap-1 flex-wrap border-b border-slate-200 dark:border-gh-border pb-2">
                     <ToolbarButton
-                        label="In đậm"
+                        label="Bold"
                         active={editor.isActive("bold")}
                         onClick={() =>
                             editor.chain().focus().toggleBold().run()
@@ -204,7 +282,7 @@ const NoteArea: React.FC = () => {
                         <MdFormatBold size={18} />
                     </ToolbarButton>
                     <ToolbarButton
-                        label="In nghiêng"
+                        label="Italic"
                         active={editor.isActive("italic")}
                         onClick={() =>
                             editor.chain().focus().toggleItalic().run()
@@ -213,7 +291,7 @@ const NoteArea: React.FC = () => {
                         <MdFormatItalic size={18} />
                     </ToolbarButton>
                     <ToolbarButton
-                        label="Tiêu đề"
+                        label="Heading"
                         active={editor.isActive("heading", { level: 2 })}
                         onClick={() =>
                             editor
@@ -226,7 +304,7 @@ const NoteArea: React.FC = () => {
                         <MdTitle size={18} />
                     </ToolbarButton>
                     <ToolbarButton
-                        label="Danh sách"
+                        label="Bulleted list"
                         active={editor.isActive("bulletList")}
                         onClick={() =>
                             editor.chain().focus().toggleBulletList().run()
@@ -235,7 +313,7 @@ const NoteArea: React.FC = () => {
                         <MdFormatListBulleted size={18} />
                     </ToolbarButton>
                     <ToolbarButton
-                        label="Danh sách có thứ tự"
+                        label="Numbered list"
                         active={editor.isActive("orderedList")}
                         onClick={() =>
                             editor.chain().focus().toggleOrderedList().run()
@@ -244,7 +322,7 @@ const NoteArea: React.FC = () => {
                         <MdFormatListNumbered size={18} />
                     </ToolbarButton>
                     <ToolbarButton
-                        label="Trích dẫn"
+                        label="Quote"
                         active={editor.isActive("blockquote")}
                         onClick={() =>
                             editor.chain().focus().toggleBlockquote().run()
@@ -253,7 +331,7 @@ const NoteArea: React.FC = () => {
                         <MdFormatQuote size={18} />
                     </ToolbarButton>
                     <ToolbarButton
-                        label="Khối mã"
+                        label="Code block"
                         active={editor.isActive("codeBlock")}
                         onClick={() =>
                             editor.chain().focus().toggleCodeBlock().run()
@@ -263,7 +341,7 @@ const NoteArea: React.FC = () => {
                     </ToolbarButton>
                     <span className="mx-1 w-px h-5 bg-slate-200 dark:bg-gh-border" />
                     <ToolbarButton
-                        label="Chèn ảnh"
+                        label="Insert image"
                         disabled={isUploading}
                         onClick={() => fileInputRef.current?.click()}
                     >
@@ -271,14 +349,14 @@ const NoteArea: React.FC = () => {
                     </ToolbarButton>
                     <span className="mx-1 w-px h-5 bg-slate-200 dark:bg-gh-border" />
                     <ToolbarButton
-                        label="Hoàn tác"
+                        label="Undo"
                         disabled={!editor.can().undo()}
                         onClick={() => editor.chain().focus().undo().run()}
                     >
                         <MdUndo size={18} />
                     </ToolbarButton>
                     <ToolbarButton
-                        label="Làm lại"
+                        label="Redo"
                         disabled={!editor.can().redo()}
                         onClick={() => editor.chain().focus().redo().run()}
                     >

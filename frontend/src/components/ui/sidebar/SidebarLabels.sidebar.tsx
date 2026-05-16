@@ -19,7 +19,7 @@ const SidebarLabels: React.FC<Props> = ({ isOpen }) => {
         <div className="flex flex-col gap-1 mt-2 border-t border-slate-200 dark:border-gh-border pt-3 overflow-y-auto">
             {isOpen && (
                 <span className="px-3 text-xs font-semibold uppercase text-slate-400 dark:text-gh-fg-subtle mb-1">
-                    Nhãn
+                    Labels
                 </span>
             )}
             {labels.map((label) => {

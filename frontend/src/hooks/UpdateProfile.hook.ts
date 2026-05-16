@@ -37,11 +37,11 @@ export const useUpdateProfile = () => {
         },
         onSuccess: (user) => {
             setUser(user);
-            showToast("Cập nhật thông tin thành công", "success");
+            showToast("Profile updated successfully", "success");
         },
         onError: (error) => {
             showToast(
-                extractErrorMessage(error, "Cập nhật thông tin thất bại"),
+                extractErrorMessage(error, "Failed to update profile"),
                 "error",
             );
         },
@@ -63,11 +63,11 @@ export const useUpdateAvatar = () => {
         },
         onSuccess: (user) => {
             setUser(user);
-            showToast("Cập nhật ảnh đại diện thành công", "success");
+            showToast("Avatar updated successfully", "success");
         },
         onError: (error) => {
             showToast(
-                extractErrorMessage(error, "Tải ảnh đại diện thất bại"),
+                extractErrorMessage(error, "Failed to upload avatar"),
                 "error",
             );
         },
