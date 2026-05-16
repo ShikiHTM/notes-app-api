@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const apiOrigin = import.meta.env.VITE_API_URL ?? "";
+const apiOrigin = window.__CONFIG__?.API_URL ?? "";
 if (!apiOrigin) {
     console.warn(
-        "VITE_API_URL is not set — API requests will be relative to the current origin.",
+        "window.__CONFIG__.API_URL is not set — API requests will be relative to the current origin.",
     );
 }
 

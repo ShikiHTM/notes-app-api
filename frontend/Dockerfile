@@ -6,16 +6,12 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml .npmrc ./
 RUN pnpm install --frozen-lockfile
 
-ARG VITE_API_URL=https://api.shikii.dev
-ENV VITE_API_URL=${VITE_API_URL}
-
-ARG VITE_YJS_URL=wss://yjs.shikii.dev
-ENV VITE_YJS_URL=${VITE_YJS_URL}
-
 COPY . .
 RUN pnpm build
 
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+COPY docker/docker-entrypoint.sh /docker-entrypoint.d/40-runtime-config.sh
+RUN chmod +x /docker-entrypoint.d/40-runtime-config.sh
 EXPOSE 80

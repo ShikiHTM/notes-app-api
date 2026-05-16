@@ -5,8 +5,8 @@ import { HocuspocusProvider, WebSocketStatus } from "@hocuspocus/provider";
 const DEFAULT_DEV_URL = "ws://localhost:1234";
 
 function resolveYjsUrl(): string {
-    const fromEnv = import.meta.env.VITE_YJS_URL;
-    if (fromEnv) return fromEnv;
+    const fromConfig = window.__CONFIG__?.YJS_URL;
+    if (fromConfig) return fromConfig;
     if (import.meta.env.DEV) return DEFAULT_DEV_URL;
     // Production fallback: derive from current origin (same host, /yjs path).
     const proto = window.location.protocol === "https:" ? "wss:" : "ws:";

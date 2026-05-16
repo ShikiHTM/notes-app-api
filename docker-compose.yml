@@ -3,6 +3,9 @@ services:
     image: shikihtm/notes-app-frontend:latest
     container_name: notes-app-frontend
     restart: unless-stopped
+    environment:
+      API_URL: ${FRONTEND_API_URL:-}
+      YJS_URL: ${FRONTEND_YJS_URL:-}
     networks:
       - notes-network
 
